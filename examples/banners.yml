@@ -19,7 +19,9 @@ description: '' # a longer line under the note; empty: none
 figures: []
 closing: '' # the footer's closing phrase; empty: none
 top: Back to Top # the footer's way back up
-# The links row under the footer. Empty: your website, and a repository's releases and issues.
+# Up to four buttons under the footer. Empty: the first four pages GitHub has for it. A repository:
+# Issues, Pull Requests, Releases, Actions, Discussions, Contributors; a profile: your website,
+# then Repositories, Projects, Packages, Stars.
 # links:
 #   Docs: docs/README.md
 #   Changelog: CHANGELOG.md

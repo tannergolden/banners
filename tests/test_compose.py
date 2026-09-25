@@ -26,9 +26,10 @@ class Defaults(unittest.TestCase):
                          ["PROJECT", "RELEASE", "STARS", "FORKS", "OPEN ISSUES", "LANGUAGE", "LICENSE"])
         self.assertEqual(dict(h.figures)["STARS"], "1,284")
         self.assertEqual((f.handle, f.license, f.updated), ("@octo-dev", "MIT", "2026-09-23"))
-        self.assertEqual(f.links, (("Website", "https://toolkit.octo.dev"),
+        self.assertEqual(f.links, (("Issues", "https://github.com/octo-dev/toolkit/issues"),
+                                   ("Pull Requests", "https://github.com/octo-dev/toolkit/pulls"),
                                    ("Releases", "https://github.com/octo-dev/toolkit/releases"),
-                                   ("Issues", "https://github.com/octo-dev/toolkit/issues")))
+                                   ("Actions", "https://github.com/octo-dev/toolkit/actions")))
         self.assertEqual(notes, [])
 
     def test_a_profile_reads_the_person(self):
@@ -37,7 +38,10 @@ class Defaults(unittest.TestCase):
         self.assertEqual(h.figures[0], ("ACCOUNT", "@octo-dev"))
         self.assertEqual(dict(h.figures)["CONTRIBUTIONS, LAST YEAR"], "1,864")
         self.assertEqual(dict(h.figures)["MEMBER SINCE"], "2018")
-        self.assertEqual([label for label, _ in f.links], ["Website"])
+        self.assertEqual(f.links, (("Website", "https://octo.dev"),
+                                   ("Repositories", "https://github.com/octo-dev?tab=repositories"),
+                                   ("Projects", "https://github.com/octo-dev?tab=projects"),
+                                   ("Packages", "https://github.com/octo-dev?tab=packages")))
 
     def test_a_figure_github_does_not_have_is_left_out(self):
         m = copy.deepcopy(sample.REPOSITORY)
@@ -125,6 +129,28 @@ class Drawable(unittest.TestCase):
             for name, svg in files.items():
                 if "footer" in name:
                     self.assertNotIn("stroke-dasharray", svg, name)
+
+    def test_a_person_with_no_website_gets_the_four_profile_tabs(self):
+        m = copy.deepcopy(sample.PROFILE)
+        m["profile"]["website"] = "octo.dev"
+        _, f, _ = composed(m)
+        self.assertEqual(f.links[0], ("Website", "https://octo.dev"))
+        m["profile"]["website"] = ""
+        _, f, _ = composed(m)
+        self.assertEqual([label for label, _ in f.links], ["Repositories", "Projects", "Packages", "Stars"])
+
+    def test_a_repository_page_with_nothing_on_it_is_never_a_button(self):
+        m = copy.deepcopy(sample.REPOSITORY)
+        m["repository"].update(issuesOn=False, releases=0, workflows=0, discussionsOn=True)
+        _, f, _ = composed(m)
+        self.assertEqual([label for label, _ in f.links], ["Pull Requests", "Discussions", "Contributors"])
+
+    def test_the_config_names_up_to_four_buttons(self):
+        four = {f"Link {i}": f"https://example.com/{i}" for i in range(4)}
+        _, f, _ = composed(sample.REPOSITORY, links=four)
+        self.assertEqual([label for label, _ in f.links], list(four))
+        with self.assertRaisesRegex(config.ConfigError, "at most 4"):
+            config.validate({"links": dict(four, Fifth="https://example.com/5")})
 
     def test_a_config_written_for_1_0_still_runs(self):
         # 1.0's starter file carried `emoji: ''` and listed both under `hide`; they are read and set aside.

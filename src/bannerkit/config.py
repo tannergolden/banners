@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import re
 
-from .compose import FIGURES
+from .compose import FIGURES, MAX_LINKS
 from .content import FOOTER_FIELDS, HEADER_FIELDS
 from .drafting import DEFAULT_PRINT, PRINTS, RAINBOW
 
@@ -37,7 +37,7 @@ DEFAULTS = {
     "figures": [],             # which figures, in order; empty means the mode's defaults
     "closing": "",             # the footer's closing phrase; empty: none
     "top": "Back to Top",      # the footer's way back up
-    "links": [],               # the row of links under the footer; empty: the website, releases and issues
+    "links": [],               # up to four buttons under the footer; empty: the first four pages GitHub has for it
     "hide": [],                # fields that are not drawn (not `off`, which YAML reads as false)
     "readme": "manage",        # manage the blocks between the markers | none
     "readme_path": "README.md",
@@ -185,6 +185,8 @@ def _links(value) -> list:
     bad = [label for label, url in out if not label or not url]
     if bad:
         raise ConfigError(f"links: every link needs a label and a URL ({bad!r})")
+    if len(out) > MAX_LINKS:
+        raise ConfigError(f"links: at most {MAX_LINKS}, the buttons the row under the footer holds ({len(out)} given)")
     return out
 
 

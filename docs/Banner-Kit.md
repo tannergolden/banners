@@ -149,7 +149,9 @@ repository everywhere else.
 The repository whose README carries the banners: its name, description,
 homepage, creation date, stars, forks, watchers, open issues, open pull
 requests, primary language, licence (its SPDX id; one GitHub cannot name is
-left off), latest release and its date, topics, and **the last change**.
+left off), latest release and its date, topics, whether its issues and
+discussions are on and how many workflow files it has (for the link
+buttons), and **the last change**.
 
 ### Profile mode
 
@@ -194,7 +196,21 @@ empty is **read from GitHub**; a field it sets **wins**; a field listed under
 | `motto`       | Nothing, or in profile mode the status message: the sheet's one note    |
 | `figures`     | The mode's defaults, below                                              |
 | footer        | The handle, the licence and the last change; the closing phrase is the config's |
-| `links`       | The website, and a repository's releases and issues                     |
+| `links`       | The first four pages a developer reaches for, below                     |
+
+**Link buttons.** The row under the footer holds up to four buttons, each its
+own small image with its own link. A config that names links gets those, in
+its order, four at most. One that names none gets the first four of these
+the repository has:
+
+| Mode       | In order, the first four there                                                                  |
+| :--------- | :---------------------------------------------------------------------------------------------- |
+| repository | Issues (when on), Pull Requests, Releases (when there is one), Actions (when it has a workflow), Discussions (when on), Contributors |
+| profile    | Website (when the person has one), Repositories, Projects, Packages, Stars                      |
+
+A repository's page with nothing on it is never a button. Every default URL
+is absolute, since a README is also read where a relative link would resolve
+against the wrong page.
 
 **Figures.** Each is a label over a value; one GitHub has no value for is left
 out. Counts are lettered in full to 99,999, then as `128k` and `1.2M`.
@@ -233,7 +249,7 @@ lists every key at its default.
 | `figures`     | the mode's       | Which figures, in order.                                                          |
 | `closing`     | none             | The footer's closing phrase.                                                      |
 | `top`         | `Back to Top`    | The words on the footer's way back up. The footer links to the top either way.    |
-| `links`       | from GitHub      | The links row: a map of label to URL, or a list of `Label \| URL` lines.          |
+| `links`       | from GitHub      | Up to four buttons: a map of label to URL, or a list of `Label \| URL` lines.     |
 | `hide`        | `[]`             | Fields not drawn: any of the header's and footer's fields.                        |
 | `readme`      | `manage`         | Write the README blocks, or `none`.                                               |
 | `readme_path` | `README.md`      | The file that holds them.                                                         |

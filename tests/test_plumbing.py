@@ -66,7 +66,8 @@ class Run(unittest.TestCase):
         self.assertIn("# Toolkit\n\nWhat it does.\n\n<!-- banners:footer:start -->", text)
         self.assertTrue(text.rstrip().endswith("<!-- banners:footer:end -->"))
         drawn = sorted(p.name for p in (self.root / "assets" / "banners").iterdir())
-        self.assertEqual(len(drawn), 16)
+        # Six header files, four footer files, and a day and a dark button for each of the four links.
+        self.assertEqual(len(drawn), 18)
         lock = json.loads((self.root / ".github" / "banners.lock.json").read_text(encoding="utf-8"))
         self.assertEqual(lock["last"]["subject"], "octo-dev/toolkit")
         self.assertEqual(lock["snapshot"], "2026-09-25")

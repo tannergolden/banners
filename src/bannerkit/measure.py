@@ -36,12 +36,13 @@ from collections import Counter
 REPOSITORY = """
 query($owner:String!,$name:String!){ rateLimit{cost}
   repository(owner:$owner,name:$name){ nameWithOwner name description homepageUrl createdAt isArchived isPrivate
-    hasIssuesEnabled owner{ login __typename }
+    hasIssuesEnabled hasDiscussionsEnabled owner{ login __typename }
     stargazerCount forkCount watchers{totalCount}
     openIssues: issues(states:OPEN){totalCount} openPulls: pullRequests(states:OPEN){totalCount}
     primaryLanguage{ name } licenseInfo{ spdxId name }
     latestRelease{ tagName publishedAt }
     releases{totalCount}
+    workflows: object(expression:"HEAD:.github/workflows"){ ... on Tree{ entries{ name } } }
     repositoryTopics(first:20){ nodes{ topic{ name } } }
     defaultBranchRef{ name } } }"""
 
@@ -120,6 +121,10 @@ def repository(gh, owner: str, name: str, notes: list) -> dict:
         "issues": ((r.get("openIssues") or {}).get("totalCount")) or 0,
         "pulls": ((r.get("openPulls") or {}).get("totalCount")) or 0,
         "issuesOn": bool(r.get("hasIssuesEnabled")),
+        "discussionsOn": bool(r.get("hasDiscussionsEnabled")),
+        # The workflow files on the default branch: an Actions page with none has nothing to show.
+        "workflows": sum(1 for e in ((r.get("workflows") or {}).get("entries") or [])
+                         if (e.get("name") or "").endswith((".yml", ".yaml"))),
         "language": (r.get("primaryLanguage") or {}).get("name") or "",
         # NOASSERTION is GitHub saying it found a licence file it cannot name.
         "license": "" if licence in ("", "NOASSERTION") else licence,

@@ -16,7 +16,11 @@ changes, and one who writes a title keeps that title.
   figures      the ones the config names, in its order, else the mode's
                defaults; one whose value GitHub does not have is left out
   footer       the handle, the licence and the last change, from GitHub;
-               the closing phrase and the links row from the config
+               the closing phrase from the config
+  links        up to four buttons under the footer: the config's, else
+               the first four pages a developer reaches for: a
+               repository's own on GitHub, or a person's website and
+               profile tabs
 
 Text is drawn as outlines from a fixed set of letters, so measured text is
 made drawable first: a dash the standards ban becomes a hyphen, a GitHub
@@ -54,6 +58,8 @@ DEFAULT_FIGURES = {
 }
 # Measured text is clipped here, at a word, before it is drawn.
 LIMITS = {"title": 40, "tagline": 160, "motto": 80, "value": 40}
+# The row under a footer holds this many buttons at most.
+MAX_LINKS = 4
 TOP = "Back to Top"
 
 # Characters a measured line may carry that the letters do not: each is
@@ -187,23 +193,47 @@ def _pick(cfg: dict, key: str, measured: str) -> str:
     return str(given).strip() if given not in (None, "") else measured
 
 
-def links(mode: str, m: dict) -> tuple:
-    """The links row when the config names none: the website, and a repository's releases and issues."""
+def pages(mode: str, m: dict) -> list[tuple[str, str, bool]]:
+    """(label, URL, whether it is there) for every page the links row may default to, in order.
+
+    A repository's, in the order a developer reaches for them: its issues,
+    its pull requests, its releases, its Actions runs, its discussions and
+    who built it, each offered only when the measurement says it has
+    something on it, so an empty tab is never a button. A person's: their
+    website when they have one, then the tabs of their profile, which every
+    account has: repositories, projects, packages and stars. Every URL is
+    absolute, since a README is also read on a profile page, where a
+    relative link would resolve against the wrong place.
+    """
     repo = m.get("repository") or {}
-    person = m.get("profile") or {}
-    out = []
-    site = (person.get("website") if mode == "profile" else repo.get("homepage")) or ""
-    if site:
-        out.append(("Website", site if re.match(r"^[a-z]+://", site, re.I) else "https://" + site))
-    # Absolute, since a relative link resolves against whatever page shows
-    # the README, which on a profile is not the repository.
-    home = f"https://github.com/{repo.get('full')}" if repo.get("full") else ""
-    if mode == "repository" and home:
-        if repo.get("releases"):
-            out.append(("Releases", f"{home}/releases"))
-        if repo.get("issuesOn"):
-            out.append(("Issues", f"{home}/issues"))
-    return tuple(out)
+    if mode == "profile":
+        person = m.get("profile") or {}
+        login = person.get("login") or repo.get("owner") or ""
+        site = (person.get("website") or "").strip()
+        home = f"https://github.com/{login}"
+        return [
+            ("Website", site if re.match(r"^[a-z]+://", site, re.I) else "https://" + site, bool(site)),
+            ("Repositories", f"{home}?tab=repositories", True),
+            ("Projects", f"{home}?tab=projects", True),
+            ("Packages", f"{home}?tab=packages", True),
+            ("Stars", f"{home}?tab=stars", True),
+        ] if login else []
+    if not repo.get("full"):
+        return []
+    home = f"https://github.com/{repo['full']}"
+    return [
+        ("Issues", f"{home}/issues", bool(repo.get("issuesOn"))),
+        ("Pull Requests", f"{home}/pulls", True),
+        ("Releases", f"{home}/releases", bool(repo.get("releases"))),
+        ("Actions", f"{home}/actions", bool(repo.get("workflows"))),
+        ("Discussions", f"{home}/discussions", bool(repo.get("discussionsOn"))),
+        ("Contributors", f"{home}/graphs/contributors", True),
+    ]
+
+
+def links(mode: str, m: dict) -> tuple:
+    """The links row when the config names none: the first four pages GitHub has for this repository or person."""
+    return tuple((label, url) for label, url, has in pages(mode, m) if has)[:MAX_LINKS]
 
 
 def compose(m: dict, cfg: dict) -> tuple[Header, Footer, list[str]]:

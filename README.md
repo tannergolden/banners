@@ -257,7 +257,7 @@ Everything is optional, and an empty text field is read from GitHub. A
 | `figures`     | the mode's        | Which figures run along the foot, in order.                                                    |
 | `closing`     | none              | The footer's closing phrase.                                                                   |
 | `top`         | `Back to Top`     | The words on the footer's way back up. The whole footer links to the top either way.           |
-| `links`       | from GitHub       | The links row under the footer: your website, releases and issues.                             |
+| `links`       | from GitHub       | Up to four buttons under the footer. Empty: the first four pages GitHub has for it, below.     |
 | `hide`        | `[]`              | Fields not drawn at all.                                                                       |
 | `readme`      | `manage`          | Manage the blocks between the markers, or `none`.                                              |
 | `readme_path` | `README.md`       | The file that holds the markers.                                                               |
@@ -283,6 +283,13 @@ stars they earned, contributions in the last year as GitHub counts them,
 main language and the year they joined, and on request following, location,
 company and website. A figure GitHub has no value for is left out rather than
 drawn as a blank.
+
+**Four buttons under the footer.** Name up to four links in `links` and
+those are the buttons. Name none and a repository gets the first four of
+Issues, Pull Requests, Releases, Actions, Discussions and Contributors that
+it actually has, so an empty tab is never a button; a profile gets the
+person's website, when they have one, then Repositories, Projects, Packages
+and Stars.
 
 **The last change is a person's.** The footer's date is the newest commit on
 the default branch that a person made. A commit a bot pushed, and a refresh

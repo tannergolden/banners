@@ -598,7 +598,7 @@
     { key: 'built', label: 'Built with ♥ by', measured: 'handle' },
     { key: 'license', label: 'License', measured: 'license' },
     { key: 'updated', label: 'Last change', measured: 'updated', note: 'by a person' },
-    { key: 'links', label: 'Links row', input: 'links' },
+    { key: 'links', label: 'Link buttons', input: 'links' },
   ];
   const ROWS = {};
   const inputs = [];
@@ -634,7 +634,8 @@
         if (row.input === 'links') {
           // Only whole links reach the kit, so a line half typed never fails the config.
           const pairs = control.value.split('\n').map((line) => line.split('|').map((s) => s.trim())).filter((p) => p[0] && p[1]);
-          S.links = pairs.length ? pairs.map((p) => [p[0], p.slice(1).join('|')]) : null;
+          // The row holds four buttons; a fifth line waits until one above it goes.
+          S.links = pairs.length ? pairs.slice(0, 4).map((p) => [p[0], p.slice(1).join('|')]) : null;
         } else {
           S.words[row.key] = control.value;
         }
@@ -671,7 +672,7 @@
         const v = now ? now[row.measured] : '';
         ref.src.replaceChildren(v || 'none', ' ', h('em', { text: row.note ? `from GitHub, ${row.note}` : 'from GitHub' }));
       } else if (row.input === 'links') {
-        ref.small.textContent = 'empty: the website, releases, issues';
+        ref.small.textContent = 'up to four; empty: four pages GitHub has for it';
         const auto = now ? now.links.map((l) => `${l[0]} | ${l[1]}`).join('\n') : '';
         ref.control.placeholder = auto || 'none';
       } else if (row.fixed !== undefined) {

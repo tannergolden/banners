@@ -54,6 +54,13 @@ class Repository(unittest.TestCase):
         self.assertEqual(m["repository"]["updated"], "")
         self.assertTrue(any("no commit by a person" in n for n in m["notes"]))
 
+    def test_workflows_and_discussions_are_measured_for_the_link_buttons(self):
+        m = measure.measure(repository_client(), "repository", "", "octo-dev/toolkit", today="2026-09-25")
+        # Two workflow files; the README beside them is not one.
+        self.assertEqual((m["repository"]["workflows"], m["repository"]["discussionsOn"]), (2, False))
+        m = measure.measure(repository_client(workflows=None), "repository", "", "octo-dev/toolkit", today="2026-09-25")
+        self.assertEqual(m["repository"]["workflows"], 0)
+
     def test_an_unnamed_licence_is_left_off(self):
         gh = repository_client(licenseInfo={"spdxId": "NOASSERTION", "name": "Other"})
         m = measure.measure(gh, "repository", "", "octo-dev/toolkit", today="2026-09-25")

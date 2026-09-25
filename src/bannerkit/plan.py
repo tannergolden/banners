@@ -101,6 +101,9 @@ def facts(p: dict) -> dict:
             shown["footer:license"] = (f.license, _phrase(mode, "license", f.license))
         if f.on("updated"):
             shown["footer:updated"] = (f.updated, _phrase(mode, "updated", f.updated))
+        if f.on("links") and f.links:
+            labels = [label for label, _ in f.links]
+            shown["footer:links"] = (", ".join(labels), "the buttons " + _series(labels))
     return shown
 
 
