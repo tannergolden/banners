@@ -110,9 +110,12 @@ promise to take on trust; it is a property of a committed file.
 The header at the top of this page and the footer at its foot are the live
 example. They read this repository every night through
 [`🪧 Own Banners`](.github/workflows/own-banners.yml), which calls the same
-workflow you would. Everything in them comes from GitHub except the note, the
-closing phrase and the links, which are set in
-[`.github/banners.yml`](.github/banners.yml).
+workflow you would. Everything in them comes from GitHub except the note and
+the closing phrase, which are set in
+[`.github/banners.yml`](.github/banners.yml). That includes the four buttons
+under the footer: nothing names them, so they are the pages this repository
+has that a developer reaches for first, Issues, Pull Requests, Releases and
+Actions, and they will change on their own if that does.
 
 Every other image below is a real file in this repository too, drawn by the
 kit from a **sample** measurement into `assets/gallery/`: trophies' own made-up
@@ -468,9 +471,10 @@ in `src/fonts/`.
 </picture>
 </a>
 
-<a href="docs/Banner-Kit.md"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-specification-dark.svg"><img alt="Specification" src="assets/banners/link-specification-day.svg"></picture></a>
-<a href="examples/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-examples-dark.svg"><img alt="Examples" src="assets/banners/link-examples-day.svg"></picture></a>
 <a href="https://github.com/tannergolden/banners/issues"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-issues-dark.svg"><img alt="Issues" src="assets/banners/link-issues-day.svg"></picture></a>
+<a href="https://github.com/tannergolden/banners/pulls"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-pull-requests-dark.svg"><img alt="Pull Requests" src="assets/banners/link-pull-requests-day.svg"></picture></a>
+<a href="https://github.com/tannergolden/banners/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-releases-dark.svg"><img alt="Releases" src="assets/banners/link-releases-day.svg"></picture></a>
+<a href="https://github.com/tannergolden/banners/actions"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-actions-dark.svg"><img alt="Actions" src="assets/banners/link-actions-day.svg"></picture></a>
 
 </div>
 <!-- banners:footer:end -->
