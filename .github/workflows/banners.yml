@@ -56,7 +56,7 @@ on:
       author:
         description: >-
           Who the refresh commit is authored by, as "Name <email>". The
-          kit's author by default, as for emblems and trophies: the drawing
+          kit's author by default, as for badges and trophies: the drawing
           is the kit's output, and the commit is signed for by the bot as
           committer. The kit recognises its own commits by their scope and
           never counts one as the repository's last change.

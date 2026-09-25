@@ -32,7 +32,7 @@ on:
       author:
         description: >-
           Who the refresh commit is authored by, as "Name <email>". The kit's
-          author by default, as for banners, emblems and trophies: the drawing
+          author by default, as for banners, badges and trophies: the drawing
           is the kit's output, and the commit is signed for by the bot as
           committer.
         type: string
