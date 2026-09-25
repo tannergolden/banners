@@ -43,7 +43,7 @@
      ],
      [
       "21 SEP",
-      16
+      22
      ]
     ]
    },
@@ -52,23 +52,23 @@
     "parts": [
      [
       "SVG",
-      3216522
+      3239288
      ],
      [
       "PYTHON",
-      420465
+      424013
      ],
      [
       "JSON",
-      342355
+      343606
      ],
      [
       "MARKDOWN",
-      226690
+      226685
      ],
      [
       "OTHER",
-      284987
+      284982
      ]
     ],
     "total": "4.5 MB"
@@ -79,7 +79,7 @@
     "span": 30,
     "major": 10,
     "minor": 5,
-    "sub": "V1.1.0  ·  25 SEP"
+    "sub": "V1.2.3  ·  25 SEP"
    },
    "counters": [
     [
@@ -431,7 +431,7 @@
    ]
   },
   "history": {
-   "caption": "2 RELEASES SINCE 25 SEP 2026",
+   "caption": "6 RELEASES SINCE 25 SEP 2026",
    "events": [
     {
      "date": "2026-09-25",
@@ -450,17 +450,40 @@
      "above": [
       "FOUR LINK BUTTONS"
      ]
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.0",
+     "major": true,
+     "above": [
+      "THE ELEMENTS"
+     ]
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.1",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.2",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.3",
+     "major": false
     }
    ],
    "today": "2026-09-25"
   },
   "contributors": {
-   "caption": "16 COMMITS FROM 2 CONTRIBUTORS",
+   "caption": "22 COMMITS FROM 2 CONTRIBUTORS",
    "people": [
     {
      "name": "TANNER GOLDEN",
      "handle": "@TANNERGOLDEN",
-     "n": 16,
+     "n": 22,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "TG"
@@ -468,7 +491,7 @@
     {
      "name": "CLAUDE",
      "handle": "CO-AUTHOR",
-     "n": 13,
+     "n": 19,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "C"
@@ -476,7 +499,7 @@
    ]
   },
   "conformance": {
-   "commit": "87cf3f0",
+   "commit": "ee44140",
    "checks": [
     [
      "Licensed",
@@ -495,7 +518,7 @@
     ],
     [
      "Conventional commits",
-     "16 of 16 subjects",
+     "22 of 22 subjects",
      true
     ]
    ]
