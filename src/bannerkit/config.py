@@ -11,7 +11,10 @@ their repository or profile and keep reading it as it changes.
 Stdlib only, like the rest of the kit: PyYAML is used when it happens to be
 installed and a small reader for the flat, two-level YAML this file needs
 substitutes when it is not. Every key is validated; an unknown key or value
-fails the run with the key named rather than being ignored.
+fails the run with the key named rather than being ignored. The one
+exception is a retired key: `emoji`, which the headers no longer draw, is
+read and set aside, as is `emoji` under `hide`, so a config written for an
+earlier version keeps working.
 """
 from __future__ import annotations
 
@@ -27,7 +30,6 @@ DEFAULTS = {
     "header": "section",       # section | sheet | strip | none; section is what a config that says nothing gets
     "footer": "",              # title-block | scale-bar | none; empty means the one made for the header
     "theme": DEFAULT_PRINT,    # the print the set is drawn in: blueprint, redprint, ... or rainbowprint
-    "emoji": "",               # empty: the status emoji, or one the description or bio opens with
     "title": "",               # empty: the repository's name, or the person's name
     "tagline": "",             # empty: the repository's description, or the bio
     "motto": "",               # the sheet's one general note; empty: none, or in profile mode the status message
@@ -49,7 +51,9 @@ CHOICES = {
     "theme": set(PRINTS) | {RAINBOW},
     "readme": {"manage", "none"},
 }
-TEXT = ("subject", "emoji", "title", "tagline", "motto", "description", "closing", "top", "readme_path", "out")
+# Keys an earlier version read and this one sets aside, rather than fail a config written for it.
+RETIRED = frozenset({"emoji"})
+TEXT = ("subject", "title", "tagline", "motto", "description", "closing", "top", "readme_path", "out")
 
 
 class ConfigError(ValueError):
@@ -188,6 +192,8 @@ def validate(given: dict, where: str = "the config") -> dict:
     cfg = {k: (list(v) if isinstance(v, list) else v) for k, v in DEFAULTS.items()}
     for k, v in (given or {}).items():
         k = str(k).replace("-", "_")
+        if k in RETIRED:
+            continue
         if k not in DEFAULTS:
             raise ConfigError(f"unknown key in {where}: {k}")
         if v is not None:
@@ -202,7 +208,7 @@ def validate(given: dict, where: str = "the config") -> dict:
             cfg[k] = [cfg[k]]
         if not isinstance(cfg[k], list):
             raise ConfigError(f"{k}: expected a list")
-        cfg[k] = [str(x) for x in cfg[k]]
+        cfg[k] = [str(x) for x in cfg[k] if k != "hide" or str(x) not in RETIRED]
     known = {key for keys in FIGURES.values() for key in keys}
     for k in cfg["figures"]:
         if k not in known:

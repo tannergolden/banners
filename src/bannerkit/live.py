@@ -53,7 +53,7 @@ def answer(request: dict) -> dict:
         out[code] = entry
     if request.get("composed"):
         out["composed"] = {
-            "header": {k: getattr(header, k) for k in ("emoji", "title", "tagline", "motto", "description")}
+            "header": {k: getattr(header, k) for k in ("title", "tagline", "motto", "description")}
             | {"figures": [list(f) for f in header.figures]},
             "footer": {k: getattr(footer, k) for k in ("closing", "top", "handle", "license", "updated")}
             | {"links": [list(link) for link in footer.links]},

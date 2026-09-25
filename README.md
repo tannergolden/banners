@@ -110,8 +110,8 @@ promise to take on trust; it is a property of a committed file.
 The header at the top of this page and the footer at its foot are the live
 example. They read this repository every night through
 [`🪧 Own Banners`](.github/workflows/own-banners.yml), which calls the same
-workflow you would. Everything in them comes from GitHub except the emoji, the
-note, the closing phrase and the links, which are set in
+workflow you would. Everything in them comes from GitHub except the note, the
+closing phrase and the links, which are set in
 [`.github/banners.yml`](.github/banners.yml).
 
 Every other image below is a real file in this repository too, drawn by the
@@ -150,11 +150,11 @@ person made, and the way back to the top. **F2 Scale bar** sits under H3.
 ### A profile, read from the person
 
 In a profile repository the same header reads a person: their name, their
-bio, their status as the sheet's one note and its emoji beside the name, and
-along the foot their followers, repositories, the stars those earned, their
-contributions in the last year, their main language and the year they joined.
+bio, their status as the sheet's one note, and along the foot their
+followers, repositories, the stars those earned, their contributions in the
+last year, their main language and the year they joined.
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-profile-dark.svg"><img alt="H2 Section, drawn for the sample account octo-dev: the name OCTO DEV with a status emoji, the bio, the status as a note, and followers, repositories, stars earned, contributions, language and member since along the foot." src="assets/gallery/h2-profile-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-profile-dark.svg"><img alt="H2 Section, drawn for the sample account octo-dev: the name OCTO DEV, the bio, the status as a note, and followers, repositories, stars earned, contributions, language and member since along the foot." src="assets/gallery/h2-profile-day.svg"></picture>
 
 ### Eleven prints and a rainbow
 
@@ -250,7 +250,6 @@ Everything is optional, and an empty text field is read from GitHub. A
 | `header`      | `section`         | `section` (H2), `sheet` (H1), `strip` (H3) or `none`.                                          |
 | `footer`      | the header's pair | `title-block` (F1), `scale-bar` (F2) or `none`.                                                |
 | `theme`       | `blueprint`       | Any of the eleven prints, or `rainbowprint`.                                                   |
-| `emoji`       | from GitHub       | The emoji before the title: a status emoji, or one your description opens with.               |
 | `title`       | from GitHub       | The repository's name, or your name.                                                           |
 | `tagline`     | from GitHub       | The repository's description, or your bio.                                                     |
 | `motto`       | none              | The sheet's one general note. On a profile, your status message.                               |

@@ -18,9 +18,7 @@ Three faces, named the way trophies names them:
   num     Barlow Condensed Bold: the heavier cut, for a title that shouts
 
 Each SVG embeds only the glyphs it uses, once, and places them with `<use>`.
-The one thing not drawn as a path is an emoji, which no open font here
-carries: it is set as text in the viewer's emoji font, the way the profile
-masthead sets its own.
+Nothing is set as `<text>`: every letter on a banner is a path.
 """
 from __future__ import annotations
 
@@ -37,8 +35,6 @@ PREFIX = {"serif": "s", "num": "n", "meta": "m"}
 # What an unknown character advances by, in ems. It is drawn as nothing; the
 # kit reports it rather than guessing a shape.
 UNKNOWN_EM = 0.5
-
-EMOJI_FONT = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"
 
 _FONTS: dict | None = None
 
@@ -176,11 +172,6 @@ def flow(text: str, face: str, size: float, floor: float, max_w: float, ls: floa
         size = max(floor, size - 0.5)
 
 
-def entities(text: str) -> str:
-    """Every non-ASCII character as a hex entity, the portability rule the standards set for emoji."""
-    return "".join(ch if ord(ch) < 128 else f"&#x{ord(ch):X};" for ch in text)
-
-
 class Lettering:
     """Collects the glyphs one SVG uses, so `defs()` can embed each once."""
 
@@ -247,23 +238,3 @@ class Lettering:
         for face, ch in sorted(self.used, key=lambda k: (k[0], ord(k[1]))):
             out.append(f'<path id="{PREFIX[face]}{ord(ch)}" d="{fonts()[face]["g"][ch][0]}"/>')
         return "".join(out)
-
-
-def emoji(chars: str, *, cx: float, baseline: float, size: float, attrs: str = "") -> str:
-    """An emoji in the viewer's own emoji font, centred on `cx`.
-
-    Centred rather than started, because the three platforms' emoji fonts
-    advance by different amounts and the middle is the one point they agree on.
-    """
-    if not chars:
-        return ""
-    return (f'<text class="e" x="{f1(cx)}" y="{f1(baseline)}" font-size="{f1(size)}" '
-            f'text-anchor="middle"{attrs}>{entities(chars)}</text>')
-
-
-# How wide an emoji is taken to be, in ems of its own size, for layout. The
-# three platform fonts land between 1.17 and 1.28; the box is laid out for
-# the middle of that and the glyph is centred inside it.
-EMOJI_EM = 1.22
-
-EMOJI_CSS = f".e{{font-family:{EMOJI_FONT}}}"

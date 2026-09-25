@@ -91,7 +91,8 @@ fails the run:
   file: no font, image or stylesheet is fetched.
 - Every colour is one of emblems' 64 tokens; a colour that is not is a bug.
 - Lettering is drawn as paths from Barlow Condensed, so no reader needs a font
-  installed; the one thing a viewer's font draws is an emoji.
+  installed, and no viewer's font draws anything. No header carries an
+  emoji: an emoji a description or bio opens with is left off the tagline.
 - `role="img"`, a `<title>` and a `<desc>`, and alt text built from exactly
   what the image shows.
 - No en or em dash, and no file over 48 KB (12 KB for a link).
@@ -156,8 +157,8 @@ The person: name, bio, company, location, website, the year they joined,
 followers, following, public repositories they own (forks excluded), the
 stars those repositories earned, contributions in the last year as GitHub
 counts them, their main language (the one most of their repositories are
-written in, a tie going to the one with more stars) and their status, emoji
-and message. The profile repository is measured too, for the footer's
+written in, a tie going to the one with more stars) and their status
+message. The profile repository is measured too, for the footer's
 licence and last change.
 
 ### The last change
@@ -191,7 +192,6 @@ empty is **read from GitHub**; a field it sets **wins**; a field listed under
 | `title`       | The repository's name, or the person's name (their login if the letters cannot draw it) |
 | `tagline`     | The repository's description, or the bio                                |
 | `motto`       | Nothing, or in profile mode the status message: the sheet's one note    |
-| `emoji`       | The status emoji, else an emoji the description or bio opens with       |
 | `figures`     | The mode's defaults, below                                              |
 | footer        | The handle, the licence and the last change; the closing phrase is the config's |
 | `links`       | The website, and a repository's releases and issues                     |
@@ -226,7 +226,6 @@ lists every key at its default.
 | `header`      | `section`        | `section`, `sheet`, `strip` or `none`.                                            |
 | `footer`      | the header's pair | `title-block`, `scale-bar` or `none`.                                            |
 | `theme`       | `blueprint`      | Any print above, or `rainbowprint`.                                               |
-| `emoji`       | from GitHub      | The emoji before the title.                                                       |
 | `title`       | from GitHub      | The title, set fully capped.                                                      |
 | `tagline`     | from GitHub      | The line under the title.                                                         |
 | `motto`       | none             | The sheet's one general note, in capitals.                                        |

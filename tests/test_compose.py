@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from bannerkit import compose as c, config, sample  # noqa: E402
+from bannerkit import compose as c, config, plan, sample  # noqa: E402
 from bannerkit.text import missing  # noqa: E402
 
 
@@ -21,7 +21,7 @@ def composed(m, **given):
 class Defaults(unittest.TestCase):
     def test_a_repository_reads_itself(self):
         h, f, notes = composed(sample.REPOSITORY)
-        self.assertEqual((h.title, h.tagline, h.motto, h.emoji), ("toolkit", sample.REPOSITORY["repository"]["description"], "", ""))
+        self.assertEqual((h.title, h.tagline, h.motto), ("toolkit", sample.REPOSITORY["repository"]["description"], ""))
         self.assertEqual([label for label, _ in h.figures],
                          ["PROJECT", "RELEASE", "STARS", "FORKS", "OPEN ISSUES", "LANGUAGE", "LICENSE"])
         self.assertEqual(dict(h.figures)["STARS"], "1,284")
@@ -33,7 +33,7 @@ class Defaults(unittest.TestCase):
 
     def test_a_profile_reads_the_person(self):
         h, f, _ = composed(sample.PROFILE)
-        self.assertEqual((h.title, h.emoji, h.motto), ("Octo Dev", "\U0001F6E0\ufe0f", "Shipping toolkit 2.5"))
+        self.assertEqual((h.title, h.motto), ("Octo Dev", "Shipping toolkit 2.5"))
         self.assertEqual(h.figures[0], ("ACCOUNT", "@octo-dev"))
         self.assertEqual(dict(h.figures)["CONTRIBUTIONS, LAST YEAR"], "1,864")
         self.assertEqual(dict(h.figures)["MEMBER SINCE"], "2018")
@@ -50,10 +50,10 @@ class Defaults(unittest.TestCase):
 
 class Config(unittest.TestCase):
     def test_the_config_wins_where_it_speaks(self):
-        h, f, _ = composed(sample.REPOSITORY, title="Toolkit Pro", tagline="Logs, tamed.", emoji="\U0001FAB5",
+        h, f, _ = composed(sample.REPOSITORY, title="Toolkit Pro", tagline="Logs, tamed.",
                            motto="Drawn, never fetched.", closing="Thanks for reading.", theme="brownprint")
-        self.assertEqual((h.title, h.tagline, h.emoji, h.motto, h.tone), ("Toolkit Pro", "Logs, tamed.", "\U0001FAB5",
-                                                                          "Drawn, never fetched.", "brownprint"))
+        self.assertEqual((h.title, h.tagline, h.motto, h.tone), ("Toolkit Pro", "Logs, tamed.", "Drawn, never fetched.",
+                                                                 "brownprint"))
         self.assertEqual((f.closing, f.tone), ("Thanks for reading.", "brownprint"))
 
     def test_figures_are_the_ones_named_in_that_order(self):
@@ -101,12 +101,28 @@ class Drawable(unittest.TestCase):
         h, _, _ = composed(m)
         self.assertEqual(h.title, "octo-dev")
 
-    def test_an_opening_emoji_moves_to_the_emoji(self):
+    def test_an_opening_emoji_is_taken_off_the_tagline_quietly(self):
         m = copy.deepcopy(sample.REPOSITORY)
         m["repository"]["description"] = "\U0001F9F0 Tools for logs."
-        h, _, _ = composed(m)
-        self.assertEqual((h.emoji, h.tagline), ("\U0001F9F0", "Tools for logs."))
+        h, _, notes = composed(m)
+        self.assertEqual(h.tagline, "Tools for logs.")
+        self.assertEqual(notes, [])
         self.assertEqual(c.split_emoji("\u5f35\u5049 x"), ("", "\u5f35\u5049 x"))
+
+    def test_no_header_draws_an_emoji(self):
+        m = copy.deepcopy(sample.PROFILE)
+        m["profile"]["bio"] = "\U0001F9F0 Builds small tools for big logs."
+        for header in ("sheet", "section", "strip"):
+            files = plan.plan(m, config.validate({"header": header}))["files"]
+            for name, svg in files.items():
+                if "header" in name:
+                    self.assertNotIn("<text", svg, name)
+                    self.assertNotIn("1F9F0", svg.upper(), name)
+
+    def test_a_config_written_for_the_emoji_still_runs(self):
+        # 1.0's starter file carried `emoji: ''`; the key is now read and set aside.
+        self.assertEqual(config.validate({"emoji": "\U0001FAB5", "hide": ["emoji", "motto"]}),
+                         config.validate({"hide": ["motto"]}))
 
     def test_long_text_is_clipped_at_a_word(self):
         m = copy.deepcopy(sample.REPOSITORY)

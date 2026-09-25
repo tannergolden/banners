@@ -17,7 +17,7 @@ from html import escape
 
 from . import KIT_VERSION
 from .palette import HEXES, hexof
-from .text import EMOJI_CSS, Lettering
+from .text import Lettering
 
 # The two themes GitHub paints behind a README, as ink roles. Every role is a
 # palette token, so a design never reaches for a colour of its own.
@@ -46,7 +46,6 @@ class Canvas:
         self.defs: list[str] = []
         self.css: list[str] = []
         self.body: list[str] = []
-        self.emoji = False
         self._ids = 0
 
     def uid(self, base: str = "") -> str:
@@ -59,7 +58,7 @@ class Canvas:
 
     def svg(self) -> str:
         w, h = round(self.w), round(self.h)
-        css = "".join(self.css) + (EMOJI_CSS if self.emoji else "")
+        css = "".join(self.css)
         glyphs = self.L.defs()
         defs = "".join(self.defs) + glyphs
         return (
@@ -143,8 +142,8 @@ def _matches(pattern: re.Pattern, text: str, starts: tuple[str, ...], window, fo
 def lint(svg: str, *, budget: int, text_ok: bool = False) -> list[str]:
     """Everything wrong with `svg` as a README image, or an empty list.
 
-    The only `<text>` allowed is an emoji, class `e`; `text_ok` would admit
-    any, for a design set in a font, and no design here is.
+    No `<text>` is allowed: every letter is a path. `text_ok` would admit it,
+    for a design set in a font, and no design here is.
     """
     problems = []
     low = svg.lower()
@@ -189,8 +188,8 @@ def lint(svg: str, *, budget: int, text_ok: bool = False) -> list[str]:
         if ref not in ids:
             problems.append(f"#{ref} is referenced but never defined")
     texts = [m.group(1) for m in _matches(_TEXT, svg, ("<text",), lambda i, n: _stop(svg, i + 5, ">"))]
-    if not text_ok and any('class="e"' not in attrs for attrs in texts):
-        problems.append("text that is not an emoji and not drawn as paths")
+    if not text_ok and texts:
+        problems.append("text not drawn as paths")
     if any(d in svg for d in _DASHES):
         problems.append("an en or em dash")
     size = len(svg.encode("utf-8"))

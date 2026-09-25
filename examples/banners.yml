@@ -7,7 +7,6 @@ header: section # section (H2) | sheet (H1) | strip (H3) | none
 footer: '' # title-block | scale-bar | none; empty means the one made for the header
 theme: blueprint # redprint | orangeprint | yellowprint | greenprint | tealprint | blueprint | indigoprint | purpleprint
                  # | pinkprint | brownprint | blackprint | rainbowprint, the spectrum in turn, one colour per update
-emoji: '' # empty: your status emoji, or one your description or bio opens with
 title: '' # empty: the repository's name, or your name
 tagline: '' # empty: the repository's description, or your bio
 motto: '' # the sheet's one general note; empty: none, or in profile mode your status message
@@ -24,7 +23,7 @@ top: Back to Top # the footer's way back up
 # links:
 #   Docs: docs/README.md
 #   Changelog: CHANGELOG.md
-hide: [] # fields not drawn: emoji, title, tagline, motto, description, figures, divider, closing, top, built, license, updated, links
+hide: [] # fields not drawn: title, tagline, motto, description, figures, divider, closing, top, built, license, updated, links
 readme: manage # write the blocks between <!-- banners:header:start --> and its end, and the footer's
 readme_path: README.md # the file that holds them
 out: assets/banners # where the SVGs are written

@@ -30,7 +30,6 @@ asked.
 """
 from __future__ import annotations
 
-import html
 import re
 from collections import Counter
 
@@ -57,7 +56,7 @@ query($login:String!){ rateLimit{cost}
   user(login:$login){ login name bio company location websiteUrl twitterUsername createdAt
     followers{totalCount} following{totalCount}
     publicRepos: repositories(ownerAffiliations:OWNER,isFork:false,privacy:PUBLIC){totalCount}
-    status{ emojiHTML message }
+    status{ message }
     contributionsCollection{ contributionCalendar{ totalContributions } } } }"""
 
 REPOS = """
@@ -70,10 +69,6 @@ query($login:String!,$first:Int!,$after:String){ rateLimit{cost}
 # This kit's own refresh commits, and trophies', which run beside it.
 REFRESH = re.compile(r"^chore\((banners|trophies)\):")
 HISTORY_PAGES = 5
-
-# The one character a status emoji is, out of the HTML GitHub renders it as.
-_EMOJI_TAG = re.compile(r"<g-emoji[^>]*>(.*?)</g-emoji>", re.S)
-
 
 def day(stamp: str | None) -> str:
     """An ISO timestamp's date, in UTC, as GitHub stores it; empty for none."""
@@ -137,13 +132,6 @@ def repository(gh, owner: str, name: str, notes: list) -> dict:
     }
 
 
-def status_emoji(emoji_html: str | None) -> str:
-    """The character a status emoji is. A custom GitHub emoji is an image, not a character, and gives none."""
-    found = _EMOJI_TAG.search(emoji_html or "")
-    text = html.unescape(found.group(1)).strip() if found else ""
-    return "" if "<" in text else text
-
-
 def profile(gh, login: str, notes: list) -> dict:
     u = gh.gql(USER, login=login).get("user")
     if not u:
@@ -170,7 +158,7 @@ def profile(gh, login: str, notes: list) -> dict:
         "contributions": ((((u.get("contributionsCollection") or {}).get("contributionCalendar")) or {})
                           .get("totalContributions")) or 0,
         "language": top[0] if top else "",
-        "status": {"emoji": status_emoji(status.get("emojiHTML")), "message": (status.get("message") or "").strip()},
+        "status": {"message": (status.get("message") or "").strip()},
     }
 
 

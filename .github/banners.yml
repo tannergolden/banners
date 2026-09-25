@@ -5,7 +5,6 @@
 #
 # Every key and its default: examples/banners.yml. The header is H2 Section,
 # the default, over its F1 Title block, in blueprint, the default print.
-emoji: 🪧
 motto: Drafted, never fetched.
 closing: Drawn at both ends. Fetched at neither.
 links:

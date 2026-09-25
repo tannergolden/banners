@@ -71,8 +71,7 @@ def user_answer(**overrides) -> dict:
         "company": "", "location": "Lisbon, Portugal", "websiteUrl": "https://octo.dev", "twitterUsername": None,
         "createdAt": "2018-05-02T08:00:00Z", "followers": {"totalCount": 88}, "following": {"totalCount": 61},
         "publicRepos": {"totalCount": 34},
-        "status": {"emojiHTML": '<div><g-emoji class="g-emoji" alias="hammer_and_wrench">\U0001F6E0\ufe0f</g-emoji></div>',
-                   "message": "Shipping toolkit 2.5"},
+        "status": {"message": "Shipping toolkit 2.5"},
         "contributionsCollection": {"contributionCalendar": {"totalContributions": 1864}},
     }
     u.update(overrides)

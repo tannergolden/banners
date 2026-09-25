@@ -12,8 +12,8 @@ what lets a committed file be checked against a fresh render.
 
 Across the foot of every sheet runs its schedule: the repository or the
 account, then the figures GitHub gives for it, each a small label over its
-value, redrawn whenever the measurement moves. The emoji rides on the
-title's line, where the standards' header matrix puts it.
+value, redrawn whenever the measurement moves. The title stands alone on
+its line: a header draws no emoji.
 
 Motion follows the masthead's rules. A file that moves is still complete
 without SMIL: every animated attribute carries its resting value, and the
@@ -26,8 +26,8 @@ from __future__ import annotations
 from .canvas import Canvas, c
 from .content import Header
 from .drafting import colours, dimension, hair, note, plot, schedule, sheet, vdimension
-from .layout import NARROW, WIDE, Flow, title_block, title_lines, title_metrics
-from .text import emoji, f1, flow, fonts, fx, width
+from .layout import NARROW, WIDE, Flow, title_block, title_lines
+from .text import f1, flow, fonts, fx, width
 
 
 def _canvas(h: Header, code: str, th: dict, wide: bool, motion: bool) -> Canvas:
@@ -79,14 +79,6 @@ def _foot(cv: Canvas, h: Header, col: dict, *, border: float, y: float, wide: bo
     return top + height + border, ((border, top, w, height),)
 
 
-def _letters(h: Header, lines: list, left: float, size: float, ls_em: float) -> float:
-    """Where a title's letters start: past the emoji on a one-line title, since a dimension measures the letters."""
-    if len(lines) == 1 and h.on("emoji"):
-        _, ew, gap, _ = title_metrics(h, "num", size, ls_em)
-        return left + ew + gap
-    return left
-
-
 # --- H1 Sheet ------------------------------------------------------------------------------
 
 def sheet_design(h: Header, th: dict, wide: bool = True, motion: bool = True) -> str:
@@ -113,7 +105,7 @@ def sheet_design(h: Header, th: dict, wide: bool = True, motion: bool = True) ->
         f.gap(22)
         left, right, top = title_block(cv, h, lines, face="num", size=size, ls_em=.07, flow=f, fill=col["ink"],
                                        cx=W / 2)
-        draws += dimension(cv, col, left=_letters(h, lines, left, size, .07), right=right, y=top - 16, near=top - 5)
+        draws += dimension(cv, col, left=left, right=right, y=top - 16, near=top - 5)
         f.gap(18 if wide else 14)
     _lines(cv, h, col, f, x0=x0, room=room, wide=wide, draws=draws, centre=W / 2)
     H, plain = _foot(cv, h, col, border=border, y=f.y, wide=wide, draws=draws)
@@ -138,8 +130,6 @@ def section(h: Header, th: dict, wide: bool = True, motion: bool = True) -> str:
 
     When the page opens a plotter draws every letter's outline at once, at
     one pen speed, so the narrow letters close first; the hatching follows.
-    The emoji stands before the cut, not in it, and the dimension measures
-    the cut alone.
     """
     cv = _canvas(h, "H2", th, wide, motion)
     W = cv.w
@@ -154,19 +144,15 @@ def section(h: Header, th: dict, wide: bool = True, motion: bool = True) -> str:
 
     if h.caps:
         size, lines = title_lines(h, "num", 64 if wide else 40, 24 if wide else 18, room, .06)
-        es, ew, egap, _ = title_metrics(h, "num", size, .06)
         sc = size / fonts()["num"]["upem"]
         ls = size * .06
         f.gap(24)
         runs = []
         for i, line in enumerate(lines):
             base = f.line(size, caps=True)
-            runs.append((x0 + (ew + egap if i == 0 else 0), base, line))
+            runs.append((x0, base, line))
             if i < len(lines) - 1:
                 f.gap(size * .22)
-        if ew:
-            cv.emoji = True
-            cv.add(emoji(h.emoji, cx=x0 + ew / 2, baseline=runs[0][1] + es * .06, size=es))
         # Each line is drawn once, then used twice: as the mask its hatching
         # shows through, and as the outline the plotter draws.
         ids = []
@@ -236,7 +222,7 @@ def strip(h: Header, th: dict, wide: bool = True, motion: bool = True) -> str:
         size, lines = title_lines(h, "num", 36 if wide else 30, 18 if wide else 16, room, .07)
         f.gap(20)
         left, right, top = title_block(cv, h, lines, face="num", size=size, ls_em=.07, flow=f, fill=col["ink"], x=x0)
-        draws += dimension(cv, col, left=_letters(h, lines, left, size, .07), right=right, y=top - 13, near=top - 4)
+        draws += dimension(cv, col, left=left, right=right, y=top - 13, near=top - 4)
         f.gap(12)
     _lines(cv, h, col, f, x0=x0, room=room, wide=wide, draws=draws, small=True)
     H, plain = _foot(cv, h, col, border=border, y=f.y, wide=wide, draws=draws, small=True)

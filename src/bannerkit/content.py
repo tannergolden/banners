@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 """What a header and a footer carry, and the alt text that says it.
 
-A header follows the standards' header matrix: an emoji and a FULLY CAPPED
+A header follows the standards' header matrix, less its emoji: a FULLY CAPPED
 title, a bold one-line description (the tagline here), an italic principle
 (the motto), and optionally a longer description. Under them runs a row of
 figures, each a label and a value: the repository or the account, then what
@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 
-HEADER_FIELDS = ("emoji", "title", "tagline", "motto", "description", "figures")
+HEADER_FIELDS = ("title", "tagline", "motto", "description", "figures")
 FOOTER_FIELDS = ("divider", "closing", "top", "built", "license", "updated", "links")
 
 MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -42,7 +42,6 @@ def sentence(text: str) -> str:
 
 @dataclass(frozen=True)
 class Header:
-    emoji: str = "\U0001FAA7"
     title: str = "Banners"
     tagline: str = "Headers and footers a README draws for itself."
     motto: str = "Drawn, never fetched."

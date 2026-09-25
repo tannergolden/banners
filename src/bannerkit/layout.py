@@ -13,7 +13,7 @@ from typing import Callable
 
 from .canvas import Canvas, c
 from .content import Header
-from .text import EMOJI_EM, emoji, width
+from .text import width
 
 WIDE, NARROW = 830, 360
 
@@ -24,7 +24,7 @@ class Design:
 
     `draw(content, theme, wide, motion)` returns the SVG. A footer also has
     `chip(label, theme, tone)`, the small linked image its links row is made of.
-    `text_ok` would admit `<text>` beyond an emoji; no design here needs it.
+    `text_ok` would admit `<text>`; no design here needs it.
     """
     code: str
     slug: str
@@ -58,20 +58,14 @@ class Flow:
         self.y += px
 
 
-def title_metrics(h: Header, face: str, size: float, ls_em: float) -> tuple[float, float, float, float]:
-    """(emoji size, emoji box, gap, title width) for the emoji and capped title set as one run."""
-    t = h.caps
-    tw = width(t, face, size, size * ls_em) if t else 0
-    es = size * .78
-    ew = es * EMOJI_EM if h.on("emoji") else 0
-    gap = size * .22 if (ew and t) else 0
-    return es, ew, gap, tw
+def title_width(h: Header, face: str, size: float, ls_em: float) -> float:
+    """How wide the capped title is set at `size`."""
+    return width(h.caps, face, size, size * ls_em) if h.caps else 0
 
 
 def fit_title(h: Header, face: str, size: float, floor: float, max_w: float, ls_em: float) -> float:
     while size > floor:
-        _, ew, gap, tw = title_metrics(h, face, size, ls_em)
-        if ew + gap + tw <= max_w:
+        if title_width(h, face, size, ls_em) <= max_w:
             break
         size -= 1
     return size
@@ -82,20 +76,18 @@ def title_lines(h: Header, face: str, size: float, floor: float, max_w: float, l
 
     One line wins while it can be set at no less than six tenths of the
     design's size; below that a two-line title set larger reads better than
-    one line set small. The emoji rides on the first line.
+    one line set small.
     """
     one = fit_title(h, face, size, floor, max_w, ls_em)
-    es, ew, gap, tw = title_metrics(h, face, one, ls_em)
     words = h.caps.split()
-    if (ew + gap + tw <= max_w and one >= size * .6) or len(words) < 2:
+    if (title_width(h, face, one, ls_em) <= max_w and one >= size * .6) or len(words) < 2:
         return one, [h.caps]
     best = None
     for cut in range(1, len(words)):
         lines = [" ".join(words[:cut]), " ".join(words[cut:])]
         s = size
         while s > floor * .8:
-            _, ew2, gap2, _ = title_metrics(h, face, s, ls_em)
-            w1 = ew2 + gap2 + width(lines[0], face, s, s * ls_em)
+            w1 = width(lines[0], face, s, s * ls_em)
             w2 = width(lines[1], face, s, s * ls_em)
             if max(w1, w2) <= max_w:
                 break
@@ -133,16 +125,12 @@ def title_block(cv: Canvas, h: Header, lines: list[str], *, face: str, size: flo
 
 def title_run(cv: Canvas, h: Header, *, face: str, size: float, ls_em: float, baseline: float, fill: str,
               cx: float | None = None, x: float | None = None, attrs: str = "") -> tuple[float, float]:
-    """The emoji and the capped title as one run, centred on `cx` or starting at `x`. Returns its extent."""
-    es, ew, gap, tw = title_metrics(h, face, size, ls_em)
-    total = ew + gap + tw
-    left = cx - total / 2 if cx is not None else x
-    if ew:
-        cv.emoji = True
-        cv.add(emoji(h.emoji, cx=left + ew / 2, baseline=baseline + es * .06, size=es))
+    """The capped title, centred on `cx` or starting at `x`. Returns its extent."""
+    tw = title_width(h, face, size, ls_em)
+    left = cx - tw / 2 if cx is not None else x
     if tw:
-        cv.add(cv.L.text(h.caps, face=face, size=size, x=left + ew + gap, y=baseline, ls=size * ls_em,
+        cv.add(cv.L.text(h.caps, face=face, size=size, x=left, y=baseline, ls=size * ls_em,
                          fill=c(fill), attrs=attrs))
-    return left, left + total
+    return left, left + tw
 
 

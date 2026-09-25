@@ -80,11 +80,9 @@ class Profile(unittest.TestCase):
         # Python and Go have two repositories each; Python's have 210 stars to Go's 102.
         self.assertEqual(m["profile"]["language"], "Python")
 
-    def test_status_emoji_is_the_character_not_the_shortcode(self):
+    def test_the_status_is_its_message(self):
         m = measure.measure(profile_client(), "profile", "octo-dev", "octo-dev/octo-dev", today="2026-09-25")
-        self.assertEqual(m["profile"]["status"], {"emoji": "\U0001F6E0\ufe0f", "message": "Shipping toolkit 2.5"})
-        self.assertEqual(measure.status_emoji('<img class="emoji" alt=":octocat:" src="x.png">'), "")
-        self.assertEqual(measure.status_emoji(None), "")
+        self.assertEqual(m["profile"]["status"], {"message": "Shipping toolkit 2.5"})
 
     def test_the_sample_has_the_shape_of_a_measurement(self):
         m = measure.measure(profile_client(), "profile", "octo-dev", "octo-dev/octo-dev", today="2026-09-25")

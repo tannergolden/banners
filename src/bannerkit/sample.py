@@ -29,7 +29,7 @@ PROFILE = {
         "company": "", "location": "Lisbon, Portugal", "website": "https://octo.dev", "twitter": "",
         "created": "2018-05-02", "followers": 88, "following": 61, "repositories": 34, "stars": 312,
         "contributions": 1864, "language": "Python",
-        "status": {"emoji": "\U0001F6E0\ufe0f", "message": "Shipping toolkit 2.5"},
+        "status": {"message": "Shipping toolkit 2.5"},
     },
     "repository": {
         "full": "octo-dev/octo-dev", "name": "octo-dev", "owner": "octo-dev", "org": False,

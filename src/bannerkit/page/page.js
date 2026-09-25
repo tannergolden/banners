@@ -587,7 +587,6 @@
   // ---------------------------------------------------------------- the rail
   // `from` says where an empty field is read from, per mode; null means nowhere, so empty is left out.
   const HEADER_ROWS = [
-    { key: 'emoji', label: 'Emoji', input: 'text', from: { repository: 'one the description opens with', profile: 'the status emoji' } },
     { key: 'title', label: 'Title', input: 'text', from: { repository: "the repository's name", profile: "the person's name" } },
     { key: 'tagline', label: 'Tagline', input: 'text', from: { repository: 'its description', profile: 'the bio' } },
     { key: 'motto', label: 'Note', input: 'text', from: { repository: null, profile: 'the status message' } },

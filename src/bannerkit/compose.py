@@ -13,8 +13,6 @@ changes, and one who writes a title keeps that title.
   tagline      the config's, else the repository's description, or the bio
   motto        the config's, else in profile mode the status message: the
                one general note on the sheet
-  emoji        the config's, else the status emoji, else an emoji the
-               description or bio opens with
   figures      the ones the config names, in its order, else the mode's
                defaults; one whose value GitHub does not have is left out
   footer       the handle, the licence and the last change, from GitHub;
@@ -23,7 +21,9 @@ changes, and one who writes a title keeps that title.
 Text is drawn as outlines from a fixed set of letters, so measured text is
 made drawable first: a dash the standards ban becomes a hyphen, a GitHub
 `:shortcode:` is dropped, and a character no face holds is left out, with
-a note saying so. The alt text is built from what is drawn.
+a note saying so. A header draws no emoji: one a description or bio
+opens with is taken off the tagline quietly, since it was never meant as
+a letter. The alt text is built from what is drawn.
 
 This module is pure: it runs in the preview page, under Brython, too.
 """
@@ -222,16 +222,12 @@ def compose(m: dict, cfg: dict) -> tuple[Header, Footer, list[str]]:
         told = person.get("bio") or ""
         status = person.get("status") or {}
         note = drawable(status.get("message") or "", "meta", notes, "status")
-        opens = status.get("emoji") or ""
     else:
         title = repo.get("name") or ""
         told = repo.get("description") or ""
         note = ""
-        opens = ""
-    lead, told = split_emoji(told)
-    emoji = _pick(cfg, "emoji", opens or lead)
+    _, told = split_emoji(told)
     header = Header(
-        emoji=emoji,
         title=clip(drawable(_pick(cfg, "title", title), "num", notes, "title"), LIMITS["title"]),
         tagline=clip(drawable(_pick(cfg, "tagline", told), "meta", notes, "tagline"), LIMITS["tagline"]),
         motto=clip(drawable(_pick(cfg, "motto", note), "meta", notes, "motto"), LIMITS["motto"]),

@@ -90,7 +90,7 @@ def facts(p: dict) -> dict:
     shown = {}
     if any(d.kind == "header" for d in p["designs"]):
         for field, say in (("title", "the title {}"), ("tagline", "a new tagline"), ("motto", "a new note"),
-                           ("emoji", "a new emoji"), ("description", "a new description")):
+                           ("description", "a new description")):
             if h.get(field):
                 shown[field] = (h.caps if field == "title" else h.get(field), say.format(h.caps))
         for label, value in h.shown_figures:
