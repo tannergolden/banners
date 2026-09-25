@@ -1,0 +1,14 @@
+# The banners THIS repository draws for itself: the kit eating its own
+# cooking. The title, the tagline and every figure are read from GitHub on
+# each run of 🪧 Own Banners; only what is written here is fixed. Delete a
+# line to hand it back to GitHub.
+#
+# Every key and its default: examples/banners.yml. The header is H2 Section,
+# the default, over its F1 Title block, in blueprint, the default print.
+emoji: 🪧
+motto: Drafted, never fetched.
+closing: Drawn at both ends. Fetched at neither.
+links:
+  Specification: docs/Banner-Kit.md
+  Examples: examples/
+  Issues: https://github.com/tannergolden/banners/issues

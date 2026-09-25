@@ -14,7 +14,7 @@ category: docs
 
 **A designated home for everything visual this project owns.**
 
-_Empty on purpose. Yours to fill._
+_Every image here is drawn, and none is fetched._
 
 </div>
 
@@ -22,22 +22,20 @@ _Empty on purpose. Yours to fill._
 
 ## 📁 What Goes Where
 
-| Folder      | Put here                                                        |
-| :---------- | :-------------------------------------------------------------- |
-| `branding/` | Logos, icons, colour palettes, typography specimens             |
-| `images/`   | General project imagery, screenshots, product shots             |
-| `docs/`     | Diagrams and figures embedded in documents under `docs/`        |
-| `badges/`   | Badge artwork and the definitions a generator reads             |
+| Folder      | What is in it                                                                                 |
+| :---------- | :-------------------------------------------------------------------------------------------- |
+| `banners/`  | This README's own header and footer, drawn by the kit and refreshed by 🪧 Own Banners          |
+| `gallery/`  | The README's gallery: every design and every theme, drawn from the samples by `make gallery`  |
+| `badges/`   | The README's header badges, drawn by [emblems](https://github.com/tannergolden/emblems) from `.github/badges.yml` |
+| `branding/` | Logos, icons, colour palettes, typography specimens                                           |
 
-`badges/` has two homes of its own: `static/` for badges committed as finished
-SVGs and served straight from the repository, and `dynamic/` for the
-definitions a generator reads to produce a badge when it runs. Both are empty
-until that generator lands.
+Nothing under `banners/`, `gallery/` or `badges/` is edited by hand: each is
+regenerated from its source, and `make check` fails when `gallery/` or
+`banners/` no longer matches what the kit draws. `badges/static/` holds
+finished SVGs; this README uses no dynamic ones.
 
-The first three folders are what every project needs, and `badges/` is the one
-here that precedes its contents on purpose, because its shape is already
-decided. Add your own - `mockups/`, `diagrams/`, `video/` - as soon as you have
-something to put in them. An empty folder invented ahead of a need is a folder
+Add your own folder, such as `images/` or `docs/`, as soon as you have
+something to put in it. An empty folder invented ahead of a need is a folder
 nobody uses.
 
 ---
