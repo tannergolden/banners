@@ -155,13 +155,14 @@ def run_measure(root: Path, data: dict, lock: dict, token: str | None) -> dict:
         elif kind == "certificate":
             req = req if isinstance(req, dict) else {}
             ci = req.get("ci")
-            inherited = None
+            inherited, at = None, None
             if token and subject:
                 if ci:
-                    status = M.ci_status(subject, ref, token)
+                    sha = M.git(root, "rev-parse", ref).strip()
+                    status, at = M.ci_status(subject, sha, token, branch=str(ci))
                     ci = ci if status == "passing" else None
                 inherited = M.inherited_policy(subject.split("/")[0], token)
-            out = M.checks(root, ref, ci=ci, inherited_policy=inherited)
+            out = M.checks(root, ref, ci=ci, head=at, inherited_policy=inherited)
             out.pop("passed", None)
         elif kind == "placard":
             full = req if isinstance(req, str) else req.get("repo", "")

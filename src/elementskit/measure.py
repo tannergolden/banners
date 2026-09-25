@@ -247,10 +247,21 @@ def inherited_policy(owner: str, token: str) -> str | None:
     return None
 
 
-def ci_status(full: str, ref: str, token: str) -> str | None:
-    """'passing' or 'failing' for the newest completed check suite on `ref`, or None when there is none."""
-    runs = api(f"/repos/{full}/actions/runs?head_sha={ref}&per_page=20", token).get("workflow_runs", [])
-    done = [r for r in runs if r.get("status") == "completed"]
+def ci_status(full: str, sha: str, token: str, branch: str | None = None) -> tuple[str | None, str | None]:
+    """('passing' | 'failing', the commit it was read at) for the newest completed workflow runs, or (None, None).
+
+    The commit itself is asked first; when its runs have not completed yet,
+    which is the usual case while a refresh runs alongside them, the newest
+    completed run of a checks workflow on `branch` answers instead, and the
+    evidence names that commit.
+    """
+    runs = api(f"/repos/{full}/actions/runs?head_sha={sha}&per_page=20", token).get("workflow_runs", [])
+    done = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") not in (None, "skipped", "cancelled")]
+    if not done and branch:
+        runs = api(f"/repos/{full}/actions/runs?branch={branch}&status=completed&per_page=40", token).get("workflow_runs", [])
+        checks = [r for r in runs if "check" in str(r.get("name", "")).lower() and r.get("conclusion") not in (None, "skipped", "cancelled")]
+        done = [max(checks, key=lambda r: str(r.get("created_at", "")))] if checks else []
     if not done:
-        return None
-    return "passing" if all(r.get("conclusion") == "success" for r in done) else "failing"
+        return None, None
+    verdict = "passing" if all(r.get("conclusion") == "success" for r in done) else "failing"
+    return verdict, str(done[0].get("head_sha", sha))[:7]

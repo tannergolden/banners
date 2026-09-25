@@ -433,6 +433,27 @@ class Measured(unittest.TestCase):
             rows = {r[0]: r for r in M.checks(root, inherited_policy="owner/.github/SECURITY.md")["checks"]}
             self.assertEqual(rows["Security policy"][1:], ["owner/.github/SECURITY.md", True])
 
+    def test_ci_verdict_falls_back_to_the_branch_when_the_commit_is_still_running(self):
+        calls = []
+
+        def fake_api(path, token):
+            calls.append(path)
+            if "head_sha=" in path:
+                return {"workflow_runs": [{"status": "in_progress", "name": "Checks"}]}
+            return {"workflow_runs": [
+                {"status": "completed", "conclusion": "success", "name": "🚦 Checks", "created_at": "2026-09-25T01:00:00Z", "head_sha": "abcdef1234567"},
+                {"status": "completed", "conclusion": "failure", "name": "🚦 Checks", "created_at": "2026-09-24T01:00:00Z", "head_sha": "0000000000000"},
+                {"status": "completed", "conclusion": "failure", "name": "🎯 Standards Lifecycle", "created_at": "2026-09-25T02:00:00Z", "head_sha": "1111111111111"},
+            ]}
+        real = M.api
+        M.api = fake_api
+        try:
+            self.assertEqual(M.ci_status("x/y", "deadbeef", "t", branch="Development"), ("passing", "abcdef1"))
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(M.ci_status("x/y", "deadbeef", "t"), (None, None), "no branch to fall back to")
+        finally:
+            M.api = real
+
     def test_measurements_have_the_shapes_the_elements_want(self):
         root = ROOT
         t = M.tree(root)
