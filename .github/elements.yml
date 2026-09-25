@@ -1,0 +1,50 @@
+# The elements THIS repository draws for itself: the kit eating its own
+# cooking, the way .github/banners.yml does for the two ends of the page.
+# Everything below is measured from git on each run of 📐 Own Elements;
+# only what is written here is fixed.
+#
+# Every key and its default: examples/stub-elements.yml explains the stub,
+# and docs/Elements-Kit.md every field of every kind.
+
+print: blueprint
+subject: tannergolden/banners
+
+elements:
+  vitals:
+    kind: instruments
+    measure:
+      count: {tests: "tests/test_*.py", workflows: ".github/workflows/*.yml", examples: "examples/*.yml"}
+
+  layout:
+    kind: plan
+    entrance: "ENTRANCE  ·  README.MD"
+    measure: {}
+    notes:
+      - [1, "THE TWO KITS: BANNERS AND ELEMENTS"]
+      - [2, "THE STUBS, AND DRIFTMARK, A README THAT USES EVERY ELEMENT"]
+    rooms:
+      - {key: src, notes: [[1, 0]]}
+      - {key: examples, notes: [[2, 0]]}
+
+  history:
+    kind: milestones
+    measure:
+      notable:
+        v1.0.0: [THREE HEADERS, TWO FOOTERS]
+        v1.1.0: [FOUR LINK BUTTONS]
+        v1.2.0: [THE ELEMENTS]
+
+  contributors:
+    kind: roster
+    size: half
+    measure:
+      rename:
+        claude: {name: CLAUDE, handle: CO-AUTHOR, initials: C}
+
+  conformance:
+    kind: certificate
+    size: half
+    name: BANNERS
+    ring_top: CONFORMS TO TANNERGOLDEN/STANDARDS
+    ring_bottom: "V1  ·  MEASURED FROM DEVELOPMENT"
+    measure: {ci: Development}

@@ -1,0 +1,23 @@
+# For pull-request CI: the committed elements are redrawn from the
+# measurement the lock remembers and the check fails if any file or README
+# block differs from what the kit draws. Nothing is measured or committed
+# and no token is used, so it runs on a pull request from a fork.
+name: Elements check
+
+on:
+  pull_request:
+    paths:
+      - '.github/elements.yml'
+      - '.github/elements.lock.json'
+      - 'assets/elements/**'
+      - 'README.md'
+
+permissions: {}
+
+jobs:
+  check:
+    permissions:
+      contents: read
+    uses: tannergolden/banners/.github/workflows/elements.yml@v1
+    with:
+      check: true

@@ -8,14 +8,15 @@
 
 PYTHON ?= python3
 KIT    := $(PYTHON) src/banner-kit.py
+ELEMENTS := $(PYTHON) src/elements-kit.py
 SCHEMA := .cache/schema/package/schema.json
 
 .DEFAULT_GOAL := help
-.PHONY: help preview sample gallery lint check test schema draw glyphs clean-preview
+.PHONY: help preview sample gallery lint check test schema draw glyphs elements clean-preview
 
 ## help: List the available targets
 help:
-	@echo "Banners - the Banner Kit"
+	@echo "Banners - the Banner Kit, and the Elements Kit beside it"
 	@echo
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed -e 's/## /  /' -e 's/:/\t-/' | column -t -s $$'\t'
 
@@ -36,7 +37,7 @@ gallery:
 lint:
 	@$(KIT) lint
 
-## check: CI gate - every file lints, every query is well formed, the gallery and this README's banners are current, a sample root re-checks clean
+## check: CI gate - every file lints, every query is well formed, the gallery, this README's banners and its elements and the driftmark specimen are current, a sample root re-checks clean
 check: lint
 	@$(PYTHON) tests/gql_check.py
 	@$(KIT) gallery --check
@@ -45,6 +46,8 @@ check: lint
 	@$(KIT) preview --root preview/check --mode repository >/dev/null
 	@$(KIT) check --root preview/check --mode repository
 	@rm -rf preview/check
+	@$(ELEMENTS) check --root examples/driftmark
+	@if [ -f .github/elements.lock.json ]; then $(ELEMENTS) check --root . ; fi
 
 ## test: Everything CI runs - the gate plus the unit tests
 test: check
@@ -55,6 +58,10 @@ test: check
 schema:
 	@test -f $(SCHEMA) || (mkdir -p .cache/schema && cd .cache/schema && npm pack @octokit/graphql-schema --silent >/dev/null && tar xzf octokit-graphql-schema-*.tgz)
 	@GITHUB_GRAPHQL_SCHEMA=$(SCHEMA) $(PYTHON) tests/gql_check.py
+
+## elements: Redraw this README's own elements from git, the way a run would (no network)
+elements:
+	@$(ELEMENTS) run --root .
 
 ## draw: Draw every design's files for the samples into preview/files/
 draw:

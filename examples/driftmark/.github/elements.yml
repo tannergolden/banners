@@ -1,0 +1,198 @@
+# The blueprint elements this README draws for itself. `python3 src/elements-kit.py render --root examples/driftmark`
+# draws every element below into assets/elements/ and writes each one's
+# <picture> between its markers in README.md; `check` fails CI when a file
+# or a block has drifted from this data.
+#
+# driftmark is a made-up project, so every figure here is written by hand.
+# A real repository leaves the measured fields out and lets `measure` fill
+# them from git and GitHub into .github/elements.lock.json.
+
+print: blueprint
+subject: driftmark/driftmark
+today: 2026-09-25
+
+elements:
+  how-it-runs:
+    kind: schematic
+    title: Schematic of driftmark
+    desc: The survey file drives the scheduler, which runs a probe in each region; the collector compares results with the baselines, writes the report and raises alerts past the threshold.
+    caption: "DATA FLOW  ·  NOT TO SCALE"
+    groups:
+      account: "YOUR CLOUD ACCOUNT  ·  6 REGIONS"
+    boxes:
+      survey: {title: The survey, path: driftmark.toml, icon: book, note: 1}
+      scheduler: {title: The scheduler, path: crates/scheduler, icon: clock}
+      probes: {title: Probes, path: crates/probe, icon: globe, note: 2, in: account}
+      collector: {title: The collector, path: crates/collector, icon: server}
+      baselines: {title: Baselines, path: survey/baselines.parquet, icon: database}
+      report: {title: The report, path: survey/2026-09-25.md, icon: chart, note: 3}
+      alerts: {title: Alerts, path: "slack, pagerduty", icon: bell}
+    wires:
+      - [survey, scheduler, READ]
+      - [scheduler, probes, NIGHTLY]
+      - [probes, collector, 200 PROBES EACH]
+      - [collector, baselines, COMPARE]
+      - [baselines, report, DRIFT]
+      - [collector, alerts, PAST THE THRESHOLD]
+    notes:
+      - [1, "YOURS: TARGET, REGIONS AND THRESHOLD"]
+      - [2, DEPLOYED BY THE TERRAFORM MODULE]
+      - [3, "COMMITTED, SO DRIFT IS REVIEWED LIKE CODE"]
+
+  vitals:
+    kind: instruments
+    title: Instruments for driftmark
+    desc: 235 commits over ten weeks, tracked bytes by file type, seven days since v1.4.0, and 7 crates, 24 regions and 612 tests counted.
+    caption: MEASURED 25 SEP 2026 FROM MAIN
+    histogram:
+      label: COMMITS PER WEEK
+      sum: IN TEN WEEKS
+      peak: 45
+      ticks: [0, 15, 30, 45]
+      bars: [[20 JUL, 18], [27 JUL, 24], [3 AUG, 31], [10 AUG, 12], [17 AUG, 9], [24 AUG, 27], [31 AUG, 35], [7 SEP, 22], [14 SEP, 41], [21 SEP, 16]]
+    dial: {label: DAYS SINCE THE LAST RELEASE, value: 7, span: 30, major: 10, minor: 5, sub: "V1.4.0  ·  18 SEP"}
+    materials:
+      label: TRACKED BYTES BY FILE TYPE
+      total: 1.6 MB
+      parts: [[RUST, 1284000], [MARKDOWN, 212000], [YAML, 61000], [OTHER, 82000]]
+    counters: [[CRATES, 7], [REGIONS, 24], [TESTS, 612]]
+
+  layout:
+    kind: plan
+    title: Plan of driftmark
+    desc: "The repository as a floor plan: 286 tracked files in a Rust workspace of seven crates."
+    caption: "LEVEL 0: THE WORKSPACE ROOT  ·  NOT TO SCALE"
+    total: 286
+    entrance: "ENTRANCE  ·  README.MD"
+    rooms:
+      - key: crates
+        label: CRATES/
+        count: 148
+        lines: [[probe/, 31], [collector/, 28], [scheduler/, 19], [report/, 22], [baseline/, 17], [alert/, 14], [cli/, 17]]
+      - key: docs
+        label: DOCS/
+        count: 41
+        lines: [[guide/, 14], [reference/, 19], [adr/, 6], [README.md, ""], [SUMMARY.md, ""]]
+        notes: [[3, 0]]
+      - key: tests
+        label: TESTS/
+        count: 36
+        lines: [[integration/, 22], [regions/, 11], [fixtures.rs, ""]]
+      - key: deploy
+        label: DEPLOY/
+        count: 23
+        lines: [[terraform/, 17], [docker/, 4], [helm/, 2]]
+        notes: [[2, 0]]
+      - key: github
+        label: .GITHUB/
+        count: 14
+        lines: [[workflows/, 9], [ISSUE_TEMPLATE/, ""]]
+    lobby:
+      count: 10
+      lines: [[README.md, ""], [Cargo.toml, ""], [Cargo.lock, ""]]
+      far: [LICENSE, CHANGELOG.md, +5 DOTFILES]
+      notes: [[1, 1]]
+    closets:
+      - {label: EXAMPLES/, count: 6}
+      - {label: BENCHES/, count: 4}
+      - {label: FUZZ/, count: 3}
+      - {label: .CARGO/, count: 1}
+    notes:
+      - [1, "THE WORKSPACE: SEVEN CRATES, ONE BINARY"]
+      - [2, DEPLOYS A PROBE TO EACH REGION]
+      - [3, START HERE]
+
+  history:
+    kind: milestones
+    title: Milestones of driftmark
+    desc: Fourteen releases from v0.1.0 in April 2025 to v1.4.0 in September 2026, with v1.5.0 planned for November.
+    caption: 14 RELEASES SINCE APRIL 2025
+    start: 2025-03-01
+    end: 2026-12-15
+    events:
+      - {date: 2025-04-02, tag: V0.1.0, above: [FIRST SURVEY, 3 REGIONS]}
+      - {date: 2025-05-06, tag: V0.2.0, major: false}
+      - {date: 2025-05-27, tag: V0.3.0, major: false}
+      - {date: 2025-06-19, tag: V0.4.0, above: [12 REGIONS]}
+      - {date: 2025-07-24, tag: V0.5.0, major: false}
+      - {date: 2025-08-19, tag: V0.6.0, major: false}
+      - {date: 2025-09-11, tag: V0.7.0, major: false}
+      - {date: 2025-10-07, tag: V0.9.0, above: [BASELINES]}
+      - {date: 2025-12-02, tag: V0.10.0, major: false}
+      - {date: 2026-02-02, tag: V1.0.0, big: true, above: [STABLE, CONFIG FORMAT]}
+      - {date: 2026-03-19, tag: V1.1.0, major: false}
+      - {date: 2026-05-14, tag: V1.2.0, above: [SLACK AND, PAGERDUTY]}
+      - {date: 2026-07-22, tag: V1.3.0}
+      - {date: 2026-09-18, tag: V1.4.0, above: [24 REGIONS]}
+      - {date: 2026-11-16, tag: V1.5.0, when: NOVEMBER, next: true, above: [PER-ENDPOINT, BASELINES]}
+
+  contributors:
+    kind: roster
+    size: half
+    title: Contributors to driftmark
+    desc: "Imogen Vale 1,184 commits, Tomas Okafor 642, Wren Castellan 297, and Dependabot 118. All fictional."
+    caption: 2,241 COMMITS FROM 4 CONTRIBUTORS
+    people:
+      - {name: IMOGEN VALE, handle: "@IMVALE", initials: IV, n: 1184, first: 11 MAR 2025, last: 24 SEP}
+      - {name: TOMAS OKAFOR, handle: "@TOKAFOR", initials: TO, n: 642, first: 2 APR 2025, last: 25 SEP}
+      - {name: WREN CASTELLAN, handle: "@WRENCASTELLAN", initials: WC, n: 297, first: 19 AUG 2025, last: 22 SEP}
+      - {name: DEPENDABOT, handle: "@DEPENDABOT[BOT]", icon: package, n: 118, first: 20 MAR 2025, last: 23 SEP}
+
+  conformance:
+    kind: certificate
+    size: half
+    title: Conformance of driftmark
+    desc: Five checks from tannergolden/standards, each passing, with the evidence for it.
+    ring_top: CONFORMS TO TANNERGOLDEN/STANDARDS
+    ring_bottom: "V1  ·  VERIFIED 25 SEP 2026"
+    name: DRIFTMARK
+    commit: 4f2c9a1
+    checks:
+      - [CI passes on main, Checks at 4f2c9a1]
+      - [Licensed, "Apache-2.0, LICENSE"]
+      - [Security policy, SECURITY.md]
+      - [Actions pinned to a tag or a commit, "31 of 31 uses:"]
+      - [Conventional commits, "2,241 of 2,241 subjects"]
+
+  action:
+    kind: placard
+    owner: driftmark
+    name: action
+    icon: play
+    link: https://github.com/driftmark/action
+    desc: Runs a survey in CI and fails the pull request that makes a region drift past your threshold.
+    cells: [[Language, TYPESCRIPT], [Release, V2.1.0], [Used at, "@V2"]]
+  terraform-probes:
+    kind: placard
+    owner: driftmark
+    name: terraform-probes
+    icon: cloud
+    link: https://github.com/driftmark/terraform-probes
+    desc: Deploys a probe to every region you list, in your own cloud account, with the least access a probe needs.
+    cells: [[Language, HCL], [Release, V1.4.0], [Regions, 24]]
+  grafana:
+    kind: placard
+    owner: driftmark
+    name: grafana
+    icon: chart
+    link: https://github.com/driftmark/grafana
+    desc: A Grafana data source for survey results, so drift sits beside the rest of your dashboards.
+    cells: [[Language, GO], [Release, V0.8.2], [Grafana, 11+]]
+  baselines-spec:
+    kind: placard
+    owner: driftmark
+    name: baselines-spec
+    icon: database
+    link: https://github.com/driftmark/baselines-spec
+    desc: The Parquet schema a baseline is written in, versioned, so any tool can read a survey's history.
+    cells: [[Format, PARQUET], [Spec, V1], [License, CC-BY-4.0]]
+
+  stamp:
+    kind: seal
+    title: "Seal: driftmark conforms to tannergolden/standards"
+    desc: The seal the certificate is stamped with, on its own, for the foot of the page.
+    link: https://github.com/tannergolden/standards
+    ring_top: CONFORMS TO TANNERGOLDEN/STANDARDS
+    ring_bottom: "V1  ·  2026"
+    name: DRIFTMARK
+    commit: 4f2c9a1

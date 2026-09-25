@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2026 Tanner Golden
+# SPDX-License-Identifier: MIT
+#
+# This repository's own elements: the kit eating its own cooking, the way
+# own-banners.yml does for the two ends of the page. It calls the reusable
+# workflow by LOCAL path, so a change to the workflow, the action or the kit
+# is exercised by the tree that carries it, rather than by the last release.
+#
+# Once a day, eight hours after the banners, so a refresh from this
+# repository lands at most once in each eight-hour slot of the day. Every run measures everything again, so a run GitHub
+# delays or drops loses nothing: the next one catches up. A day on which
+# nothing the elements show has moved writes nothing.
+
+name: '📐 Own Elements'
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  elements:
+    if: ${{ !github.event.repository.is_template }}
+    permissions:
+      contents: write # the SVGs, the README blocks and the lock
+      pull-requests: write # only used with commit: pr
+    uses: ./.github/workflows/elements.yml
+    with:
+      kit-ref: ${{ github.sha }} # the tree that carries this change, not the last release
+    secrets: inherit # zizmor: ignore[secrets-inherit] - first-party callee at a local path.

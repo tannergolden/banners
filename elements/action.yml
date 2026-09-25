@@ -1,0 +1,113 @@
+# SPDX-FileCopyrightText: 2026 Tanner Golden
+# SPDX-License-Identifier: MIT
+#
+# The body of a README, drawn for itself: the second product in this
+# repository, beside the banners at the root. A consumer's stub calls the
+# reusable workflow, which runs this action against their checkout:
+#
+#   uses: tannergolden/banners/.github/workflows/elements.yml@v1
+#
+# The kit letters with the banners' outlines, which sit one folder up in
+# this same checkout, so nothing is fetched to draw.
+name: 'Blueprint Elements'
+description: >-
+  A README's console, schematic, instruments, plan, milestones, roster,
+  certificate, placards and seal, measured from the repository and drawn as
+  committed SVGs, never fetched.
+author: 'Tanner Golden'
+branding:
+  icon: 'layout'
+  color: 'blue'
+
+inputs:
+  mode:
+    description: >-
+      run (the default) writes a starter data file and README markers when
+      there are none, measures, draws and reports; measure, render, check,
+      snippets and init are the kit's own commands, one at a time.
+    required: false
+    default: 'run'
+  data:
+    description: 'The data file, relative to the repository root.'
+    required: false
+    default: '.github/elements.yml'
+  out:
+    description: 'Where the SVGs are written.'
+    required: false
+    default: 'assets/elements'
+  readme:
+    description: 'The README whose blocks are written.'
+    required: false
+    default: 'README.md'
+  token:
+    description: 'A token for what only GitHub knows: placards and the certificate's CI verdict. Optional.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  changed:
+    description: "'true' when the run modified any tracked file."
+    value: ${{ steps.run.outputs.changed }}
+  commit-title:
+    description: 'The Conventional Commit subject for this run, naming what was redrawn. Empty when nothing changed.'
+    value: ${{ steps.run.outputs.commit-title }}
+  commit-body:
+    description: 'The commit body: what was measured, what moved, and why the files are committed.'
+    value: ${{ steps.run.outputs.commit-body }}
+  commit-file:
+    description: 'Path of the full message, title and body, for `git commit -F`. Absent when nothing changed.'
+    value: ${{ steps.run.outputs.commit-file }}
+
+runs:
+  using: composite
+  steps:
+    # No setup-python step on purpose: the kit is stdlib Python plus PyYAML,
+    # which every GitHub-hosted runner ships. Nothing to install.
+    - name: Run the kit
+      id: run
+      shell: bash
+      env:
+        KIT_MODE: ${{ inputs.mode }}
+        KIT_DATA: ${{ inputs.data }}
+        KIT_OUT: ${{ inputs.out }}
+        KIT_README: ${{ inputs.readme }}
+        KIT_PATH: ${{ github.action_path }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        set -euo pipefail
+        case "$KIT_MODE" in
+          run|init|measure|render|check|snippets) ;;
+          *) echo "::error::unknown mode '$KIT_MODE' (run|init|measure|render|check|snippets)"; exit 1 ;;
+        esac
+        root="$GITHUB_WORKSPACE"
+        # The reusable workflow fetches this repository beside the consumer's
+        # checkout. That folder is not theirs: keep it out of git's view so it
+        # never counts as a change and never lands in a commit.
+        if [ -d "$root/.banners-kit" ] && [ -d "$root/.git" ]; then
+          grep -qx '.banners-kit/' "$root/.git/info/exclude" 2>/dev/null || echo '.banners-kit/' >> "$root/.git/info/exclude"
+        fi
+        # --untracked-files=all: the default collapses a new directory to one
+        # line, so a second SVG drawn into it would read as "nothing changed".
+        before="$(git -C "$root" status --porcelain --untracked-files=all 2>/dev/null || true)"
+
+        args=( --root "$root" --data "$root/$KIT_DATA" --out "$root/$KIT_OUT" --readme "$root/$KIT_README" )
+        msg="$RUNNER_TEMP/elements-commit.txt"
+        rm -f "$msg"
+        if [ "$KIT_MODE" = "run" ]; then args+=( --commit-file "$msg" ); fi
+        python3 "$KIT_PATH/../src/elements-kit.py" "$KIT_MODE" "${args[@]}"
+
+        {
+          echo "commit-title<<EOF"
+          if [ -f "$msg" ]; then head -n 1 "$msg"; fi
+          echo "EOF"
+          echo "commit-body<<EOF"
+          if [ -f "$msg" ]; then tail -n +3 "$msg"; fi
+          echo "EOF"
+          if [ -f "$msg" ]; then echo "commit-file=$msg"; else echo "commit-file="; fi
+        } >> "$GITHUB_OUTPUT"
+        after="$(git -C "$root" status --porcelain --untracked-files=all 2>/dev/null || true)"
+        if [ "$before" != "$after" ]; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        fi

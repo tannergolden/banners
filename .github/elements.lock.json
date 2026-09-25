@@ -1,0 +1,405 @@
+{
+ "measured": {
+  "vitals": {
+   "histogram": {
+    "label": "COMMITS PER WEEK",
+    "sum": "IN TEN WEEKS",
+    "bars": [
+     [
+      "20 JUL",
+      0
+     ],
+     [
+      "27 JUL",
+      0
+     ],
+     [
+      "3 AUG",
+      0
+     ],
+     [
+      "10 AUG",
+      0
+     ],
+     [
+      "17 AUG",
+      0
+     ],
+     [
+      "24 AUG",
+      0
+     ],
+     [
+      "31 AUG",
+      0
+     ],
+     [
+      "7 SEP",
+      0
+     ],
+     [
+      "14 SEP",
+      0
+     ],
+     [
+      "21 SEP",
+      14
+     ]
+    ]
+   },
+   "materials": {
+    "label": "TRACKED BYTES BY FILE TYPE",
+    "parts": [
+     [
+      "SVG",
+      1021015
+     ],
+     [
+      "JSON",
+      315425
+     ],
+     [
+      "PYTHON",
+      290311
+     ],
+     [
+      "MARKDOWN",
+      177348
+     ],
+     [
+      "OTHER",
+      257244
+     ]
+    ],
+    "total": "2.1 MB"
+   },
+   "dial": {
+    "label": "DAYS SINCE THE LAST RELEASE",
+    "value": 0,
+    "span": 30,
+    "major": 10,
+    "minor": 5,
+    "sub": "V1.1.0  ·  25 SEP"
+   },
+   "counters": [
+    [
+     "TESTS",
+     4
+    ],
+    [
+     "WORKFLOWS",
+     15
+    ],
+    [
+     "EXAMPLES",
+     4
+    ]
+   ],
+   "caption": "MEASURED 25 SEP 2026"
+  },
+  "layout": {
+   "total": 176,
+   "rooms": [
+    {
+     "key": "github",
+     "label": ".GITHUB/",
+     "count": 50,
+     "lines": [
+      [
+       "workflows/",
+       "15"
+      ],
+      [
+       "DISCUSSION_TEMPLATE/",
+       "10"
+      ],
+      [
+       "ISSUE_TEMPLATE/",
+       "8"
+      ],
+      [
+       "scripts/",
+       "5"
+      ],
+      [
+       "CODEOWNERS",
+       ""
+      ],
+      [
+       "CODE_OF_CONDUCT.md",
+       ""
+      ],
+      [
+       "CONTRIBUTING.md",
+       ""
+      ],
+      [
+       "FUNDING.yml",
+       ""
+      ],
+      [
+       "GOVERNANCE.md",
+       ""
+      ],
+      [
+       "SECURITY.md",
+       ""
+      ],
+      [
+       "SUPPORT.md",
+       ""
+      ],
+      [
+       "banners.lock.json",
+       ""
+      ],
+      [
+       "banners.yml",
+       ""
+      ],
+      [
+       "dependabot.yml",
+       ""
+      ],
+      [
+       "pull_request_template.md",
+       ""
+      ],
+      [
+       "release.yml",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "assets",
+     "label": "ASSETS/",
+     "count": 43,
+     "lines": [
+      [
+       "gallery/",
+       "23"
+      ],
+      [
+       "banners/",
+       "18"
+      ],
+      [
+       "branding/",
+       "1"
+      ],
+      [
+       "README.md",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "src",
+     "label": "SRC/",
+     "count": 32,
+     "lines": [
+      [
+       "bannerkit/",
+       "26"
+      ],
+      [
+       "fonts/",
+       "4"
+      ],
+      [
+       "banner-kit.py",
+       ""
+      ],
+      [
+       "extract-glyphs.py",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "docs",
+     "label": "DOCS/",
+     "count": 28,
+     "lines": [
+      [
+       "templates/",
+       "25"
+      ],
+      [
+       "adrs/",
+       "1"
+      ],
+      [
+       "Banner-Kit.md",
+       ""
+      ],
+      [
+       "README.md",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "tests",
+     "label": "TESTS/",
+     "count": 6,
+     "lines": [
+      [
+       "fake.py",
+       ""
+      ],
+      [
+       "gql_check.py",
+       ""
+      ],
+      [
+       "test_compose.py",
+       ""
+      ],
+      [
+       "test_gql.py",
+       ""
+      ],
+      [
+       "test_measure.py",
+       ""
+      ],
+      [
+       "test_plumbing.py",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "examples",
+     "label": "EXAMPLES/",
+     "count": 4,
+     "lines": [
+      [
+       "banners.yml",
+       ""
+      ],
+      [
+       "stub-check.yml",
+       ""
+      ],
+      [
+       "stub-profile.yml",
+       ""
+      ],
+      [
+       "stub-repository.yml",
+       ""
+      ]
+     ]
+    }
+   ],
+   "lobby": {
+    "count": 10,
+    "lines": [
+     [
+      "LICENSE",
+      ""
+     ],
+     [
+      "Makefile",
+      ""
+     ],
+     [
+      "NOTICE",
+      ""
+     ],
+     [
+      "README.md",
+      ""
+     ],
+     [
+      "action.yml",
+      ""
+     ]
+    ],
+    "far": [
+     "+5 DOTFILES"
+    ]
+   },
+   "closets": [
+    {
+     "label": ".VSCODE/",
+     "count": 2
+    },
+    {
+     "label": ".DEVCONTAINER/",
+     "count": 1
+    }
+   ]
+  },
+  "history": {
+   "caption": "2 RELEASES SINCE 25 SEP 2026",
+   "events": [
+    {
+     "date": "2026-09-25",
+     "tag": "V1.0.0",
+     "major": true,
+     "above": [
+      "THREE HEADERS",
+      "TWO FOOTERS"
+     ],
+     "big": true
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.1.0",
+     "major": true,
+     "above": [
+      "FOUR LINK BUTTONS"
+     ]
+    }
+   ],
+   "today": "2026-09-25"
+  },
+  "contributors": {
+   "caption": "14 COMMITS FROM 2 CONTRIBUTORS",
+   "people": [
+    {
+     "name": "TANNER GOLDEN",
+     "handle": "@TANNERGOLDEN",
+     "n": 14,
+     "first": "25 SEP 2026",
+     "last": "25 SEP",
+     "initials": "TG"
+    },
+    {
+     "name": "CLAUDE",
+     "handle": "CO-AUTHOR",
+     "n": 11,
+     "first": "25 SEP 2026",
+     "last": "25 SEP",
+     "initials": "C"
+    }
+   ]
+  },
+  "conformance": {
+   "commit": "f51d6c4",
+   "checks": [
+    [
+     "Licensed",
+     "LICENSE"
+    ],
+    [
+     "Security policy",
+     ".github/SECURITY.md"
+    ],
+    [
+     "Actions pinned to a tag or a commit",
+     "31 of 31 uses:"
+    ],
+    [
+     "Conventional commits",
+     "14 of 14 subjects"
+    ]
+   ]
+  }
+ },
+ "today": "2026-09-25"
+}

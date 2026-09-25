@@ -1,7 +1,7 @@
 <!--
 title: '🪧 BANNERS'
-description: 'Blueprint headers and footers a README draws for itself: measured from GitHub on a schedule, drawn as committed SVGs, never fetched.'
-tags: [readme-header, readme-footer, banner, github-profile, profile-readme, github-actions, reusable-workflow, svg, blueprint]
+description: 'Blueprint headers, footers and body elements a README draws for itself: measured from GitHub and git on a schedule, drawn as committed SVGs, never fetched.'
+tags: [readme-header, readme-footer, banner, readme-elements, diagram, floor-plan, timeline, github-profile, profile-readme, github-actions, reusable-workflow, svg, blueprint]
 category: docs
 -->
 
@@ -41,7 +41,13 @@ sheet are the figures GitHub keeps: the release, stars, forks, open issues,
 language and licence. On a profile it reads you instead. No request at view
 time, nothing to rate-limit, and nothing to keep in step by hand.
 
-It is one stub in your repository and one kit here:
+The banners are the two ends of the page. The **elements**, the second kit
+in this repository, are its body: a schematic, instruments, a floor plan,
+milestones, a roster, a certificate, placards and a seal, measured from git
+where they can be and drawn on the same paper. [Below](#-the-body-of-the-page)
+they are drawn for this repository itself.
+
+It is one stub in your repository for each kit, and both kits here:
 
 | Part                                | Job                                                                          |
 | :---------------------------------- | :--------------------------------------------------------------------------- |
@@ -50,16 +56,19 @@ It is one stub in your repository and one kit here:
 | `src/banner-kit.py`                 | **The kit.** Measures over GitHub's API and draws the SVGs. Stdlib only.     |
 | `src/bannerkit/measure.py`          | **The measurement.** What is read from GitHub, written out in full.          |
 | `src/bannerkit/compose.py`          | **The composition.** What each field says: your config's words, or GitHub's. |
+| `.github/workflows/elements.yml`    | **The elements' workflow.** The banners' twin, for the body of the page.     |
+| `elements/action.yml`               | **The elements' action.** Runs the elements kit against the caller.          |
+| `src/elements-kit.py`               | **The elements kit.** Eight elements, measured from git, drawn on the paper. |
 | `.github/workflows/cut-release.yml` | **The release.** Cuts `vX.Y.Z` and moves `v1`, by calling the standards.     |
 
 **Called, never copied.** Your repository holds a stub that names the
 schedule. The measuring, drawing and committing happen here, so a fix lands
 once and reaches every README pinned to `v1`. That is how
-[`tannergolden/emblems`](https://github.com/tannergolden/emblems) draws
+[`tannergolden/badges`](https://github.com/tannergolden/badges) draws
 badges, how [`tannergolden/trophies`](https://github.com/tannergolden/trophies)
 draws a case, and how [`tannergolden/standards`](https://github.com/tannergolden/standards)
-delivers automation; this draws the two ends of the page, in the same
-palette, under the same rule.
+delivers automation; this draws the two ends of the page and its body, in
+the same palette, under the same rule.
 
 ---
 
@@ -174,6 +183,131 @@ it is, and a quiet day keeps the colour it has.
 
 ---
 
+## 📐 The Body Of The Page
+
+A header and a footer frame a README; what a reader looks for sits between
+them. The elements kit draws that too, from what the repository can measure
+about itself, as engineering drawings on the same paper: how the code is laid
+out, how it runs, who drew it, how it has been released, and which checks it
+passes. Eight elements, each a committed SVG in a day file and a dark file,
+most with a narrow file for a phone:
+
+| Element         | What it draws                                                                                   | You write                         | It measures                                      |
+| :-------------- | :---------------------------------------------------------------------------------------------- | :-------------------------------- | :----------------------------------------------- |
+| **schematic**   | Boxes and the wires between them, layered, snaked across the sheet and routed around each other | The boxes, the wires, the notes   | Nothing                                          |
+| **instruments** | Commits per week, days since the last release, tracked bytes by file type, three counters       | Globs for the counters            | All of it, from git                              |
+| **plan**        | The repository as a floor plan: folders as rooms sized by file count, doors on shared walls     | Notes and the entrance            | The tree, from git                               |
+| **milestones**  | Every version tag on a time line, quiet stretches cut, what is planned in outline               | Notes on the releases that matter | The tags and their dates                         |
+| **roster**      | Each contributor in a medallion, with their commits, first and last                             | Renames, if any                   | The log, co-authors included                     |
+| **certificate** | The checks a checkout can answer, each with its evidence, under the seal                        | The words on the ring             | Licence, security policy, pins, commit style, CI |
+| **placard**     | A card for a related repository: description, language, release, with a link                    | Owner, name, cells                | From GitHub, given a token                       |
+| **seal**        | The certificate's stamp on its own                                                              | The ring, the name                | Nothing                                          |
+
+### This repository, measured
+
+The five below are this repository, read from its git history by
+[`📐 Own Elements`](.github/workflows/own-elements.yml) at eight in the
+morning, eight hours after [`🪧 Own Banners`](.github/workflows/own-banners.yml)
+reads it at midnight. Nothing in them is written by hand except the two notes on the plan
+and the words on the certificate's ring, which are set in
+[`.github/elements.yml`](.github/elements.yml).
+
+<!-- elements:vitals:start -->
+<picture>
+  <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/vitals-narrow-dark.svg">
+  <source media="(max-width: 585px)" srcset="assets/elements/vitals-narrow-day.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/vitals-dark.svg">
+  <img alt="Instruments for tannergolden/banners. Commits per week, days since the last release, tracked bytes by file type and counts for tannergolden/banners." src="assets/elements/vitals-day.svg">
+</picture>
+<!-- elements:vitals:end -->
+
+<!-- elements:layout:start -->
+<picture>
+  <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/layout-narrow-dark.svg">
+  <source media="(max-width: 585px)" srcset="assets/elements/layout-narrow-day.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/layout-dark.svg">
+  <img alt="Plan of tannergolden/banners. tannergolden/banners as a floor plan: 176 tracked files in 6 rooms and a lobby." src="assets/elements/layout-day.svg">
+</picture>
+<!-- elements:layout:end -->
+
+<!-- elements:history:start -->
+<picture>
+  <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/history-narrow-dark.svg">
+  <source media="(max-width: 585px)" srcset="assets/elements/history-narrow-day.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/history-dark.svg">
+  <img alt="Milestones of tannergolden/banners. 2 releases of tannergolden/banners on a time line." src="assets/elements/history-day.svg">
+</picture>
+<!-- elements:history:end -->
+
+<div align="center">
+
+<!-- elements:contributors:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/contributors-dark.svg">
+  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 14 commits; CLAUDE: 11 commits." src="assets/elements/contributors-day.svg">
+</picture>
+<!-- elements:contributors:end -->
+<!-- elements:conformance:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/conformance-dark.svg">
+  <img alt="Conformance of tannergolden/banners. 4 checks on tannergolden/banners, each passing, with the evidence for it." src="assets/elements/conformance-day.svg">
+</picture>
+<!-- elements:conformance:end -->
+
+</div>
+
+### A page that uses every element
+
+[driftmark](examples/driftmark/README.md) is a made-up project whose README
+uses all eight, the placards and the seal included, drawn by the kit from
+[`examples/driftmark/.github/elements.yml`](examples/driftmark/.github/elements.yml).
+The schematic is the one element that is written by hand from end to end:
+you name the boxes and say which connects to which, and the kit lays them
+out, routes every wire around the boxes in its way and sets each label in a
+gap in the wire, clear of every other one.
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/how-it-runs-dark.svg"><img alt="Schematic of driftmark: the survey file drives the scheduler, which runs a probe in each region; the collector compares results with the baselines, writes the report and raises alerts past the threshold." src="examples/driftmark/assets/elements/how-it-runs-day.svg"></picture>
+
+<div align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/action-dark.svg"><img alt="driftmark/action: runs a survey in CI and fails the pull request that makes a region drift past your threshold." src="examples/driftmark/assets/elements/action-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/terraform-probes-dark.svg"><img alt="driftmark/terraform-probes: deploys a probe to every region you list." src="examples/driftmark/assets/elements/terraform-probes-day.svg"></picture>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/stamp-dark.svg"><img alt="Seal: driftmark conforms to tannergolden/standards." src="examples/driftmark/assets/elements/stamp-day.svg"></picture>
+</div>
+
+### Use them in your README
+
+The elements' stub is the banners' twin, and the two can share a repository,
+since each writes only between its own markers:
+
+```yaml
+name: Elements
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  elements:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: tannergolden/banners/.github/workflows/elements.yml@v1
+```
+
+The first run writes `.github/elements.yml` with the five elements that need
+nothing written by hand, puts a pair of markers for each at the foot of your
+README, measures the repository, draws every element into `assets/elements/`
+and commits. Move the markers wherever you like. Then open the data file to
+add a schematic, a placard or a seal, or to caption what was measured.
+[`examples/stub-elements.yml`](examples/stub-elements.yml) is the stub with
+its options, and [`docs/Elements-Kit.md`](docs/Elements-Kit.md) is the whole
+kit: every element, every field, and how it runs.
+
+---
+
 ## 🚀 Use It In Your README
 
 Add this as `.github/workflows/banners.yml` in any repository. That stub is
@@ -206,7 +340,7 @@ copied into your repository except that stub.
 
 **Who the commit is by.** Each refresh is authored by
 [@tannergolden](https://github.com/tannergolden), the author of the drawing,
-and committed by `github-actions[bot]`, which is what pushed it, as emblems
+and committed by `github-actions[bot]`, which is what pushed it, as badges
 and trophies do. The kit recognises its own commits by their
 `chore(banners)` scope, and any commit a bot pushed, and sets them aside when
 it reads your last change, so a refresh never moves the date it draws. The
@@ -325,7 +459,7 @@ what the banners now show, what they showed before, the date and the run, per
 the [commit standard](https://github.com/tannergolden/standards/blob/Development/docs/distribution/Conventional-Commits.md).
 
 **Every file is checked before it is written.** No script, no external
-reference, no `foreignObject`, emblems' 64 colour tokens and nothing else,
+reference, no `foreignObject`, badges' 64 colour tokens and nothing else,
 text as paths, a title and a description on every image, and a size budget.
 Drawing is deterministic, so the same measurement draws byte-identical files,
 and it prunes: a file the plan no longer names is deleted.
@@ -336,14 +470,18 @@ and it prunes: a file the plan no longer names is deleted.
 
 ```bash
 banners/
-├── action.yml                        the composite action
-├── .github/workflows/banners.yml     the reusable workflow your stub calls
+├── action.yml                        the banners' composite action
+├── elements/action.yml               the elements' composite action
+├── .github/workflows/banners.yml     the reusable workflow a banners stub calls
+├── .github/workflows/elements.yml    the reusable workflow an elements stub calls
 ├── .github/workflows/own-banners.yml this README's own banners, at its own commit
+├── .github/workflows/own-elements.yml this README's own elements, likewise
 ├── .github/workflows/cut-release.yml cuts a version and moves v1, via the standards
-├── .github/banners.yml               this README's own config
-├── .github/banners.lock.json         this README's lock
+├── .github/banners.yml               this README's own banners config, and its lock beside it
+├── .github/elements.yml              this README's own elements data, and its lock beside it
 ├── src/
-│   ├── banner-kit.py                 the command line
+│   ├── banner-kit.py                 the banners' command line
+│   ├── elements-kit.py               the elements' command line
 │   ├── extract-glyphs.py             where the glyph supplement comes from, and its proof
 │   ├── bannerkit/
 │   │   ├── measure.py, github.py     what is read from GitHub, and the client
@@ -353,13 +491,19 @@ banners/
 │   │   ├── plan.py, readme.py        the plan of files, the README blocks, the commit message
 │   │   ├── lock.py                   what persists between runs
 │   │   └── preview.py, page/         the preview page, running this package in the browser
+│   ├── elementskit/
+│   │   ├── elements.py               the eight elements, drawn with bannerkit's drafting tools
+│   │   ├── layout.py                 treemap, spanning tree, layering, routing, the time line
+│   │   └── measure.py                what is read from git, and from GitHub for a placard
 │   └── fonts/                        glyph outlines and their OFL licences
 ├── assets/banners/                   this README's committed banners
+├── assets/elements/                  this README's committed elements
 ├── assets/gallery/                   the gallery above, drawn from the samples
-├── examples/                         stubs and a starter config to copy
+├── examples/                         stubs and a starter config to copy, and driftmark, a README that uses every element
 ├── tests/                            the unit tests, and the GraphQL document check
 └── docs/
-    └── Banner-Kit.md                 the full specification
+    ├── Banner-Kit.md                 the banners' full specification
+    └── Elements-Kit.md               the elements' full specification
 ```
 
 ---
@@ -371,9 +515,10 @@ only the stub above.
 
 ```bash
 make help       # list every target
-make check      # CI gate: every design lints in every print, queries well formed, gallery and own banners current
-make test       # the gate plus the unit tests
+make check      # CI gate: every design lints in every print, queries well formed, gallery, own banners, own elements and driftmark current
+make test       # the gate plus the unit tests, the elements' included
 make gallery    # redraw assets/gallery/ from the samples
+make elements   # redraw this README's own elements from git
 make sample     # draw the sample repository and profile into preview/, the way a run would (no network)
 make preview    # build preview/preview.html: every design, drawn live in the browser by this same package
 make schema     # check every GraphQL query against GitHub's published schema
@@ -401,10 +546,12 @@ forward, proves the workflow, the action and the kit exist at the commit and
 that `make check` passes, then tags the immutable version, force-moves `v1`,
 publishes the release with generated notes and prunes the pages it
 superseded. Version tags are never deleted, so a full-version pin keeps
-resolving. A release that changes what a banner looks like bumps
-`KIT_VERSION`, and every README redraws on its next run.
+resolving. A release that changes what a banner or an element looks like
+bumps that kit's `KIT_VERSION`, and every README redraws on its next run.
+One version covers both kits: a stub for either pins the same `v1`.
 
-Full specification: [`docs/Banner-Kit.md`](docs/Banner-Kit.md).
+Full specifications: [`docs/Banner-Kit.md`](docs/Banner-Kit.md) and
+[`docs/Elements-Kit.md`](docs/Elements-Kit.md).
 
 ---
 
@@ -413,9 +560,10 @@ Full specification: [`docs/Banner-Kit.md`](docs/Banner-Kit.md).
 MIT. See [`LICENSE`](LICENSE).
 
 The glyph outlines in `src/fonts/` are from
-[Cinzel](https://github.com/NDISCOVER/Cinzel) and
-[Barlow](https://github.com/jpt/barlow), both under the SIL Open Font License
-1.1, which permits embedding them in a document. The preview page embeds
+[Cinzel](https://github.com/NDISCOVER/Cinzel),
+[Barlow](https://github.com/jpt/barlow) and, for the elements' monospace,
+[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), all under the
+SIL Open Font License 1.1, which permits embedding them in a document. The preview page embeds
 [Brython](https://brython.info), under the BSD 3-Clause License, when it is
 built. [`NOTICE`](NOTICE) records the attributions; the font licences travel
 in `src/fonts/`.
@@ -426,7 +574,7 @@ in `src/fonts/`.
 
 > [!TIP]
 > The full specification is [`docs/Banner-Kit.md`](docs/Banner-Kit.md).
-> [`tannergolden/emblems`](https://github.com/tannergolden/emblems) draws the
+> [`tannergolden/badges`](https://github.com/tannergolden/badges) draws the
 > badges a repository commits for itself, and
 > [`tannergolden/trophies`](https://github.com/tannergolden/trophies) draws a
 > profile's or a repository's trophies, the way this draws its banners: in the
