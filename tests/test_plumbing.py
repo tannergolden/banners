@@ -7,11 +7,13 @@ import copy
 import importlib.util
 import io
 import json
+import os
 import sys
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -25,12 +27,18 @@ kit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(kit)
 
 
+# What a runner sets that the kit reads: the run id goes into the commit
+# message, and the step summary would take the test's own report.
+RUNNER = ("GITHUB_ACTIONS", "GITHUB_RUN_ID", "GITHUB_STEP_SUMMARY", "GITHUB_REPOSITORY")
+
+
 def run(argv: list[str], measurement: dict | None = None) -> tuple[int, str]:
-    """The command line, with `measurement` standing in for GitHub."""
+    """The command line, with `measurement` standing in for GitHub, as it runs off a runner."""
     if measurement is not None:
         kit._measure = lambda args, cfg: copy.deepcopy(measurement) | ({"today": args.today} if args.today else {})
     out = io.StringIO()
-    with redirect_stdout(out), redirect_stderr(io.StringIO()):
+    env = {k: v for k, v in os.environ.items() if k not in RUNNER}
+    with mock.patch.dict(os.environ, env, clear=True), redirect_stdout(out), redirect_stderr(io.StringIO()):
         code = kit.main(argv)
     return code, out.getvalue()
 
@@ -64,7 +72,7 @@ class Run(unittest.TestCase):
         self.assertEqual(lock["snapshot"], "2026-09-25")
         msg = self.msg.read_text(encoding="utf-8")
         self.assertTrue(msg.startswith("chore(banners): \U0001FAA7 draw the banners for octo-dev/toolkit\n\n"))
-        self.assertIn("1,284 stars", msg)
+        self.assertIn("1,284 stars", msg.replace("\n", " "))
 
     def test_an_empty_config_draws_the_section_and_reads_everything_from_github(self):
         (self.root / ".github").mkdir()
