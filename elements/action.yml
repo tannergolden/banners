@@ -40,7 +40,7 @@ inputs:
     required: false
     default: 'README.md'
   token:
-    description: 'A token for what only GitHub knows: placards and the certificate's CI verdict. Optional.'
+    description: "A token for what only GitHub knows: placards and the certificate's CI verdict. Optional."
     required: false
     default: ${{ github.token }}
 
