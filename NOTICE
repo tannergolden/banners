@@ -18,7 +18,7 @@ The fonts themselves are not redistributed.
   SIL Open Font License 1.1: src/fonts/OFL-Barlow-Condensed.txt
 
 The 64 color tokens and 64 line icons in src/bannerkit/palette.py are
-copied from the registries of tannergolden/emblems (MIT).
+copied from the registries of tannergolden/badges (MIT).
 
 The preview page, preview/preview.html, is built by `make preview` and not
 committed. It embeds Brython (https://brython.info), Copyright (c) 2012

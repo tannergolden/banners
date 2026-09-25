@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Tanner Golden
 # SPDX-License-Identifier: MIT
-"""The 64 color tokens and the 64 icons, copied verbatim from emblems.
+"""The 64 color tokens and the 64 icons, copied verbatim from badges.
 
 Every color a banner uses is one of these tokens, and every icon is one of
 these glyphs, so a README drawn by all three kits reads as one family.
@@ -8,8 +8,8 @@ Nothing here is mixed, tinted or invented: a lighter or darker shade is the
 same token at a lower opacity, and a color that is not a token is a bug the
 lint in `canvas.py` refuses to write.
 
-Both registries are copied from `src/badge-kit.py` in tannergolden/emblems,
-comments and all, and a test compares them with an emblems checkout when one
+Both registries are copied from `src/badge-kit.py` in tannergolden/badges,
+comments and all, and a test compares them with a badges checkout when one
 is present, so they cannot drift apart unnoticed.
 """
 from __future__ import annotations
