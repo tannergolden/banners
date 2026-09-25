@@ -421,6 +421,18 @@ class Measured(unittest.TestCase):
         self.assertIn("not met: Security policy", svg)
         self.assertEqual(lint(svg, budget=E.BUDGET["sheet"]), [])
 
+    def test_a_policy_the_owner_serves_for_every_repository_meets_the_check(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            M.git(root, "init", "-q")
+            (root / "LICENSE").write_text("MIT\n")
+            M.git(root, "add", "LICENSE")
+            M.git(root, "-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-q", "-m", "feat: 🎉 begin")
+            bare_rows = {r[0]: r for r in M.checks(root)["checks"]}
+            self.assertEqual(bare_rows["Security policy"][1:], ["none", False])
+            rows = {r[0]: r for r in M.checks(root, inherited_policy="owner/.github/SECURITY.md")["checks"]}
+            self.assertEqual(rows["Security policy"][1:], ["owner/.github/SECURITY.md", True])
+
     def test_measurements_have_the_shapes_the_elements_want(self):
         root = ROOT
         t = M.tree(root)

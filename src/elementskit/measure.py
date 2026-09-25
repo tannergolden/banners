@@ -179,8 +179,14 @@ def milestones(root: Path, *, notable: dict | None = None, planned: list | None 
     return {"caption": f"{n} RELEASES SINCE {when(dt.date.fromisoformat(rows[0][1]), True)}" if rows else "", "events": events}
 
 
-def checks(root: Path, ref: str = "HEAD", *, ci: str | None = None, head: str | None = None) -> dict:
-    """The conformance checks a checkout can answer, plus CI's verdict when the caller knows it."""
+def checks(root: Path, ref: str = "HEAD", *, ci: str | None = None, head: str | None = None,
+           inherited_policy: str | None = None) -> dict:
+    """The conformance checks a checkout can answer, plus CI's verdict when the caller knows it.
+
+    `inherited_policy` names a security policy GitHub serves for the
+    repository from its owner's .github repository, which a checkout cannot
+    see; the row is met by it when the tree carries none of its own.
+    """
     files = set(git(root, "ls-tree", "-r", "--name-only", ref).split())
     uses = pinned = 0
     for f in files:
@@ -193,7 +199,7 @@ def checks(root: Path, ref: str = "HEAD", *, ci: str | None = None, head: str | 
     subjects = git(root, "log", ref, "--format=%s").splitlines()
     conv = sum(1 for s in subjects if re.match(r"^(feat|fix|docs|chore|ci|test|refactor|style|perf|build|revert)(\([^)]+\))?!?: ", s))
     lic = next((f for f in ("LICENSE", "LICENSE.md", "LICENSE.txt") if f in files), None)
-    sec = next((f for f in ("SECURITY.md", ".github/SECURITY.md") if f in files), None)
+    sec = next((f for f in ("SECURITY.md", ".github/SECURITY.md", "docs/SECURITY.md") if f in files), None) or inherited_policy
     sha = head or git(root, "rev-parse", "--short", ref).strip()
     # Each row carries its own verdict, so the certificate marks a check that is not met as not met.
     out = []
@@ -228,6 +234,17 @@ def placard(full: str, token: str) -> dict:
     return {"owner": owner, "name": name, "desc": repo.get("description") or "", "link": repo["html_url"],
             "cells": [["Language", (repo.get("language") or "").upper()], ["Release", release.upper()],
                       ["Stars", f"{repo.get('stargazers_count', 0):,}"]]}
+
+
+def inherited_policy(owner: str, token: str) -> str | None:
+    """The security policy GitHub serves for every repository of `owner` from the owner's .github repository, if any."""
+    for path in ("SECURITY.md", ".github/SECURITY.md", "docs/SECURITY.md"):
+        try:
+            if api(f"/repos/{owner}/.github/contents/{path}", token).get("path"):
+                return f"{owner}/.github/{path}"
+        except Exception:
+            continue
+    return None
 
 
 def ci_status(full: str, ref: str, token: str) -> str | None:
