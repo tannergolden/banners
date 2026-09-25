@@ -6,6 +6,7 @@
    "branch": "Development",
    "created": "2026-09-25",
    "description": "Blueprint headers and footers a README draws for itself. Measured nightly, never fetched, so they are up for as long as GitHub is.",
+   "discussionsOn": false,
    "forks": 0,
    "full": "tannergolden/banners",
    "homepage": "",
@@ -18,13 +19,14 @@
    "owner": "tannergolden",
    "private": false,
    "pulls": 0,
-   "release": "",
-   "released": "",
-   "releases": 0,
+   "release": "v1.0.0",
+   "released": "2026-09-25",
+   "releases": 1,
    "stars": 0,
    "topics": [],
    "updated": "2026-09-25",
-   "watchers": 1
+   "watchers": 0,
+   "workflows": 16
   },
   "subject": "tannergolden/banners",
   "today": "2026-09-25"
