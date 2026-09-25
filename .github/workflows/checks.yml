@@ -75,7 +75,7 @@ jobs:
       #   lint-command: 'golangci-lint run'
       #   test-command: 'go test ./...'
       #   build-command: 'go build ./...'
-      lint-command: 'python3 .github/scripts/validate-repository.py'
+      lint-command: 'python3 .github/scripts/validate-repository.py && make check'
       # The scripts under .github/scripts/ are the only gates a fresh
       # repository has, so they are the code here that must not regress
       # silently. Their tests ship beside them and run on every push - a suite
@@ -83,7 +83,7 @@ jobs:
       #
       # Discovery rather than a list: a `test_*.py` added next to a new script
       # is picked up without anyone remembering to name it here.
-      test-command: "python3 -m unittest discover -s .github/scripts -p 'test_*.py'"
+      test-command: "python3 -m unittest discover -s tests -p 'test_*.py' && python3 -m unittest discover -s .github/scripts -p 'test_*.py'"
 
   # RULESET-LOAD-BEARING JOB ID: reports as 'secrets / 🔍 Scan for Secrets'.
   secrets:

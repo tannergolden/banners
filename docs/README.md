@@ -37,6 +37,14 @@ why they ship as seed content rather than as law.
 
 ---
 
+## 🪧 This Project's Documents
+
+| Document                           | What it is                                                                                          |
+| :--------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| [`Banner-Kit.md`](Banner-Kit.md)   | The specification: the designs, the themes, the two modes, what is measured, the lock, and the contract |
+
+---
+
 ## 🌱 Using A Template
 
 Copy it out of `docs/templates/` to the matching path **without** `templates/`,

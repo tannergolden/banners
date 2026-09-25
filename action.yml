@@ -1,0 +1,157 @@
+# SPDX-FileCopyrightText: 2026 Tanner Golden
+# SPDX-License-Identifier: MIT
+#
+# The action metadata lives at the repository ROOT because GitHub Marketplace
+# requires it there, and because `uses: tannergolden/banners@v1` is the
+# shortest thing a consumer has to type.
+name: 'Banners'
+description: >-
+  A README header and footer that read the profile or repository they sit
+  in: measured over the API on a schedule, drawn as committed SVGs, never
+  fetched.
+author: 'Tanner Golden'
+branding:
+  icon: 'pen-tool'
+  color: 'blue'
+
+inputs:
+  mode:
+    description: >-
+      run measures, draws, writes and reports; preview draws the built-in
+      sample with no network; check redraws the committed banners from the
+      measurement the lock remembers and fails if any file or README block
+      differs, with no token and no network.
+    required: false
+    default: 'run'
+  banner-mode:
+    description: >-
+      auto, profile or repository. Empty reads .github/banners.yml, whose
+      default is auto: profile in the repository named after its owner,
+      repository everywhere else.
+    required: false
+    default: ''
+  subject:
+    description: >-
+      Who to measure: a login in profile mode, owner/name in repository mode.
+      Empty means the repository the workflow runs in, or its owner.
+    required: false
+    default: ''
+  header:
+    description: 'section, sheet, strip or none. Empty reads the config, whose default is section.'
+    required: false
+    default: ''
+  footer:
+    description: 'title-block, scale-bar or none. Empty reads the config, whose default pairs with the header.'
+    required: false
+    default: ''
+  theme:
+    description: >-
+      The print the banners are drawn in: blueprint, redprint, orangeprint,
+      yellowprint, greenprint, tealprint, indigoprint, purpleprint,
+      pinkprint, brownprint or blackprint; or rainbowprint, which draws each
+      update in the next colour of the spectrum. Empty reads the config.
+    required: false
+    default: ''
+  config:
+    description: 'Config file, relative to the repository root.'
+    required: false
+    default: '.github/banners.yml'
+  token:
+    description: >-
+      Token for the API. GITHUB_TOKEN reads everything a banner shows: a
+      profile's public figures and everything about its own repository.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  changed:
+    description: "'true' when the run modified any tracked file."
+    value: ${{ steps.run.outputs.changed }}
+  summary:
+    description: 'One line: the subject, the designs, and the figures they show.'
+    value: ${{ steps.run.outputs.summary }}
+  commit-title:
+    description: 'The Conventional Commit subject for this run, unique to what it measured. Empty when nothing changed.'
+    value: ${{ steps.run.outputs.commit-title }}
+  commit-body:
+    description: 'The commit body: what the banners show, what moved, the run, and why the images are committed.'
+    value: ${{ steps.run.outputs.commit-body }}
+  commit-file:
+    description: 'Path of the full message, title and body, for `git commit -F`.'
+    value: ${{ steps.run.outputs.commit-file }}
+
+runs:
+  using: 'composite'
+  steps:
+    # No setup-python step on purpose: the kit is stdlib-only and every
+    # GitHub-hosted runner ships python3. Nothing to install, nothing to cache.
+    - id: run
+      shell: bash
+      # Inputs travel through env, never interpolated into the script body -
+      # a ${{ }} expansion inside `run:` is a shell-injection sink.
+      env:
+        KIT_MODE: ${{ inputs.mode }}
+        KIT_BANNER_MODE: ${{ inputs.banner-mode }}
+        KIT_SUBJECT: ${{ inputs.subject }}
+        KIT_HEADER: ${{ inputs.header }}
+        KIT_FOOTER: ${{ inputs.footer }}
+        KIT_THEME: ${{ inputs.theme }}
+        KIT_CONFIG: ${{ inputs.config }}
+        KIT_PATH: ${{ github.action_path }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        set -euo pipefail
+        case "$KIT_MODE" in
+          run|preview|check) ;;
+          *) echo "::error::unknown mode '$KIT_MODE' (run|preview|check)"; exit 1 ;;
+        esac
+        PY="$(command -v python3 || command -v python || true)"
+        if [ -z "$PY" ]; then echo "::error::no python3 or python on PATH"; exit 1; fi
+
+        root="$GITHUB_WORKSPACE"
+        # The reusable workflow fetches this action beside the consumer's
+        # checkout; keep that folder out of git's view so it never counts as
+        # a change and never lands in a commit.
+        if [ -d "$root/.banners-kit" ] && [ -d "$root/.git" ]; then
+          grep -qx '.banners-kit/' "$root/.git/info/exclude" 2>/dev/null || echo '.banners-kit/' >> "$root/.git/info/exclude"
+        fi
+        # --untracked-files=all: the default collapses a new directory to one
+        # "?? dir/" line, so a second SVG drawn into it would read as
+        # "nothing changed".
+        before="$(git -C "$root" status --porcelain --untracked-files=all 2>/dev/null || true)"
+
+        args=( --root "$root" --config "$KIT_CONFIG" )
+        if [ -n "$KIT_BANNER_MODE" ]; then args+=( --mode "$KIT_BANNER_MODE" ); fi
+        if [ -n "$KIT_SUBJECT" ]; then args+=( --subject "$KIT_SUBJECT" ); fi
+        if [ -n "$KIT_HEADER" ]; then args+=( --header "$KIT_HEADER" ); fi
+        if [ -n "$KIT_FOOTER" ]; then args+=( --footer "$KIT_FOOTER" ); fi
+        if [ -n "$KIT_THEME" ]; then args+=( --theme "$KIT_THEME" ); fi
+        msg="$RUNNER_TEMP/banners-commit.txt"
+        rm -f "$msg"
+        if [ "$KIT_MODE" = "run" ]; then
+          args+=( --save "$RUNNER_TEMP/banners-measurement.json" --commit-file "$msg" )
+        fi
+
+        out="$("$PY" "$KIT_PATH/src/banner-kit.py" "$KIT_MODE" "${args[@]}" | tee /dev/stderr)"
+        {
+          echo "summary<<EOF"
+          printf '%s\n' "$out" | head -n 1
+          echo "EOF"
+          # The commit message the kit wrote for this run: a Conventional
+          # Commit whose subject and body carry what the banners show, so no
+          # two refreshes read alike. Empty when nothing changed.
+          echo "commit-file=$msg"
+          echo "commit-title<<EOF"
+          if [ -f "$msg" ]; then head -n 1 "$msg"; fi
+          echo "EOF"
+          echo "commit-body<<EOF"
+          if [ -f "$msg" ]; then tail -n +3 "$msg"; fi
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+        after="$(git -C "$root" status --porcelain --untracked-files=all 2>/dev/null || true)"
+        if [ "$before" != "$after" ]; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        fi

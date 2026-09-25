@@ -1,0 +1,138 @@
+<title>Banners Preview</title>
+<meta name="description" content="README headers and footers that read the profile or repository they sit in, drawn by the kit, in both themes and at both widths.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>/*@CSS@*/</style>
+
+<div class="app">
+  <header class="masthead">
+    <div class="brand">
+      <p class="eyebrow">tannergolden/banners · phase 2</p>
+      <h1 class="wordmark">Banners</h1>
+      <p class="lede">Blueprint banners that read the profile or repository they sit in. The title, the tagline and the figures ruled along the header's foot come from GitHub, measured every day and redrawn when they move, the way trophies keeps its case. Every image here is drawn by the kit's own Python, from a sample measurement.</p>
+    </div>
+    <div class="state">
+      <p class="pill" id="status" data-state="static"><span class="dot" aria-hidden="true"></span><span id="status-text">Pre-rendered by the kit</span></p>
+      <p class="state-note" id="status-note">Drawn by <code>make preview</code>. Live editing starts in a moment.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="rail" aria-label="What the banners carry">
+      <div class="rail-inner">
+        <section class="group">
+          <h2 class="group-title">Subject</h2>
+          <div class="seg" role="radiogroup" aria-label="What the banners read" id="subject-seg"></div>
+          <p class="hint" id="subject-hint"></p>
+        </section>
+
+        <section class="group">
+          <div class="group-head"><h2 class="group-title">Theme</h2></div>
+          <div class="swatches" role="radiogroup" aria-label="Theme" id="tone-seg"></div>
+          <div class="rainbow" id="rainbow" hidden>
+            <ol class="rainbow-steps" id="rainbow-steps" aria-label="The spectrum, in order"></ol>
+            <p class="hint" id="rainbow-now"></p>
+            <button class="btn" type="button" id="rainbow-next">Next update</button>
+          </div>
+          <p class="hint">The value of <code>theme</code> in the config: the print the whole set is drawn in, its lines on white by day and its sheet by night. The spectrum runs red to pink; brownprint and blackprint are the Van Dyke and black-line prints. <b>Rainbowprint</b> draws each update in the next colour.</p>
+        </section>
+
+        <section class="group">
+          <div class="group-head"><h2 class="group-title">Figures</h2></div>
+          <label class="check"><input type="checkbox" id="opt-figures" checked> <span>Rule the figures along the header's foot</span></label>
+          <div class="chips" role="group" aria-label="Figures to draw" id="figure-chips"></div>
+          <p class="hint">Measured from GitHub on every run. The ones pressed are drawn, in this order; a figure GitHub has no value for is left out.</p>
+        </section>
+
+        <section class="group">
+          <div class="group-head"><h2 class="group-title">Header</h2></div>
+          <p class="hint">An empty field is read from GitHub: the grey text is what it says now. Type to use your own words instead; untick to leave a field out.</p>
+          <div class="fields" id="header-fields"></div>
+        </section>
+
+        <section class="group">
+          <div class="group-head"><h2 class="group-title">Footer</h2></div>
+          <div class="fields" id="footer-fields"></div>
+          <ul class="left-out" id="left-out" hidden></ul>
+        </section>
+
+        <section class="group">
+          <h2 class="group-title">View</h2>
+          <div class="view-row"><span class="view-label" id="lbl-motion">Motion</span><div class="seg small" role="radiogroup" aria-labelledby="lbl-motion" id="motion-seg"></div></div>
+          <div class="view-row"><span class="view-label" id="lbl-frames">Frames</span><div class="seg small" role="radiogroup" aria-labelledby="lbl-frames" id="frames-seg"></div></div>
+          <div class="view-row"><span class="view-label" id="lbl-size">Size</span><div class="seg small" role="radiogroup" aria-labelledby="lbl-size" id="size-seg"></div></div>
+          <label class="check"><input type="checkbox" id="opt-markdown" checked> <span>Snippet writes the tagline and motto as Markdown when the header leaves them out</span></label>
+        </section>
+        <p class="static-note" id="static-note" hidden></p>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <nav class="tabs" role="tablist" aria-label="Designs">
+        <button class="tab" role="tab" id="tab-btn-headers" aria-controls="tab-headers" aria-selected="true">Headers <span class="count">H1 to H3</span></button>
+        <button class="tab" role="tab" id="tab-btn-footers" aria-controls="tab-footers" aria-selected="false">Footers <span class="count">F1 and F2</span></button>
+        <button class="tab" role="tab" id="tab-btn-together" aria-controls="tab-together" aria-selected="false">Together <span class="count">a full README</span></button>
+        <button class="tab" role="tab" id="tab-btn-setup" aria-controls="tab-setup" aria-selected="false">Set up <span class="count">and how it stays current</span></button>
+      </nav>
+      <section class="panel" id="tab-headers" role="tabpanel" aria-labelledby="tab-btn-headers"></section>
+      <section class="panel" id="tab-footers" role="tabpanel" aria-labelledby="tab-btn-footers" hidden></section>
+      <section class="panel" id="tab-together" role="tabpanel" aria-labelledby="tab-btn-together" hidden></section>
+      <section class="panel" id="tab-setup" role="tabpanel" aria-labelledby="tab-btn-setup" hidden></section>
+
+      <section class="notes" aria-label="How this page works">
+        <div class="note">
+          <h2>What you are looking at</h2>
+          <p>Every image on this page is a file the kit drew, shown the way GitHub shows a README image: as an <code>&lt;img&gt;</code>, in a frame the width of a README column. A wide file is 830 px, a desktop column. A narrow file is 360 px, drawn for a phone, and GitHub shows it below <span id="bp"></span> px of viewport. The two subjects are samples with made-up numbers, trophies' own octo-dev.</p>
+        </div>
+        <div class="note">
+          <h2>Where the words come from</h2>
+          <p>A run reads GitHub over its API with the workflow's own token: the repository's name, description, release, stars, forks, open issues, language and licence, or a person's name, bio, status, followers, repositories, stars earned and contributions. The footer's date is the last commit a person made; a bot's commit or a refresh of the kit never moves it.</p>
+        </div>
+        <div class="note">
+          <h2>What every file holds to</h2>
+          <p>No script, no external font, image or stylesheet, no <code>foreignObject</code>. Text is outlined from trophies' Barlow Condensed, now with every Latin-1 and Latin Extended-A letter, so a name reads as its owner wrote it. Colours are emblems' tokens, checked by the kit's lint on every file. The one thing drawn by the viewer's own font is an emoji.</p>
+        </div>
+        <div class="note">
+          <h2>Still to decide</h2>
+          <p>Which header, which footer and which print. Which figures a repository and a profile show by default. Whether a profile's status message belongs on the sheet as its note, and its status emoji beside the name. Whether the refresh commit is authored by the kit's author, as emblems' and trophies' are.</p>
+        </div>
+        <div class="note third-party">
+          <h2>Inside this page</h2>
+          <p>Live editing runs the kit's source in <a href="https://brython.info" target="_blank" rel="noopener">Brython</a> <span id="bry-version"></span> (BSD-3-Clause, © 2012 Pierre Quentel), with the Python standard library modules it bundles (PSF licence). Glyph outlines: Barlow, and Cinzel from the same table, SIL Open Font License 1.1.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script type="application/json" id="kit-data">/*@DATA@*/</script>
+<script>window.KIT_CORPUS = /*@CORPUS@*/; window.KIT_FONTS = /*@FONTS@*/;</script>
+<script>/*@APP@*/</script>
+<!--
+Brython, embedded below with the standard-library modules the kit imports.
+Copyright (c) 2012, Pierre Quentel pierre.quentel@gmail.com. All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met: Redistributions of source code must retain the above copyright notice, this list of
+conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+distribution. Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to endorse or
+promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The standard-library modules are Python's, Copyright (c) 2001 Python Software Foundation, under the PSF License Agreement.
+-->
+<script>
+  // Brython finds its own URL from its <script src>; inlined, it has none, so it is told the page's.
+  globalThis.__BRYTHON__ = { brython_path: location.href.split('#')[0].split('?')[0].replace(/[^/]*$/, '') };
+</script>
+<script>/*@BRYTHON@*/</script>
+<script>/*@STDLIB@*/</script>
+<script>/*@KIT@*/</script>
+<script type="text/x-kit-boot" id="kit-boot">#@BOOT@</script>

@@ -1,0 +1,31 @@
+# A starter .github/banners.yml. Every key is optional; delete what you do
+# not need. An empty text field is read from GitHub on every run, so leave
+# a field empty to keep it current and set it to keep your own words.
+mode: auto # auto | profile | repository; auto reads a profile in the repository named after its owner
+subject: '' # a login (profile) or owner/name (repository); empty means this repository, or its owner
+header: section # section (H2) | sheet (H1) | strip (H3) | none
+footer: '' # title-block | scale-bar | none; empty means the one made for the header
+theme: blueprint # redprint | orangeprint | yellowprint | greenprint | tealprint | blueprint | indigoprint | purpleprint
+                 # | pinkprint | brownprint | blackprint | rainbowprint, the spectrum in turn, one colour per update
+emoji: '' # empty: your status emoji, or one your description or bio opens with
+title: '' # empty: the repository's name, or your name
+tagline: '' # empty: the repository's description, or your bio
+motto: '' # the sheet's one general note; empty: none, or in profile mode your status message
+description: '' # a longer line under the note; empty: none
+# Which figures run along the header's foot, in order. Empty means the defaults:
+#   repository: project, release, stars, forks, issues, language, license
+#               (also: watchers, pulls, updated, created, site)
+#   profile:    account, followers, repositories, stars, contributions, language, since
+#               (also: following, location, company, site)
+figures: []
+closing: '' # the footer's closing phrase; empty: none
+top: Back to Top # the footer's way back up
+# The links row under the footer. Empty: your website, and a repository's releases and issues.
+# links:
+#   Docs: docs/README.md
+#   Changelog: CHANGELOG.md
+hide: [] # fields not drawn: emoji, title, tagline, motto, description, figures, divider, closing, top, built, license, updated, links
+readme: manage # write the blocks between <!-- banners:header:start --> and its end, and the footer's
+readme_path: README.md # the file that holds them
+out: assets/banners # where the SVGs are written
+lock: true # keep .github/banners.lock.json, so check can redraw the banners without a token

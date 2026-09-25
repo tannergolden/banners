@@ -1,0 +1,28 @@
+# Put this at .github/workflows/banners.yml in your PROFILE repository
+# (the one named after your account, whose README is your profile).
+#
+# That is the whole interface. The header reads your name, your bio and
+# your status, and ruled along its foot: followers, public repositories,
+# the stars they earned, your contributions in the last year, your main
+# language and the year you joined. Once a day it measures again, and when
+# anything moved it redraws the SVGs and commits them. Nothing is copied
+# into your repository and there is no generator to keep current: a fix in
+# tannergolden/banners reaches you the moment v1 moves.
+name: Banners
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  banners:
+    permissions:
+      contents: write # the SVGs, the README blocks and the lock
+      pull-requests: write # only used with commit: pr
+    uses: tannergolden/banners/.github/workflows/banners.yml@v1
+    with:
+      mode: profile
+      # theme: rainbowprint # or blueprint, the default; redprint, yellowprint and the rest of the spectrum

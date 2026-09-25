@@ -1,0 +1,27 @@
+Banners
+Copyright (c) 2026 Tanner Golden
+Licensed under the MIT License; see LICENSE.
+
+This repository embeds glyph outlines from two typefaces, each licensed
+under the SIL Open Font License, Version 1.1. The outlines live in
+src/fonts/glyphs.json, copied from tannergolden/trophies, and in
+src/fonts/glyphs-extra.json, extracted from the same fonts by
+src/extract-glyphs.py, and are placed into every rendered SVG as paths.
+The fonts themselves are not redistributed.
+
+  Cinzel
+  Copyright 2020 The Cinzel Project Authors (https://github.com/NDISCOVER/Cinzel)
+  SIL Open Font License 1.1: src/fonts/OFL-Cinzel.txt
+
+  Barlow Condensed
+  Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)
+  SIL Open Font License 1.1: src/fonts/OFL-Barlow-Condensed.txt
+
+The 64 color tokens and 64 line icons in src/bannerkit/palette.py are
+copied from the registries of tannergolden/emblems (MIT).
+
+The preview page, preview/preview.html, is built by `make preview` and not
+committed. It embeds Brython (https://brython.info), Copyright (c) 2012
+Pierre Quentel, under the BSD 3-Clause License, with the Python standard
+library modules it bundles, Copyright (c) 2001 Python Software Foundation,
+under the PSF License Agreement.

@@ -1,0 +1,27 @@
+# Put this at .github/workflows/banners.yml in any repository, and its
+# README gets a header and a footer that read the repository: its name and
+# description, and along the header's foot the release, stars, forks, open
+# issues, language and licence; in the footer, when a person last changed
+# it. Once a day it measures again and redraws whatever moved.
+#
+# GITHUB_TOKEN already reads everything about its own repository, private
+# or not, so no extra token is needed.
+name: Banners
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  banners:
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: tannergolden/banners/.github/workflows/banners.yml@v1
+    with:
+      mode: repository
+      # theme: rainbowprint # or blueprint, the default; redprint, yellowprint and the rest of the spectrum
+      commit: pr # or push, the default, to commit straight to the branch
