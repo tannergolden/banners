@@ -404,6 +404,23 @@ class Measured(unittest.TestCase):
             self.assertEqual(run(["render", "--root", str(root)])[0], 0)
             self.assertEqual(before, {p.name: p.read_bytes() for p in (root / "assets" / "elements").glob("*.svg")})
 
+    def test_a_counter_glob_stays_in_its_folder_unless_told_to_cross(self):
+        one = M.count(ROOT, "HEAD", ".github/workflows/*.yml")
+        every = M.count(ROOT, "HEAD", ".github/**.yml")
+        self.assertGreater(one, 0)
+        self.assertGreater(every, one, "the data file and the workflows both end in .yml")
+        self.assertEqual(M.count(ROOT, "HEAD", "src/fonts/*.json"), 3)
+        self.assertEqual(M.count(ROOT, "HEAD", "*.py"), 0, "no Python at the root: * does not reach into src/")
+
+    def test_a_check_that_is_not_met_is_drawn_as_not_met(self):
+        rows = M.checks(ROOT, "HEAD")["checks"]
+        self.assertTrue(all(len(r) == 3 and isinstance(r[2], bool) for r in rows))
+        d = {"checks": [["Licensed", "LICENSE", True], ["Security policy", "none", False], ["By hand", "a claim"]],
+             "ring_top": "RING", "ring_bottom": "V1", "name": "X", "subject": "x/y"}
+        svg = E.draw("certificate", d, "blueprint", "day", "wide")
+        self.assertIn("not met: Security policy", svg)
+        self.assertEqual(lint(svg, budget=E.BUDGET["sheet"]), [])
+
     def test_measurements_have_the_shapes_the_elements_want(self):
         root = ROOT
         t = M.tree(root)

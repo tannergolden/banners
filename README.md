@@ -226,7 +226,7 @@ and the words on the certificate's ring, which are set in
   <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/layout-narrow-dark.svg">
   <source media="(max-width: 585px)" srcset="assets/elements/layout-narrow-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/layout-dark.svg">
-  <img alt="Plan of tannergolden/banners. tannergolden/banners as a floor plan: 176 tracked files in 6 rooms and a lobby." src="assets/elements/layout-day.svg">
+  <img alt="Plan of tannergolden/banners. tannergolden/banners as a floor plan: 283 tracked files in 6 rooms and a lobby." src="assets/elements/layout-day.svg">
 </picture>
 <!-- elements:layout:end -->
 
@@ -244,13 +244,13 @@ and the words on the certificate's ring, which are set in
 <!-- elements:contributors:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/contributors-dark.svg">
-  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 14 commits; CLAUDE: 11 commits." src="assets/elements/contributors-day.svg">
+  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 16 commits; CLAUDE: 13 commits." src="assets/elements/contributors-day.svg">
 </picture>
 <!-- elements:contributors:end -->
 <!-- elements:conformance:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/conformance-dark.svg">
-  <img alt="Conformance of tannergolden/banners. 4 checks on tannergolden/banners, each passing, with the evidence for it." src="assets/elements/conformance-day.svg">
+  <img alt="Conformance of tannergolden/banners. 4 checks on tannergolden/banners, with the evidence for each, each met." src="assets/elements/conformance-day.svg">
 </picture>
 <!-- elements:conformance:end -->
 

@@ -115,9 +115,10 @@ def days_since_release(root: Path, today: dt.date | None = None) -> dict | None:
 
 
 def count(root: Path, ref: str, pattern: str) -> int:
-    """Files matching a glob, as a counter's value."""
-    import fnmatch
-    return sum(1 for f in git(root, "ls-tree", "-r", "--name-only", ref).split() if fnmatch.fnmatch(f, pattern))
+    """Tracked files matching a glob, as a counter's value: `*` stays within one folder, `**` crosses them."""
+    rx = "".join(".*" if part == "**" else "[^/]*" if part == "*" else re.escape(part)
+                 for part in re.split(r"(\*\*|\*)", pattern))
+    return sum(1 for f in git(root, "ls-tree", "-r", "--name-only", ref).split() if re.fullmatch(rx, f))
 
 
 def roster(root: Path, ref: str = "HEAD", *, most: int = 4, bots: bool = True) -> dict:
@@ -194,13 +195,14 @@ def checks(root: Path, ref: str = "HEAD", *, ci: str | None = None, head: str | 
     lic = next((f for f in ("LICENSE", "LICENSE.md", "LICENSE.txt") if f in files), None)
     sec = next((f for f in ("SECURITY.md", ".github/SECURITY.md") if f in files), None)
     sha = head or git(root, "rev-parse", "--short", ref).strip()
+    # Each row carries its own verdict, so the certificate marks a check that is not met as not met.
     out = []
     if ci:
-        out.append([f"CI passes on {ci}", f"Checks at {sha}"])
-    out += [["Licensed", lic or "no LICENSE"], ["Security policy", sec or "none"],
-            ["Actions pinned to a tag or a commit", f"{pinned} of {uses} uses:"],
-            ["Conventional commits", f"{conv:,} of {len(subjects):,} subjects"]]
-    passed = bool(lic) and bool(sec) and pinned == uses and conv == len(subjects)
+        out.append([f"CI passes on {ci}", f"Checks at {sha}", True])
+    out += [["Licensed", lic or "no LICENSE", bool(lic)], ["Security policy", sec or "none", bool(sec)],
+            ["Actions pinned to a tag or a commit", f"{pinned} of {uses} uses:", pinned == uses],
+            ["Conventional commits", f"{conv:,} of {len(subjects):,} subjects", conv == len(subjects)]]
+    passed = all(row[2] for row in out)
     return {"commit": sha, "checks": out, "passed": passed}
 
 

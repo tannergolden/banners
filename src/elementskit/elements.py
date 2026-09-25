@@ -1061,9 +1061,11 @@ def certificate(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
         plate(cv, col, "CONFORMANCE", x0 + 14, 24)
         cv.add(_open(col, f"M{x0} 50H{W - B}", .55, ' stroke-width=".8"'))
         y = 72
-        for label, evidence in checks:
+        for label, evidence, *ok in checks:
             label, evidence = str(label), str(evidence)
-            cv.add(icon("check", x0 + 14, y - 10, 11, col["line"], 2.6))
+            passed = ok[0] if ok else True   # a row written by hand is a claim; a measured row says
+            cv.add(icon("check" if passed else "cross", x0 + 14, y - 10, 11, col["line"], 2.6,
+                        opacity=None if passed else .55))
             say(cv, label.upper(), x=x0 + 32, y=y, col=col, size=fit(label.upper(), "meta", W - B - 12 - (x0 + 32), 9.5, 7, .8),
                 ls=.8)
             say(cv, evidence, x=x0 + 32, y=y + 11, col=col, size=7.5, face="mono", op=.65)
@@ -1078,9 +1080,11 @@ def certificate(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
     x0 = B + 196
     title(cv, col, dict(W=W, B=B, narrow=False), "CONFORMANCE", d.get("subject", ""), "EVIDENCE", x0=x0 + 20)
     y, rules = 78, []
-    for label, evidence in checks:
+    for label, evidence, *ok in checks:
         label, evidence = str(label), str(evidence)
-        cv.add(icon("check", x0 + 22, y - 11, 13, col["line"], 2.6))
+        passed = ok[0] if ok else True
+        cv.add(icon("check" if passed else "cross", x0 + 22, y - 11, 13, col["line"], 2.6,
+                    opacity=None if passed else .55))
         say(cv, label.upper(), x=x0 + 44, y=y, col=col, size=11, ls=1)
         say(cv, evidence, x=W - B - 20, y=y, col=col, size=9.5, face="mono", anchor="end", op=.75)
         rules.append(f"M{x0 + 20} {y + 12}H{W - B - 20}")
@@ -1133,7 +1137,10 @@ def describe(kind: str, d: dict) -> dict:
         d.setdefault("desc", "; ".join(f"{p['name']}: {p['n']:,} commits" for p in d.get("people", ())) + ".")
     elif kind == "certificate":
         d.setdefault("title", f"Conformance of {subject}")
-        d.setdefault("desc", f"{len(d.get('checks', ()))} checks on {subject}, each passing, with the evidence for it.")
+        rows = d.get("checks", ())
+        failed = [str(r[0]) for r in rows if len(r) > 2 and not r[2]]
+        d.setdefault("desc", f"{len(rows)} checks on {subject}, with the evidence for each"
+                     + (f"; not met: {', '.join(failed)}." if failed else ", each met."))
     elif kind == "seal":
         d.setdefault("title", f"Seal: {subject}")
         d.setdefault("desc", f"{d.get('ring_top', '')}, {d.get('ring_bottom', '')}.")

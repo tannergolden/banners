@@ -43,7 +43,7 @@
      ],
      [
       "21 SEP",
-      14
+      16
      ]
     ]
    },
@@ -52,26 +52,26 @@
     "parts": [
      [
       "SVG",
-      1021015
-     ],
-     [
-      "JSON",
-      315425
+      3216522
      ],
      [
       "PYTHON",
-      290311
+      420465
+     ],
+     [
+      "JSON",
+      342355
      ],
      [
       "MARKDOWN",
-      177348
+      226690
      ],
      [
       "OTHER",
-      257244
+      284987
      ]
     ],
-    "total": "2.1 MB"
+    "total": "4.5 MB"
    },
    "dial": {
     "label": "DAYS SINCE THE LAST RELEASE",
@@ -84,30 +84,104 @@
    "counters": [
     [
      "TESTS",
-     4
+     5
     ],
     [
      "WORKFLOWS",
-     15
+     17
     ],
     [
      "EXAMPLES",
-     4
+     6
     ]
    ],
    "caption": "MEASURED 25 SEP 2026"
   },
   "layout": {
-   "total": 176,
+   "total": 283,
    "rooms": [
+    {
+     "key": "examples",
+     "label": "EXAMPLES/",
+     "count": 67,
+     "lines": [
+      [
+       "driftmark/",
+       "61"
+      ],
+      [
+       "banners.yml",
+       ""
+      ],
+      [
+       "stub-check.yml",
+       ""
+      ],
+      [
+       "stub-elements-check.yml",
+       ""
+      ],
+      [
+       "stub-elements.yml",
+       ""
+      ],
+      [
+       "stub-profile.yml",
+       ""
+      ],
+      [
+       "stub-repository.yml",
+       ""
+      ]
+     ]
+    },
+    {
+     "key": "assets",
+     "label": "ASSETS/",
+     "count": 63,
+     "lines": [
+      [
+       "gallery/",
+       "23"
+      ],
+      [
+       "banners/",
+       "18"
+      ],
+      [
+       "elements/",
+       "16"
+      ],
+      [
+       "badges/",
+       "2"
+      ],
+      [
+       "branding/",
+       "1"
+      ],
+      [
+       "docs/",
+       "1"
+      ],
+      [
+       "images/",
+       "1"
+      ],
+      [
+       "README.md",
+       ""
+      ]
+     ]
+    },
     {
      "key": "github",
      "label": ".GITHUB/",
-     "count": 50,
+     "count": 54,
      "lines": [
       [
        "workflows/",
-       "15"
+       "17"
       ],
       [
        "DISCUSSION_TEMPLATE/",
@@ -162,6 +236,14 @@
        ""
       ],
       [
+       "elements.lock.json",
+       ""
+      ],
+      [
+       "elements.yml",
+       ""
+      ],
+      [
        "pull_request_template.md",
        ""
       ],
@@ -172,32 +254,9 @@
      ]
     },
     {
-     "key": "assets",
-     "label": "ASSETS/",
-     "count": 43,
-     "lines": [
-      [
-       "gallery/",
-       "23"
-      ],
-      [
-       "banners/",
-       "18"
-      ],
-      [
-       "branding/",
-       "1"
-      ],
-      [
-       "README.md",
-       ""
-      ]
-     ]
-    },
-    {
      "key": "src",
      "label": "SRC/",
-     "count": 32,
+     "count": 43,
      "lines": [
       [
        "bannerkit/",
@@ -205,10 +264,34 @@
       ],
       [
        "fonts/",
+       "6"
+      ],
+      [
+       "elementskit/",
        "4"
       ],
       [
+       "app/",
+       "1"
+      ],
+      [
+       "domain/",
+       "1"
+      ],
+      [
+       "infra/",
+       "1"
+      ],
+      [
+       "README.md",
+       ""
+      ],
+      [
        "banner-kit.py",
+       ""
+      ],
+      [
+       "elements-kit.py",
        ""
       ],
       [
@@ -220,7 +303,7 @@
     {
      "key": "docs",
      "label": "DOCS/",
-     "count": 28,
+     "count": 29,
      "lines": [
       [
        "templates/",
@@ -235,6 +318,10 @@
        ""
       ],
       [
+       "Elements-Kit.md",
+       ""
+      ],
+      [
        "README.md",
        ""
       ]
@@ -243,8 +330,24 @@
     {
      "key": "tests",
      "label": "TESTS/",
-     "count": 6,
+     "count": 11,
      "lines": [
+      [
+       "e2e/",
+       "1"
+      ],
+      [
+       "integration/",
+       "1"
+      ],
+      [
+       "unit/",
+       "1"
+      ],
+      [
+       "README.md",
+       ""
+      ],
       [
        "fake.py",
        ""
@@ -258,6 +361,10 @@
        ""
       ],
       [
+       "test_elements.py",
+       ""
+      ],
+      [
        "test_gql.py",
        ""
       ],
@@ -267,29 +374,6 @@
       ],
       [
        "test_plumbing.py",
-       ""
-      ]
-     ]
-    },
-    {
-     "key": "examples",
-     "label": "EXAMPLES/",
-     "count": 4,
-     "lines": [
-      [
-       "banners.yml",
-       ""
-      ],
-      [
-       "stub-check.yml",
-       ""
-      ],
-      [
-       "stub-profile.yml",
-       ""
-      ],
-      [
-       "stub-repository.yml",
        ""
       ]
      ]
@@ -331,6 +415,18 @@
     {
      "label": ".DEVCONTAINER/",
      "count": 1
+    },
+    {
+     "label": "BENCHMARKS/",
+     "count": 1
+    },
+    {
+     "label": "ELEMENTS/",
+     "count": 1
+    },
+    {
+     "label": "PACKAGES/",
+     "count": 1
     }
    ]
   },
@@ -359,12 +455,12 @@
    "today": "2026-09-25"
   },
   "contributors": {
-   "caption": "14 COMMITS FROM 2 CONTRIBUTORS",
+   "caption": "16 COMMITS FROM 2 CONTRIBUTORS",
    "people": [
     {
      "name": "TANNER GOLDEN",
      "handle": "@TANNERGOLDEN",
-     "n": 14,
+     "n": 16,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "TG"
@@ -372,7 +468,7 @@
     {
      "name": "CLAUDE",
      "handle": "CO-AUTHOR",
-     "n": 11,
+     "n": 13,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "C"
@@ -380,23 +476,27 @@
    ]
   },
   "conformance": {
-   "commit": "f51d6c4",
+   "commit": "87cf3f0",
    "checks": [
     [
      "Licensed",
-     "LICENSE"
+     "LICENSE",
+     true
     ],
     [
      "Security policy",
-     ".github/SECURITY.md"
+     ".github/SECURITY.md",
+     true
     ],
     [
      "Actions pinned to a tag or a commit",
-     "31 of 31 uses:"
+     "36 of 36 uses:",
+     true
     ],
     [
      "Conventional commits",
-     "14 of 14 subjects"
+     "16 of 16 subjects",
+     true
     ]
    ]
   }
