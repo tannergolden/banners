@@ -98,6 +98,7 @@ jobs:
         env:
           MESSAGE_FILE: ${{ steps.kit.outputs.commit-file }}
           AUTHOR: ${{ inputs.author }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -105,7 +106,13 @@ jobs:
           rm -rf .banners-kit
           git add -A
           git commit --author="$AUTHOR" -F "$MESSAGE_FILE"
-          git push
+          # Another kit may have pushed since this run began: the umbrella in
+          # tannergolden/markdown runs the kits in turn, and each writes only
+          # its own files and its own README markers. The refresh is replayed
+          # onto whatever the branch holds now, and pushed from there.
+          git fetch origin "$BRANCH"
+          git rebase "origin/$BRANCH"
+          git push origin "HEAD:$BRANCH"
 
       - name: Drop the kit before the pull request is cut
         id: author
