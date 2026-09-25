@@ -746,8 +746,8 @@
     });
     const subject = D.subjects[S.subject];
     document.getElementById('subject-hint').textContent = subject.mode === 'profile'
-      ? `A sample account, ${subject.name}, with made-up figures. In a profile repository a run reads the account it is named after.`
-      : `A sample repository, ${subject.name}, with made-up figures. Anywhere else a run reads the repository its README sits in.`;
+      ? `The account ${subject.name}, as GitHub reported it on ${subject.measurement.today}. In a profile repository a run reads the account it is named after.`
+      : `The repository ${subject.name}, as the kit measured it on ${subject.measurement.today}. Anywhere else a run reads the repository its README sits in.`;
     const rainbowDot = h('span', { class: 'sw rainbow', 'aria-hidden': 'true' });
     rainbowDot.style.setProperty('--sw-rainbow', `conic-gradient(${D.spectrum.map((k) => D.tones[k].band).join(', ')}, ${D.tones[D.spectrum[0]].band})`);
     seg('tone-seg', [...Object.entries(D.tones).map(([k, t]) => {

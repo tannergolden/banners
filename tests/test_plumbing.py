@@ -47,7 +47,7 @@ class Run(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
-        (self.root / "README.md").write_text("# Toolkit\n\nWhat it does.\n", encoding="utf-8")
+        (self.root / "README.md").write_text("# Banners\n\nWhat it draws.\n", encoding="utf-8")
         self.msg = self.root.parent / f"{self.root.name}-commit.txt"
 
     def tearDown(self):
@@ -63,17 +63,17 @@ class Run(unittest.TestCase):
         self.assertEqual(code, 0)
         text = (self.root / "README.md").read_text(encoding="utf-8")
         self.assertTrue(text.startswith("<!-- banners:header:start -->"))
-        self.assertIn("# Toolkit\n\nWhat it does.\n\n<!-- banners:footer:start -->", text)
+        self.assertIn("# Banners\n\nWhat it draws.\n\n<!-- banners:footer:start -->", text)
         self.assertTrue(text.rstrip().endswith("<!-- banners:footer:end -->"))
         drawn = sorted(p.name for p in (self.root / "assets" / "banners").iterdir())
         # Six header files, four footer files, and a day and a dark button for each of the four links.
         self.assertEqual(len(drawn), 18)
         lock = json.loads((self.root / ".github" / "banners.lock.json").read_text(encoding="utf-8"))
-        self.assertEqual(lock["last"]["subject"], "octo-dev/toolkit")
+        self.assertEqual(lock["last"]["subject"], "tannergolden/banners")
         self.assertEqual(lock["snapshot"], "2026-09-25")
         msg = self.msg.read_text(encoding="utf-8")
-        self.assertTrue(msg.startswith("chore(banners): \U0001FAA7 draw the banners for octo-dev/toolkit\n\n"))
-        self.assertIn("1,284 stars", msg.replace("\n", " "))
+        self.assertTrue(msg.startswith("chore(banners): \U0001FAA7 draw the banners for tannergolden/banners\n\n"))
+        self.assertIn("release v1.0.0, 0 stars", msg.replace("\n", " "))
 
     def test_an_empty_config_draws_the_section_and_reads_everything_from_github(self):
         (self.root / ".github").mkdir()
@@ -89,8 +89,8 @@ class Run(unittest.TestCase):
         repo = sample.REPOSITORY["repository"]
         self.assertIn(f'<title id="t">{repo["name"]}</title>', header)
         self.assertIn(repo["description"], header)
-        self.assertIn("Stars: 1,284.", header)
-        self.assertIn(f"Last updated {'September 23, 2026'}.", footer)
+        self.assertIn("Stars: 0.", header)
+        self.assertIn("Last updated September 25, 2026.", footer)
 
     def test_a_quiet_day_writes_nothing(self):
         self.first()
@@ -111,19 +111,19 @@ class Run(unittest.TestCase):
     def test_a_moved_figure_is_redrawn_and_named_in_the_commit(self):
         self.first()
         m = copy.deepcopy(sample.REPOSITORY)
-        m["repository"]["stars"] = 1285
-        m["repository"]["release"] = "v2.4.1"
+        m["repository"]["stars"] = 1
+        m["repository"]["release"] = "v1.1.0"
         _, out = run(["run", "--root", str(self.root), "--today", "2026-09-26", "--commit-file", str(self.msg)], m)
         msg = self.msg.read_text(encoding="utf-8")
-        self.assertEqual(msg.splitlines()[0], "chore(banners): \U0001FAA7 redraw with release v2.4.1 and 1,285 stars")
-        self.assertIn("release v2.4.1 (was v2.4.0)", msg.replace("\n", " "))
+        self.assertEqual(msg.splitlines()[0], "chore(banners): \U0001FAA7 redraw with release v1.1.0 and 1 star")
+        self.assertIn("release v1.1.0 (was v1.0.0)", msg.replace("\n", " "))
         self.assertIn("header-day.svg", " ".join(out.split()) + "header-day.svg")
 
     def test_check_passes_on_what_run_wrote_and_fails_on_a_hand_edit(self):
         self.first()
         self.assertEqual(run(["check", "--root", str(self.root)])[0], 0)
         svg = self.root / "assets" / "banners" / "header-day.svg"
-        svg.write_text(svg.read_text(encoding="utf-8").replace("1,284", "9,999"), encoding="utf-8")
+        svg.write_text(svg.read_text(encoding="utf-8").replace("Stars: 0.", "Stars: 9,999."), encoding="utf-8")
         code, out = run(["check", "--root", str(self.root)])
         self.assertEqual(code, 1)
         self.assertIn("header-day.svg (differs)", out)

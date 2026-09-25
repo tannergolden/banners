@@ -21,27 +21,29 @@ def composed(m, **given):
 class Defaults(unittest.TestCase):
     def test_a_repository_reads_itself(self):
         h, f, notes = composed(sample.REPOSITORY)
-        self.assertEqual((h.title, h.tagline, h.motto), ("toolkit", sample.REPOSITORY["repository"]["description"], ""))
+        self.assertEqual((h.title, h.tagline, h.motto), ("banners", sample.REPOSITORY["repository"]["description"], ""))
         self.assertEqual([label for label, _ in h.figures],
                          ["PROJECT", "RELEASE", "STARS", "FORKS", "OPEN ISSUES", "LANGUAGE", "LICENSE"])
-        self.assertEqual(dict(h.figures)["STARS"], "1,284")
-        self.assertEqual((f.handle, f.license, f.updated), ("@octo-dev", "MIT", "2026-09-23"))
-        self.assertEqual(f.links, (("Issues", "https://github.com/octo-dev/toolkit/issues"),
-                                   ("Pull Requests", "https://github.com/octo-dev/toolkit/pulls"),
-                                   ("Releases", "https://github.com/octo-dev/toolkit/releases"),
-                                   ("Actions", "https://github.com/octo-dev/toolkit/actions")))
+        self.assertEqual((dict(h.figures)["STARS"], dict(h.figures)["RELEASE"]), ("0", "v1.0.0"))
+        self.assertEqual((f.handle, f.license, f.updated), ("@tannergolden", "MIT", "2026-09-25"))
+        self.assertEqual(f.links, (("Issues", "https://github.com/tannergolden/banners/issues"),
+                                   ("Pull Requests", "https://github.com/tannergolden/banners/pulls"),
+                                   ("Releases", "https://github.com/tannergolden/banners/releases"),
+                                   ("Actions", "https://github.com/tannergolden/banners/actions")))
         self.assertEqual(notes, [])
 
     def test_a_profile_reads_the_person(self):
         h, f, _ = composed(sample.PROFILE)
-        self.assertEqual((h.title, h.motto), ("Octo Dev", "Shipping toolkit 2.5"))
-        self.assertEqual(h.figures[0], ("ACCOUNT", "@octo-dev"))
-        self.assertEqual(dict(h.figures)["CONTRIBUTIONS, LAST YEAR"], "1,864")
-        self.assertEqual(dict(h.figures)["MEMBER SINCE"], "2018")
-        self.assertEqual(f.links, (("Website", "https://octo.dev"),
-                                   ("Repositories", "https://github.com/octo-dev?tab=repositories"),
-                                   ("Projects", "https://github.com/octo-dev?tab=projects"),
-                                   ("Packages", "https://github.com/octo-dev?tab=packages")))
+        self.assertEqual((h.title, h.motto), ("Tanner Golden", ""))
+        self.assertEqual(h.figures[0], ("ACCOUNT", "@tannergolden"))
+        self.assertEqual(dict(h.figures)["MEMBER SINCE"], "2016")
+        # The snapshot did not read the contributions, so they are left out rather than drawn as zero.
+        self.assertEqual([label for label, _ in h.figures],
+                         ["ACCOUNT", "FOLLOWERS", "REPOSITORIES", "STARS EARNED", "LANGUAGE", "MEMBER SINCE"])
+        self.assertEqual(f.links, (("Website", "https://www.tannergolden.com"),
+                                   ("Repositories", "https://github.com/tannergolden?tab=repositories"),
+                                   ("Projects", "https://github.com/tannergolden?tab=projects"),
+                                   ("Packages", "https://github.com/tannergolden?tab=packages")))
 
     def test_a_figure_github_does_not_have_is_left_out(self):
         m = copy.deepcopy(sample.REPOSITORY)
@@ -54,16 +56,18 @@ class Defaults(unittest.TestCase):
 
 class Config(unittest.TestCase):
     def test_the_config_wins_where_it_speaks(self):
-        h, f, _ = composed(sample.REPOSITORY, title="Toolkit Pro", tagline="Logs, tamed.",
+        h, f, _ = composed(sample.REPOSITORY, title="Banners Pro", tagline="Drawn at both ends.",
                            motto="Drawn, never fetched.", closing="Thanks for reading.", theme="brownprint")
-        self.assertEqual((h.title, h.tagline, h.motto, h.tone), ("Toolkit Pro", "Logs, tamed.", "Drawn, never fetched.",
+        self.assertEqual((h.title, h.tagline, h.motto, h.tone), ("Banners Pro", "Drawn at both ends.", "Drawn, never fetched.",
                                                                  "brownprint"))
         self.assertEqual((f.closing, f.tone), ("Thanks for reading.", "brownprint"))
 
     def test_figures_are_the_ones_named_in_that_order(self):
-        h, _, _ = composed(sample.REPOSITORY, figures=["license", "stars", "updated", "site"])
-        self.assertEqual(h.figures, (("LICENSE", "MIT"), ("STARS", "1,284"), ("UPDATED", "2026-09-23"),
-                                     ("SITE", "toolkit.octo.dev")))
+        m = copy.deepcopy(sample.REPOSITORY)
+        m["repository"]["homepage"] = "https://www.tannergolden.com/"
+        h, _, _ = composed(m, figures=["license", "stars", "updated", "site"])
+        self.assertEqual(h.figures, (("LICENSE", "MIT"), ("STARS", "0"), ("UPDATED", "2026-09-25"),
+                                     ("SITE", "tannergolden.com")))
 
     def test_a_figure_of_the_other_mode_fails_with_its_name(self):
         with self.assertRaises(c.CompositionError) as err:
@@ -103,7 +107,7 @@ class Drawable(unittest.TestCase):
         m = copy.deepcopy(sample.PROFILE)
         m["profile"]["name"] = "\u5f35\u5049"
         h, _, _ = composed(m)
-        self.assertEqual(h.title, "octo-dev")
+        self.assertEqual(h.title, "tannergolden")
 
     def test_an_opening_emoji_is_taken_off_the_tagline_quietly(self):
         m = copy.deepcopy(sample.REPOSITORY)
@@ -132,9 +136,9 @@ class Drawable(unittest.TestCase):
 
     def test_a_person_with_no_website_gets_the_four_profile_tabs(self):
         m = copy.deepcopy(sample.PROFILE)
-        m["profile"]["website"] = "octo.dev"
+        m["profile"]["website"] = "tannergolden.com"
         _, f, _ = composed(m)
-        self.assertEqual(f.links[0], ("Website", "https://octo.dev"))
+        self.assertEqual(f.links[0], ("Website", "https://tannergolden.com"))
         m["profile"]["website"] = ""
         _, f, _ = composed(m)
         self.assertEqual([label for label, _ in f.links], ["Repositories", "Projects", "Packages", "Stars"])
@@ -171,8 +175,8 @@ class Counts(unittest.TestCase):
                          ["0", "1", "1,284", "99,999", "100k", "128k", "999k", "1.0M", "1.2M", "12M"])
 
     def test_host(self):
-        self.assertEqual(c.host("https://www.octo.dev/"), "octo.dev")
-        self.assertEqual(c.host("octo.dev/blog"), "octo.dev/blog")
+        self.assertEqual(c.host("https://www.tannergolden.com/"), "tannergolden.com")
+        self.assertEqual(c.host("tannergolden.com/blog"), "tannergolden.com/blog")
 
 
 if __name__ == "__main__":

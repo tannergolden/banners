@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 """Banner Kit: the command line the action runs, and the one you run locally.
 
-  python3 src/banner-kit.py run --root . [--mode auto|profile|repository] [--subject octo-dev]
+  python3 src/banner-kit.py run --root . [--mode auto|profile|repository] [--subject tannergolden]
       measure over GitHub's API, draw, write the README blocks and the lock
   python3 src/banner-kit.py measure --mode ... --subject ... > measurement.json
       measure only, print the JSON

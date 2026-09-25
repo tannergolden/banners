@@ -118,9 +118,11 @@ has that a developer reaches for first, Issues, Pull Requests, Releases and
 Actions, and they will change on their own if that does.
 
 Every other image below is a real file in this repository too, drawn by the
-kit from a **sample** measurement into `assets/gallery/`: trophies' own made-up
-subjects, the repository `octo-dev/toolkit` and the account `octo-dev`. Nothing
-on this page is fetched from anywhere. Each sheet exists twice, a **day** file
+kit into `assets/gallery/` from a **snapshot** taken on 2026-09-25: this
+repository as the kit measured it that night, and the account
+[@tannergolden](https://github.com/tannergolden) as GitHub reported it. The
+snapshot stays as it was taken, so its figures age while the header above
+keeps up. Nothing on this page is fetched from anywhere. Each sheet exists twice, a **day** file
 and a **dark** file, and the README shows one through a `<picture>` element
 that follows the viewer's theme, the method GitHub documents. There is a third
 file for a phone and a fourth, still, for reduced motion.
@@ -131,22 +133,22 @@ file for a phone and a fourth, still, for reduced motion.
 hatched at 45 degrees, dimensioned both ways, and plotted in as the page
 opens.
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-section-dark.svg"><img alt="H2 Section, drawn for the sample repository octo-dev/toolkit: the title TOOLKIT as a hatched cut solid, dimensioned, its description under it, and its figures ruled along the foot." src="assets/gallery/h2-section-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-section-dark.svg"><img alt="H2 Section, drawn for tannergolden/banners: the title BANNERS as a hatched cut solid, dimensioned, its description under it, and its figures ruled along the foot." src="assets/gallery/h2-section-day.svg"></picture>
 
 **H1 Sheet** is a cover sheet, its title centred and dimensioned with its own
 measured width:
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h1-sheet-dark.svg"><img alt="H1 Sheet, drawn for the sample repository: the title TOOLKIT centred and dimensioned, the description under it, and the figures along the foot." src="assets/gallery/h1-sheet-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h1-sheet-dark.svg"><img alt="H1 Sheet, drawn for tannergolden/banners: the title BANNERS centred and dimensioned, the description under it, and the figures along the foot." src="assets/gallery/h1-sheet-day.svg"></picture>
 
 **H3 Strip** is the sheet at a smaller scale, for a short header:
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h3-strip-dark.svg"><img alt="H3 Strip, drawn for the sample repository: a slimmer sheet with the title, one line and the figures." src="assets/gallery/h3-strip-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h3-strip-dark.svg"><img alt="H3 Strip, drawn for tannergolden/banners: a slimmer sheet with the title, one line and the figures." src="assets/gallery/h3-strip-day.svg"></picture>
 
 A header pairs with a footer from the same set. **F1 Title block** sits under
 H1 and H2: the closing notes, who built it, the licence, the last change a
 person made, and the way back to the top. **F2 Scale bar** sits under H3.
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/f1-title-block-dark.svg"><img alt="F1 Title block: notes, built with love by @octo-dev, license MIT, updated 2026-09-23, and back to top." src="assets/gallery/f1-title-block-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/f1-title-block-dark.svg"><img alt="F1 Title block: notes, built with love by @tannergolden, license MIT, updated 2026-09-25, and back to top." src="assets/gallery/f1-title-block-day.svg"></picture>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/f2-scale-bar-dark.svg"><img alt="F2 Scale bar: a graphic scale, the closing phrase over the attribution, and back to top." src="assets/gallery/f2-scale-bar-day.svg"></picture>
 
@@ -155,9 +157,11 @@ person made, and the way back to the top. **F2 Scale bar** sits under H3.
 In a profile repository the same header reads a person: their name, their
 bio, their status as the sheet's one note, and along the foot their
 followers, repositories, the stars those earned, their contributions in the
-last year, their main language and the year they joined.
+last year, their main language and the year they joined. The snapshot below
+was read without GitHub's GraphQL API, the only one that knows a status or a
+year's contributions, so it shows neither; a real run draws both.
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-profile-dark.svg"><img alt="H2 Section, drawn for the sample account octo-dev: the name OCTO DEV, the bio, the status as a note, and followers, repositories, stars earned, contributions, language and member since along the foot." src="assets/gallery/h2-profile-day.svg"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/gallery/h2-profile-dark.svg"><img alt="H2 Section, drawn for the account tannergolden: the name TANNER GOLDEN, the bio, and the account, followers, repositories, stars earned, language and member since along the foot." src="assets/gallery/h2-profile-day.svg"></picture>
 
 ### Eleven prints and a rainbow
 

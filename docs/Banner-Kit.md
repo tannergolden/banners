@@ -270,7 +270,7 @@ two agree on every documented form.
 ```json
 {
   "version": 1,
-  "last": { "mode": "repository", "subject": "octo-dev/toolkit", "today": "2026-09-25", "repository": { "…": "…" } },
+  "last": { "mode": "repository", "subject": "tannergolden/banners", "today": "2026-09-25", "repository": { "…": "…" } },
   "rainbow": "tealprint",
   "snapshot": "2026-09-25"
 }

@@ -155,15 +155,16 @@ def _value(mode: str, key: str, m: dict) -> str:
             "site": host(repo.get("homepage") or ""),
         }.get(key)
         if key in ("stars", "forks", "watchers", "issues", "pulls"):
-            v = count(repo.get(key)) if key in repo else ""
+            v = count(repo[key]) if repo.get(key) is not None else ""
         return v or ""
     v = {
         "account": "@" + person["login"] if person.get("login") else "", "language": person.get("language"),
         "since": (person.get("created") or "")[:4], "location": person.get("location"), "company": person.get("company"),
         "site": host(person.get("website") or ""),
     }.get(key)
+    # A count that was not read is None, and is left out rather than drawn as zero.
     if key in ("followers", "following", "repositories", "stars", "contributions"):
-        v = count(person.get(key)) if key in person else ""
+        v = count(person[key]) if person.get(key) is not None else ""
     return v or ""
 
 

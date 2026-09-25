@@ -70,7 +70,7 @@ PAGE_MODULES = ("__init__", "canvas", "compose", "config", "content", "designs",
 
 # --- subjects: what the page can show even without the live renderer ---------------------
 
-# The two sample measurements, made up, and trophies' own sample subjects.
+# The two sample measurements: snapshots of this repository and of its author's account (see sample.py).
 SUBJECTS = {
     "repository": ("Repository", sample.REPOSITORY),
     "profile": ("Profile", sample.PROFILE),
