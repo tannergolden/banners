@@ -119,9 +119,16 @@ class Drawable(unittest.TestCase):
                     self.assertNotIn("<text", svg, name)
                     self.assertNotIn("1F9F0", svg.upper(), name)
 
-    def test_a_config_written_for_the_emoji_still_runs(self):
-        # 1.0's starter file carried `emoji: ''`; the key is now read and set aside.
-        self.assertEqual(config.validate({"emoji": "\U0001FAB5", "hide": ["emoji", "motto"]}),
+    def test_no_footer_draws_a_separator_line(self):
+        for footer in ("title-block", "scale-bar"):
+            files = plan.plan(sample.REPOSITORY, config.validate({"footer": footer}))["files"]
+            for name, svg in files.items():
+                if "footer" in name:
+                    self.assertNotIn("stroke-dasharray", svg, name)
+
+    def test_a_config_written_for_1_0_still_runs(self):
+        # 1.0's starter file carried `emoji: ''` and listed both under `hide`; they are read and set aside.
+        self.assertEqual(config.validate({"emoji": "\U0001FAB5", "hide": ["emoji", "divider", "motto"]}),
                          config.validate({"hide": ["motto"]}))
 
     def test_long_text_is_clipped_at_a_word(self):

@@ -19,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 
 HEADER_FIELDS = ("title", "tagline", "motto", "description", "figures")
-FOOTER_FIELDS = ("divider", "closing", "top", "built", "license", "updated", "links")
+FOOTER_FIELDS = ("closing", "top", "built", "license", "updated", "links")
 
 MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
           "October", "November", "December")
@@ -97,7 +97,6 @@ class Footer:
     updated: str = "2026-09-25"
     links: tuple = (("Docs", "docs/Banner-Kit.md"), ("Issues", "https://github.com/tannergolden/banners/issues"),
                     ("Releases", "https://github.com/tannergolden/banners/releases"))
-    divider: bool = True
     built: bool = True
     # The print it is drawn in, the header's: a key of `drafting.PRINTS`.
     tone: str = "blueprint"

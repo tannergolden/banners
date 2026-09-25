@@ -3,8 +3,9 @@
 """The footers: the foot of the same set of drawings, and the chips their links are made of.
 
 A footer follows the standards' footer composition: a closing phrase, the
-way back to the top, and the attribution line, here with the licence, a
-date and a divider as options.
+way back to the top, and the attribution line, here with the licence and a
+date as options. Nothing is ruled above a footer: it starts at its own
+border.
 
   F1 Title block   the foot of a sheet: notes, built by, licence, last change, the way up   (H1, H2)
   F2 Scale bar     a slim foot: a graphic scale, the closing lines, the way up        (H3)
@@ -20,7 +21,7 @@ import math
 from .canvas import Canvas, c
 from .content import Footer
 from .draw import solid, up_arrow
-from .drafting import centre_line, colours, hair, rule, sheet
+from .drafting import colours, hair, rule, sheet
 from .layout import NARROW, WIDE
 from .text import cap_height, f1, fit, flow, width
 
@@ -82,10 +83,9 @@ def title_block(ft: Footer, th: dict, wide: bool = True, motion: bool = True) ->
     W = cv.w
     col = colours(ft.tone, th)
     border = 12 if wide else 10
-    y0 = 16 if ft.on("divider") else 0
     cells = _cells(ft)
     left, right = border, W - border
-    top = y0 + border
+    top = border
     ink = c(col["ink"])
     closing = ft.get("closing")
     if wide:
@@ -98,10 +98,8 @@ def title_block(ft: Footer, th: dict, wide: bool = True, motion: bool = True) ->
         gx = left + note_w
         cw = (right - gx) / len(cells) if cells else 0
         H = top + rh + border
-        sheet(cv, col, W=W, H=H, border=border, zones=8, top=y0,
+        sheet(cv, col, W=W, H=H, border=border, zones=8,
               plain=((gx, top, right - gx, rh),) if cells else ())
-        if ft.on("divider"):
-            centre_line(cv, col, x0=border, x1=W - border, y=6)
         if closing:
             cv.add(cv.L.text("NOTES", face="meta", size=7, x=left + 8, y=top + 12, ls=1.1, fill=ink, opacity=.6))
             yy = top + 12 + (rh - 12) / 2 - len(lines) * s * 1.25 / 2 + s * .95
@@ -125,10 +123,8 @@ def title_block(ft: Footer, th: dict, wide: bool = True, motion: bool = True) ->
         cw = (right - left) / 2
         H = top + note_h + rows * rh + border
         cells_top = top + note_h
-        sheet(cv, col, W=W, H=H, border=border, zones=4, top=y0,
+        sheet(cv, col, W=W, H=H, border=border, zones=4,
               plain=((left, cells_top, right - left, rows * rh),) if cells else ())
-        if ft.on("divider"):
-            centre_line(cv, col, x0=border, x1=W - border, y=6)
         if closing:
             cv.add(cv.L.text("NOTES", face="meta", size=7, x=left + 8, y=top + 12, ls=1.1, fill=ink, opacity=.6))
             yy = top + 22 + s_n
@@ -211,19 +207,16 @@ def scale_bar(ft: Footer, th: dict, wide: bool = True, motion: bool = True) -> s
     W = cv.w
     col = colours(ft.tone, th)
     border = 10 if wide else 9
-    y0 = 16 if ft.on("divider") else 0
     ink = c(col["ink"])
     has_text = ft.on("closing") or ft.on("built") or ft.on("license") or ft.on("updated")
     if wide:
         # Compartments ruled on the sheet's own grid lines, which fall every fifty pixels from the left edge.
         side = 200 - border
-        H = y0 + 2 * border + 66
-        top = y0 + border
+        H = 2 * border + 66
+        top = border
         mid = top + 33
-        sheet(cv, col, W=W, H=H, border=border, zones=8, top=y0,
-              plain=((border, y0 + border, side, 66), (W - border - side, y0 + border, side, 66)))
-        if ft.on("divider"):
-            centre_line(cv, col, x0=border, x1=W - border, y=6)
+        sheet(cv, col, W=W, H=H, border=border, zones=8,
+              plain=((border, border, side, 66), (W - border - side, border, side, 66)))
         cv.add(f'<path d="M{f1(border + side + .5)} {f1(top)}V{f1(H - border)}M{f1(W - border - side + .5)} {f1(top)}'
                f'V{f1(H - border)}" {hair(col, .85)} stroke-width="1.2"/>')
         _scale(cv, col, x=border + (side - 100) / 2, y=mid - 3)
@@ -251,17 +244,15 @@ def scale_bar(ft: Footer, th: dict, wide: bool = True, motion: bool = True) -> s
         if ft.on("closing"):
             s, lines = flow(ft.get("closing"), "meta", 15, 12, room, rows=3)
             body.append(("closing", s, lines))
-        H = y0 + border + 48
+        H = border + 48
         extra = 0.0
         for _, s, lines in body:
             extra += len(lines) * s * 1.25 + 6
         if ft.on("built") or ft.on("license") or ft.on("updated"):
             extra += 34
         H += extra + (14 if extra else 0) + border
-        sheet(cv, col, W=W, H=H, border=border, zones=4, top=y0, plain=((border, y0 + border, W - 2 * border, 44),))
-        if ft.on("divider"):
-            centre_line(cv, col, x0=border, x1=W - border, y=6)
-        top = y0 + border
+        sheet(cv, col, W=W, H=H, border=border, zones=4, plain=((border, border, W - 2 * border, 44),))
+        top = border
         cv.add(f'<path d="M{f1(border)} {f1(top + 44)}H{f1(W - border)}" {hair(col, .85)} stroke-width="1.2"/>')
         _scale(cv, col, x=border + 18, y=top + 19)
         if ft.on("top"):

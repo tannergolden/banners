@@ -593,7 +593,6 @@
     { key: 'description', label: 'Description', input: 'textarea', from: { repository: null, profile: null } },
   ];
   const FOOTER_ROWS = [
-    { key: 'divider', label: 'Divider', note: 'a rule above' },
     { key: 'closing', label: 'Closing phrase', input: 'text', from: { repository: null, profile: null } },
     { key: 'top', label: 'Back to top', input: 'text', fixed: D.top },
     { key: 'built', label: 'Built with ♥ by', measured: 'handle' },

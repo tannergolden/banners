@@ -12,9 +12,9 @@ Stdlib only, like the rest of the kit: PyYAML is used when it happens to be
 installed and a small reader for the flat, two-level YAML this file needs
 substitutes when it is not. Every key is validated; an unknown key or value
 fails the run with the key named rather than being ignored. The one
-exception is a retired key: `emoji`, which the headers no longer draw, is
-read and set aside, as is `emoji` under `hide`, so a config written for an
-earlier version keeps working.
+exception is what 1.0 read and the designs no longer draw: the `emoji` key,
+and `emoji` or `divider` under `hide`, are read and set aside, so a config
+written for 1.0 keeps working.
 """
 from __future__ import annotations
 
@@ -51,8 +51,9 @@ CHOICES = {
     "theme": set(PRINTS) | {RAINBOW},
     "readme": {"manage", "none"},
 }
-# Keys an earlier version read and this one sets aside, rather than fail a config written for it.
+# What 1.0 read and this version sets aside, rather than fail a config written for it: keys, and names under `hide`.
 RETIRED = frozenset({"emoji"})
+RETIRED_FIELDS = frozenset({"emoji", "divider"})
 TEXT = ("subject", "title", "tagline", "motto", "description", "closing", "top", "readme_path", "out")
 
 
@@ -208,7 +209,7 @@ def validate(given: dict, where: str = "the config") -> dict:
             cfg[k] = [cfg[k]]
         if not isinstance(cfg[k], list):
             raise ConfigError(f"{k}: expected a list")
-        cfg[k] = [str(x) for x in cfg[k] if k != "hide" or str(x) not in RETIRED]
+        cfg[k] = [str(x) for x in cfg[k] if k != "hide" or str(x) not in RETIRED_FIELDS]
     known = {key for keys in FIGURES.values() for key in keys}
     for k in cfg["figures"]:
         if k not in known:

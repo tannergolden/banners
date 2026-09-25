@@ -23,7 +23,7 @@ top: Back to Top # the footer's way back up
 # links:
 #   Docs: docs/README.md
 #   Changelog: CHANGELOG.md
-hide: [] # fields not drawn: title, tagline, motto, description, figures, divider, closing, top, built, license, updated, links
+hide: [] # fields not drawn: title, tagline, motto, description, figures, closing, top, built, license, updated, links
 readme: manage # write the blocks between <!-- banners:header:start --> and its end, and the footer's
 readme_path: README.md # the file that holds them
 out: assets/banners # where the SVGs are written

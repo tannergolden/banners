@@ -120,12 +120,6 @@ def sheet(cv: Canvas, col: dict, *, W: float, H: float, border: float, zones: in
            cv.L.scatter(marks, face="meta", size=7, fill=c(col["ink"]), opacity=.6))
 
 
-def centre_line(cv: Canvas, col: dict, *, x0: float, x1: float, y: float) -> None:
-    """A long-dash, short-dash line: the divider above a footer, where a drawing marks an axis."""
-    cv.add(f'<path d="M{f1(x0)} {f1(y)}H{f1(x1)}" stroke="{c(col["edge"] if not col["dark"] else "gray")}" '
-           f'stroke-opacity=".6" stroke-dasharray="8 4 2 4"/>')
-
-
 # --- linework ------------------------------------------------------------------------------
 
 def arrowhead(x: float, y: float, sgn: int, col: dict, vertical: bool = False) -> str:
