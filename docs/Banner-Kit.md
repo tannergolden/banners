@@ -37,7 +37,7 @@ The kit is one Python package with no dependencies, driven by one command:
 | `github.py`, `measure.py`                          | Measurement: the API client and both modes.                                           |
 | `compose.py`                                       | A measurement and a config, as the header and footer's words and figures.             |
 | `headers.py`, `footers.py`, `drafting.py`          | Drawing: three headers, two footers, and the sheet, dimensions and prints they share. |
-| `canvas.py`, `text.py`, `draw.py`, `palette.py`    | The SVG canvas and its lint, outlined lettering, shared shapes, emblems' tokens.      |
+| `canvas.py`, `text.py`, `draw.py`, `palette.py`    | The SVG canvas and its lint, outlined lettering, shared shapes, badges' tokens.      |
 | `plan.py`, `readme.py`, `lock.py`, `config.py`     | The plan of files, the README blocks, the lock, the config, and the commit message.   |
 | `snippets.py`, `designs.py`, `layout.py`           | The `<picture>` markup, the design registry and its variants, layout helpers.         |
 | `live.py`, `preview.py`, `page/`                   | The preview page, which runs this same package in the browser.                        |
@@ -89,7 +89,7 @@ fails the run:
 
 - No script, no `foreignObject`, and no reference to anything outside the
   file: no font, image or stylesheet is fetched.
-- Every colour is one of emblems' 64 tokens; a colour that is not is a bug.
+- Every colour is one of badges' 64 tokens; a colour that is not is a bug.
 - Lettering is drawn as paths from Barlow Condensed, so no reader needs a font
   installed, and no viewer's font draws anything. No header carries an
   emoji: an emoji a description or bio opens with is left off the tagline.

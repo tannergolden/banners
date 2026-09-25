@@ -201,7 +201,7 @@ repository: each writes only between its own markers.
 **Who the commit is by.** Each refresh is authored by
 [@tannergolden](https://github.com/tannergolden), the author of the drawing,
 and committed by `github-actions[bot]`, which is what pushed it, as banners,
-emblems and trophies do. Its subject is `chore(elements)`, so the roster
+badges and trophies do. Its subject is `chore(elements)`, so the roster
 and the history know a refresh from a change. The `author` input on the
 workflow changes the name if you want a different one.
 

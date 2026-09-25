@@ -62,7 +62,7 @@ SOURCES = {
 # prose reaches for. No dashes beyond the hyphen, on purpose: the standards
 # ban the en and em dash in everything a repository writes, and a glyph that
 # is not here cannot be drawn by accident. Arrows and hearts are absent from
-# both fonts; the kit draws those with emblems' `arrow` and `heart` icons.
+# both fonts; the kit draws those with badges' `arrow` and `heart` icons.
 WANTED = "".join(chr(c) for c in range(32, 127)) + "©®™°•…‘’“”×·‹›«»"
 
 # What the two Barlow faces gain beyond that: every letter of Latin-1 and

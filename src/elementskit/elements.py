@@ -9,7 +9,7 @@ layout module places it; nothing here takes a coordinate from a consumer.
 
 What every sheet shares, so the set reads as one drawing set:
   - a tag plate at the head, the element's name lettered on a solid block of
-    the print, the way an emblems plate carries its value, then the subject
+    the print, the way a badges plate carries its value, then the subject
   - one caption style, small capitals letter-spaced, for every label
   - poché (section lining) wherever a drawing shows solid material
   - wire and dimension text set in a gap in the line, never floating
@@ -126,7 +126,7 @@ def _open(col, d: str, op: float = .9, extra: str = "") -> str:
 
 
 def plate(cv, col, text: str, x: float, y: float, *, h: float = 17, size: float = 9, pad: float = 7) -> float:
-    """A tag: capitals on a solid block of the print, the emblems plate's value block. Returns its right edge."""
+    """A tag: capitals on a solid block of the print, the badges plate's value block. Returns its right edge."""
     w = width(text, "num", size, 1.3) + 2 * pad
     cv.add(f'<rect x="{f1(x)}" y="{f1(y)}" width="{f1(w)}" height="{f1(h)}" fill="{c(col["line"])}"/>')
     say(cv, text, x=x + pad, y=y + h / 2 + cap_height("num", size) / 2, col=col, size=size, face="num", ls=1.3,

@@ -7,7 +7,7 @@ GitHub serves the file with a policy that runs no script and fetches
 nothing, and a viewer's theme decides which of two files it sees. So every
 file is self-contained, and `lint()` checks the things that would break it
 quietly: a script, a `foreignObject`, an external reference, a colour that is
-not an emblems token, a missing title or description, a dash the standards
+not a badges token, a missing title or description, a dash the standards
 ban, a reference to an id that does not exist, and a file grown too large.
 """
 from __future__ import annotations
@@ -165,7 +165,7 @@ def lint(svg: str, *, budget: int, text_ok: bool = False) -> list[str]:
     for hexc in (m.group(1) for m in _matches(_HEX, svg, ("#",), lambda i, n: i + 8)):
         full = hexc if len(hexc) == 6 else "".join(ch * 2 for ch in hexc)
         if f"#{full.upper()}" not in HEXES:
-            problems.append(f"#{hexc} is not an emblems token")
+            problems.append(f"#{hexc} is not a badges token")
     # A paint's value ends at the first of " ; } after it, which is the second after the name when an = opens it.
     paints = _matches(_PAINT, svg, ("fill", "stroke", "stop-color", "flood-color", "lighting-color", "color"),
                       lambda i, n: _stop(svg, _stop(svg, i + len(n), '";}'), '";}'))

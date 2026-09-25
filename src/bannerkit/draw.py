@@ -14,14 +14,14 @@ from .text import f1, fx
 
 def icon(name: str, x: float, y: float, size: float, stroke: str, sw: float = 2, opacity: float | None = None,
          attrs: str = "") -> str:
-    """An emblems icon, stroked, with its 24x24 box's top-left at (x, y)."""
+    """An badges icon, stroked, with its 24x24 box's top-left at (x, y)."""
     op = f' stroke-opacity="{fx(opacity)}"' if opacity is not None else ""
     return (f'<g transform="translate({f1(x)} {f1(y)}) scale({fx(size / 24, 4)})" fill="none" stroke="{c(stroke)}" '
             f'stroke-width="{fx(sw)}" stroke-linecap="round" stroke-linejoin="round"{op}{attrs}>{ICONS[name]}</g>')
 
 
 def solid(name: str, x: float, y: float, size: float, fill: str, attrs: str = "") -> str:
-    """An emblems icon filled rather than stroked: the heart that stands for the love in "built with"."""
+    """An badges icon filled rather than stroked: the heart that stands for the love in "built with"."""
     return (f'<g transform="translate({f1(x)} {f1(y)}) scale({fx(size / 24, 4)})" fill="{c(fill)}" stroke="{c(fill)}" '
             f'stroke-width="1.2" stroke-linejoin="round"{attrs}>{ICONS[name]}</g>')
 
