@@ -381,7 +381,6 @@ fieldset[disabled] { opacity: .6; }
 .gh-body img { max-width: 100%; vertical-align: middle; }
 .gh-center { text-align: center; }
 .gh-center > img.banner { display: block; margin: 0 auto; }
-.gh-badges { margin: 16px 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
 .gh-body hr { height: .25em; margin: 24px 0; padding: 0; border: 0; background: var(--gh-hr); }
 .gh-body h2 { margin: 24px 0 16px; padding-bottom: .3em; border-bottom: 1px solid var(--gh-border); font-size: 1.5em; font-weight: 600; line-height: 1.25; }
 .gh-body h2:first-child { margin-top: 0; }

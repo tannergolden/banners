@@ -146,5 +146,3 @@ _site/
 # Banner Kit: the built preview (make preview)
 preview/
 
-# The emblems kit, checked out beside this repository for `make badges`.
-.emblems/

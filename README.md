@@ -24,21 +24,6 @@ category: docs
 </div>
 <!-- banners:header:end -->
 
-<div align="center">
-
-[![Status: Active](assets/badges/static/status.svg)](./)
-[![Role: Workflow](assets/badges/static/role.svg)](./)
-[![Context: Banners](assets/badges/static/context.svg)](./)
-[![License: MIT](assets/badges/static/license.svg)](./LICENSE)
-
-[![Designs: 3 headers, 2 footers](assets/badges/static/designs.svg)](./#three-headers-two-footers)
-[![Themes: 11 prints and a rainbow](assets/badges/static/themes.svg)](./#eleven-prints-and-a-rainbow)
-[![Uptime: 24/7/365](assets/badges/static/uptime.svg)](./#-up-247365)
-[![Dependencies: None](assets/badges/static/dependencies.svg)](./)
-[![Use this workflow](assets/badges/static/use-workflow.svg)](./#-use-it-in-your-readme)
-
-</div>
-
 ---
 
 ## 💡 What This Is
@@ -355,10 +340,8 @@ banners/
 ├── .github/workflows/banners.yml     the reusable workflow your stub calls
 ├── .github/workflows/own-banners.yml this README's own banners, at its own commit
 ├── .github/workflows/cut-release.yml cuts a version and moves v1, via the standards
-├── .github/workflows/badges.yml      redraws the README's badges through emblems
 ├── .github/banners.yml               this README's own config
 ├── .github/banners.lock.json         this README's lock
-├── .github/badges.yml                the README's badges, as data
 ├── src/
 │   ├── banner-kit.py                 the command line
 │   ├── extract-glyphs.py             where the glyph supplement comes from, and its proof
@@ -373,7 +356,6 @@ banners/
 │   └── fonts/                        glyph outlines and their OFL licences
 ├── assets/banners/                   this README's committed banners
 ├── assets/gallery/                   the gallery above, drawn from the samples
-├── assets/badges/                    the README's badges, drawn by emblems
 ├── examples/                         stubs and a starter config to copy
 ├── tests/                            the unit tests, and the GraphQL document check
 └── docs/
@@ -395,14 +377,7 @@ make gallery    # redraw assets/gallery/ from the samples
 make sample     # draw the sample repository and profile into preview/, the way a run would (no network)
 make preview    # build preview/preview.html: every design, drawn live in the browser by this same package
 make schema     # check every GraphQL query against GitHub's published schema
-make badges     # redraw the README's badges from .github/badges.yml (emblems kit at .emblems/)
 ```
-
-The badges in the header are drawn by [`tannergolden/emblems`](https://github.com/tannergolden/emblems)
-from `.github/badges.yml`, the same way the banners are drawn here: committed
-SVGs, no request at view time. Pushing a change to that file re-renders them
-through the **🏷️ Badges** workflow; locally, check the emblems kit out at
-`.emblems/` (or point `EMBLEMS_KIT` at it) and run `make badges`.
 
 `make preview` builds a page with every design and theme on it, drawn by
 this same package running in the browser under Brython. Before it draws
@@ -452,7 +427,7 @@ in `src/fonts/`.
 > [!TIP]
 > The full specification is [`docs/Banner-Kit.md`](docs/Banner-Kit.md).
 > [`tannergolden/emblems`](https://github.com/tannergolden/emblems) draws the
-> badges under this header and
+> badges a repository commits for itself, and
 > [`tannergolden/trophies`](https://github.com/tannergolden/trophies) draws a
 > profile's or a repository's trophies, the way this draws its banners: in the
 > same palette, under the same rule. The engineering standards this repository

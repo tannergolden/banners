@@ -262,8 +262,7 @@ def cmd_preview(args) -> int:
 def cmd_page(args) -> int:
     from bannerkit import preview
 
-    emblems = Path(args.emblems_kit) if args.emblems_kit else None
-    stats = preview.build(Path(args.out), Path(args.cache), emblems)
+    stats = preview.build(Path(args.out), Path(args.cache))
     print(f"{args.out}: {stats['bytes'] / 1e6:.2f} MB, {stats['files']} pre-rendered files in {stats['sets']} sets")
     return 0
 
@@ -385,7 +384,6 @@ def main(argv: list[str] | None = None) -> int:
     sp = sub.add_parser("page", help="build the preview page")
     sp.add_argument("--out", default="preview/preview.html")
     sp.add_argument("--cache", default=".cache")
-    sp.add_argument("--emblems-kit", default="", help="emblems' src/badge-kit.py, to draw the mock README's badges")
     sub.add_parser("lint", help="draw and lint every design")
     sp = sub.add_parser("gallery", help="draw the README's gallery into assets/gallery/")
     sp.add_argument("--root", default=".")

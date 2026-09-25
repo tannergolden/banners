@@ -180,26 +180,11 @@ def corpus() -> dict:
 
 # --- the page -------------------------------------------------------------------------
 
-def emblems_badges(kit: Path | None) -> dict:
-    """The four header badges, drawn by emblems itself when a checkout is at hand."""
-    if not kit or not kit.exists():
-        return {}
-    import importlib.util
-
-    spec = importlib.util.spec_from_file_location("badge_kit", kit)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    rows = (("status", "Status", "Active", "green", "pulse"), ("role", "Role", "Tool", "pink", "book"),
-            ("context", "Context", "Banners", "purple", "layers"), ("license", "License", "MIT", "yellow", "scale"))
-    return {name: {"svg": mod.render(label, message, "black", color, icon, "for-the-badge"), "alt": f"{label}: {message}"}
-            for name, label, message, color, icon in rows}
-
-
 # What a README gets from a config that says nothing: the header and the footer made for it.
 DEFAULTS = plan.designs(config.validate({}))
 
 
-def build(out: Path, cache: Path, emblems_kit: Path | None = None) -> dict:
+def build(out: Path, cache: Path) -> dict:
     runtime, stdlib = brython(cache)
     base, extra = ((fonts_dir() / name).read_text(encoding="utf-8") for name in FILES)
     rendered = corpus()
@@ -222,7 +207,6 @@ def build(out: Path, cache: Path, emblems_kit: Path | None = None) -> dict:
         "defaultTone": DEFAULT_PRINT,
         "spectrum": list(SPECTRUM),
         "rainbow": RAINBOW,
-        "badges": emblems_badges(emblems_kit),
     }
     html = (PAGE / "page.html").read_text(encoding="utf-8")
     parts = {

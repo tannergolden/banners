@@ -192,8 +192,6 @@
     urls.set(img, url);
     if (old) setTimeout(() => URL.revokeObjectURL(old), 2000);
   }
-  const badgeUrls = {};
-  for (const [name, b] of Object.entries(D.badges || {})) badgeUrls[name] = { url: URL.createObjectURL(new Blob([b.svg], { type: 'image/svg+xml' })), alt: b.alt };
 
   function mock({ device, theme, header, footer, sheet }) {
     const root = h('div', { class: `gh ${theme === 'dark' ? 'dark' : 'light'} ${device}` });
@@ -204,10 +202,6 @@
     if (header) {
       const img = h('img', { class: 'banner', alt: '' });
       const center = h('div', { class: 'gh-center' }, img);
-      const names = Object.keys(badgeUrls);
-      if (names.length) {
-        center.append(h('p', { class: 'gh-badges' }, names.map((n) => h('img', { src: badgeUrls[n].url, alt: badgeUrls[n].alt, height: 28 }))));
-      }
       body.append(center, h('hr'), h('h2', { text: '\u{1F4A1} What This Is' }), h('p', { text: INTRO }));
       SLOTS.push({ role: 'header', code: header, device, theme, img, sheet });
     }

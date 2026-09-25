@@ -26,13 +26,11 @@ _Every image here is drawn, and none is fetched._
 | :---------- | :-------------------------------------------------------------------------------------------- |
 | `banners/`  | This README's own header and footer, drawn by the kit and refreshed by 🪧 Own Banners          |
 | `gallery/`  | The README's gallery: every design and every theme, drawn from the samples by `make gallery`  |
-| `badges/`   | The README's header badges, drawn by [emblems](https://github.com/tannergolden/emblems) from `.github/badges.yml` |
 | `branding/` | Logos, icons, colour palettes, typography specimens                                           |
 
-Nothing under `banners/`, `gallery/` or `badges/` is edited by hand: each is
-regenerated from its source, and `make check` fails when `gallery/` or
-`banners/` no longer matches what the kit draws. `badges/static/` holds
-finished SVGs; this README uses no dynamic ones.
+Nothing under `banners/` or `gallery/` is edited by hand: each is
+regenerated from its source, and `make check` fails when either no longer
+matches what the kit draws.
 
 Add your own folder, such as `images/` or `docs/`, as soon as you have
 something to put in it. An empty folder invented ahead of a need is a folder
