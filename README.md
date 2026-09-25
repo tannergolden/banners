@@ -257,7 +257,7 @@ Everything is optional, and an empty text field is read from GitHub. A
 | `description` | none              | A longer line under the note.                                                                  |
 | `figures`     | the mode's        | Which figures run along the foot, in order.                                                    |
 | `closing`     | none              | The footer's closing phrase.                                                                   |
-| `top`         | `Back to Top`     | The footer's way back up.                                                                      |
+| `top`         | `Back to Top`     | The words on the footer's way back up. The whole footer links to the top either way.           |
 | `links`       | from GitHub       | The links row under the footer: your website, releases and issues.                             |
 | `hide`        | `[]`              | Fields not drawn at all.                                                                       |
 | `readme`      | `manage`          | Manage the blocks between the markers, or `none`.                                              |
@@ -453,12 +453,14 @@ in `src/fonts/`.
 <!-- banners:footer:start -->
 <div align="center">
 
-<a href="#top"><picture>
+<a href="#top">
+<picture>
   <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/banners/footer-narrow-dark.svg">
   <source media="(max-width: 585px)" srcset="assets/banners/footer-narrow-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/banners/footer-dark.svg">
   <img alt="Drawn at both ends. Fetched at neither. Back to Top. Built with love by @tannergolden. Distributed under the MIT License. Last updated September 25, 2026." src="assets/banners/footer-day.svg">
-</picture></a>
+</picture>
+</a>
 
 <a href="docs/Banner-Kit.md"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-specification-dark.svg"><img alt="Specification" src="assets/banners/link-specification-day.svg"></picture></a>
 <a href="examples/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banners/link-examples-dark.svg"><img alt="Examples" src="assets/banners/link-examples-day.svg"></picture></a>

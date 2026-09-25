@@ -20,6 +20,9 @@ from .designs import slug
 from .layout import WIDE, Design
 
 BASE = "assets/banners"
+# Where the footer goes back to: the top of the README, which is where the
+# header block sits. The standards' own documents use the same anchor.
+ANCHOR = '<a name="top"></a>'
 
 # The width below which a phone gets the narrow file. Derived, not picked:
 # the wide layouts set their secondary lines at 15 px, and a reader should
@@ -57,7 +60,7 @@ def header(design: Design, h: Header, *, markdown: bool = True, base: str = BASE
     image as Markdown, so switching it off in the drawing does not drop it
     from the page.
     """
-    parts = ["<!-- markdownlint-disable MD041 -->", "", '<div align="center">', "", '<a name="top"></a>', "",
+    parts = ["<!-- markdownlint-disable MD041 -->", "", '<div align="center">', "", ANCHOR, "",
              picture("header", design, h.alt(), base)]
     if markdown:
         if h.tagline.strip() and not h.on("tagline"):
@@ -75,11 +78,24 @@ def chip(label: str, url: str, base: str = BASE) -> str:
             f'src="{base}/link-{name}-day.svg"></picture></a>')
 
 
+def anchor() -> str:
+    """The header block when there is no header: only the anchor the footer links back to."""
+    return "\n".join(["<!-- markdownlint-disable MD041 -->", "", ANCHOR]) + "\n"
+
+
 def footer(design: Design, ft: Footer, *, base: str = BASE) -> str:
-    """The footer block. The image is the way back to the top; each link is its own image."""
-    image = picture("footer", design, ft.spoken(), base)
-    if ft.on("top"):
-        image = '<a href="#top">' + image.replace("<picture>", "<picture>", 1) + "</a>"
+    """The footer block. The whole image is the way back to the top; each link is its own image.
+
+    The link opens on a line of its own and nothing inside it is blank, so
+    GitHub reads it as one HTML block and the `<img>` stays inside the `<a>`.
+    Written as `<a href="#top"><picture>` on one line, the `<a>` opens a
+    paragraph, the first `<source>` line ends that paragraph (a `source` tag
+    may interrupt one), and the link closes around nothing; GitHub then
+    links the image to its own SVG, so a click opened the file instead of
+    going up. The link is there whether or not the words say so: hiding
+    `top` takes "Back to Top" off the drawing, not the way back.
+    """
+    image = "\n".join(['<a href="#top">', picture("footer", design, ft.spoken(), base), "</a>"])
     parts = ['<div align="center">', "", image]
     if ft.on("links") and ft.links:
         parts += ["", "\n".join(chip(label, url, base) for label, url in ft.links)]

@@ -254,7 +254,6 @@
         cap.textContent = `${name} · ${kb(enc.encode(svg).length)}`;
       }
       if (slot.role === 'footer') {
-        slot.link.title = S.hide.has('top') ? 'No Back to Top: the footer image carries no link' : 'Back to Top: the whole footer image is this link';
         slot.chips.replaceChildren();
         const links = (COMPOSED && COMPOSED.footer.links) || [];
         const suffix = `-${slot.theme}.svg`;

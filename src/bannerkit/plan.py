@@ -68,6 +68,10 @@ def plan(m: dict, cfg: dict, draw: bool = True) -> dict:
             snippet = (snippets.header(design, content, base=base) if design.kind == "header"
                        else snippets.footer(design, content, base=base))
             blocks[design.kind] = readme.block(design.kind, snippet)
+    if fd and not hd:
+        # The footer always links to the top of the README, so the top has to
+        # be there even when no header is drawn.
+        blocks["header"] = readme.block("header", snippets.anchor())
     return {"mode": m["mode"], "subject": m["subject"], "today": m.get("today", ""), "out": out, "theme": header.tone,
             "designs": [d for d in (hd, fd) if d], "header": header, "footer": footer, "files": files,
             "blocks": blocks, "notes": notes + list(m.get("notes") or ())}

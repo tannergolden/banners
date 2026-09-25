@@ -233,7 +233,7 @@ lists every key at its default.
 | `description` | none             | A longer line under the note.                                                     |
 | `figures`     | the mode's       | Which figures, in order.                                                          |
 | `closing`     | none             | The footer's closing phrase.                                                      |
-| `top`         | `Back to Top`    | The footer's way back up.                                                         |
+| `top`         | `Back to Top`    | The words on the footer's way back up. The footer links to the top either way.    |
 | `links`       | from GitHub      | The links row: a map of label to URL, or a list of `Label \| URL` lines.          |
 | `hide`        | `[]`             | Fields not drawn: any of the header's and footer's fields.                        |
 | `readme`      | `manage`         | Write the README blocks, or `none`.                                               |
@@ -287,6 +287,14 @@ and one `<picture>`: the narrow file below 585 px, the still file under
 reduced motion, the dark file in a dark theme, the day file otherwise. A
 tagline or motto the drawing leaves out is written under it as Markdown, so
 hiding it from the image does not drop it from the page.
+
+The whole footer image is a link to `#top`, always: hiding `top` takes the
+words "Back to Top" off the drawing, not the way back. With `header: none`
+the header block is still written, holding the anchor and nothing else, so
+the footer has a top to go back to. The link is written as one HTML block,
+`<a href="#top">` on a line of its own and no blank line before `</a>`.
+Written on one line with `<picture>`, Markdown would close the link before
+the image, and GitHub would link the image to its own SVG instead.
 
 ---
 

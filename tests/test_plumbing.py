@@ -18,7 +18,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from bannerkit import config, readme, sample  # noqa: E402
+from bannerkit import config, plan, readme, sample  # noqa: E402
 from bannerkit.drafting import PRINTS  # noqa: E402
 from bannerkit.palette import PALETTE  # noqa: E402
 
@@ -227,6 +227,38 @@ class Blocks(unittest.TestCase):
         blocks = {"header": readme.block("header", "H"), "footer": readme.block("footer", "F")}
         text = readme.place("", blocks)
         self.assertEqual(text, blocks["header"] + "\n\n" + blocks["footer"] + "\n")
+
+
+class TopLink(unittest.TestCase):
+    """The footer is always the way back to the top of the README."""
+
+    def blocks(self, **given) -> dict:
+        return plan.plan(copy.deepcopy(sample.REPOSITORY), config.validate(given), draw=False)["blocks"]
+
+    def assertLinksTheImage(self, footer: str):
+        # The link opens on a line of its own and nothing inside it is blank,
+        # so Markdown reads it as one HTML block, with the image inside it.
+        start = footer.index('<a href="#top">\n<picture>\n')
+        body = footer[start:footer.index("</picture>\n</a>", start)]
+        self.assertNotIn("\n\n", body)
+        self.assertIn('src="assets/banners/footer-day.svg"', body)
+
+    def test_the_whole_footer_links_to_the_anchor_in_the_header(self):
+        blocks = self.blocks()
+        self.assertLinksTheImage(blocks["footer"])
+        self.assertIn('<a name="top"></a>', blocks["header"])
+
+    def test_hiding_the_words_keeps_the_way_back(self):
+        self.assertLinksTheImage(self.blocks(hide=["top"])["footer"])
+
+    def test_with_no_header_the_top_is_still_there(self):
+        blocks = self.blocks(header="none")
+        self.assertLinksTheImage(blocks["footer"])
+        self.assertIn('<a name="top"></a>', blocks["header"])
+        self.assertNotIn("<picture>", blocks["header"])
+
+    def test_with_no_footer_nothing_is_added(self):
+        self.assertEqual(self.blocks(header="none", footer="none"), {})
 
 
 class Config(unittest.TestCase):
