@@ -222,7 +222,7 @@ needed.
 ### The data file
 
 ```yaml
-print: blueprint          # any of the eleven prints below
+print: blueprint          # any of the eleven prints below, or rainbowprint
 subject: owner/name       # what the title blocks say; the first run reads it from origin
 today: 2026-09-25         # optional: the date the measurement is as of, for a reproducible page
 
@@ -268,6 +268,13 @@ and the black-line prints of the same trade: `redprint`, `orangeprint`,
 `indigoprint`, `purpleprint`, `pinkprint`, `brownprint` and `blackprint`.
 The prints are the banners' own, so a page whose header, elements and footer
 are drawn in the same print matches to the hex.
+
+`print: rainbowprint` draws the elements in the colour the page's banners
+are in. The banners' lock beside the data file records which colour of the
+spectrum their last update took, and the elements are drawn in the same one,
+so the header, the body and the footer change colour together. Elements on
+a page without banners keep their own colour in their lock, from the
+redprint, and take the next each time an update redraws them.
 
 ---
 

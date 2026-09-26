@@ -257,6 +257,61 @@ class Cli(unittest.TestCase):
                          re.search(r'height="(\d+)"', files["conformance-day.svg"]).group(1))
         self.assertIsNone(E.half_height({"a": {"kind": "placard"}}), "a page with no half elements shares nothing")
 
+    def test_a_rainbowprint_follows_the_banners_or_keeps_its_own_colour(self):
+        data = {"print": "rainbowprint", "elements": {"a": {"kind": "placard", "owner": "o", "name": "n", "desc": "d", "cells": []}}}
+        self.assertEqual(K.validate(data, {"measured": {}}), [], "the rainbow is a print the data file may name")
+        self.assertIn("or rainbowprint", K.validate(dict(data, print="goldprint"), {"measured": {}})[0])
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            self.assertIsNone(K.shade(dict(data, print="blueprint"), {}, root), "one print has no rainbow")
+            self.assertEqual(K.shade(data, {}, root), "redprint", "without banners, the first colour")
+            self.assertEqual(K.shade(data, {"rainbow": "tealprint"}, root), "tealprint", "then the lock's own")
+            (root / ".github").mkdir()
+            banners = root / ".github" / "banners.lock.json"
+            banners.write_text(json.dumps({"rainbow": "greenprint"}))
+            self.assertEqual(K.shade(data, {"rainbow": "tealprint"}, root), "greenprint", "the banners' colour wins")
+            for text in (json.dumps({"rainbow": "goldprint"}), json.dumps({"last": None}), "not json", "[]"):
+                banners.write_text(text)
+                self.assertEqual(K.shade(data, {}, root), "redprint", text)
+                self.assertIsNone(K.following(root), text)
+        self.assertEqual(K.next_shade("pinkprint"), "redprint", "the spectrum wraps")
+
+    def test_run_draws_a_rainbowprint_in_the_banners_colour_and_takes_the_next_on_its_own(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "repo"
+            bare(root)
+            (root / "README.md").write_text("# banners\n")
+            msg = Path(td) / "commit.txt"
+            self.assertEqual(run(["init", "--root", str(root)])[0], 0)
+            data = root / ".github" / "elements.yml"
+            data.write_text(data.read_text().replace("print: blueprint", "print: rainbowprint"))
+            banners = root / ".github" / "banners.lock.json"
+            banners.write_text(json.dumps({"rainbow": "greenprint"}))
+            code, out = run(["run", "--root", str(root), "--commit-file", str(msg)])
+            self.assertEqual(code, 0, out)
+            self.assertIn("greenprint, colour 4 of 9, the colour the banners are drawn in", " ".join(msg.read_text().split()))
+            lock = root / ".github" / "elements.lock.json"
+            self.assertEqual(json.loads(lock.read_text())["rainbow"], "greenprint")
+            self.assertEqual(run(["check", "--root", str(root)])[0], 0)
+            # The banners moved on: the elements follow, though nothing else moved.
+            banners.write_text(json.dumps({"rainbow": "tealprint"}))
+            code, out = run(["run", "--root", str(root), "--commit-file", str(msg)])
+            self.assertEqual(code, 0, out)
+            self.assertIn("Something moved", out)
+            self.assertIn("tealprint, colour 5 of 9, the colour the banners", " ".join(msg.read_text().split()))
+            self.assertEqual(run(["check", "--root", str(root)])[0], 0)
+            # Without banners the elements keep the colour they have, and an update takes the next.
+            banners.write_text(json.dumps({"last": None}))
+            code, out = run(["run", "--root", str(root), "--commit-file", str(msg)])
+            self.assertEqual(code, 0, out)
+            self.assertIn("Nothing moved", out)
+            (root / "assets" / "elements" / "vitals-day.svg").unlink()
+            code, out = run(["run", "--root", str(root), "--commit-file", str(msg)])
+            self.assertEqual(code, 0, out)
+            self.assertIn("blueprint, colour 6 of 9; the next update will be the indigoprint", " ".join(msg.read_text().split()))
+            self.assertEqual(json.loads(lock.read_text())["rainbow"], "blueprint")
+            self.assertEqual(run(["check", "--root", str(root)])[0], 0)
+
     def test_bad_data_fails_with_a_precise_message(self):
         data = self.root / ".github" / "elements.yml"
         text = data.read_text().replace("      - [collector, alerts, PAST THE THRESHOLD]", "      - [collector, alarms, PAST THE THRESHOLD]")

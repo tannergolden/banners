@@ -97,6 +97,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # The branch as it is NOW, not as it was when the run was queued: a job chained after
+          # another kit's job reads what that job committed, such as the colour a rainbowprint
+          # is drawn in, and the push below replays onto the tip anyway.
+          ref: ${{ github.ref_name }}
           # The bot commits the drawing and the lock's weekly snapshot must
           # land, so the checkout keeps credentials for the push below.
           persist-credentials: true # zizmor: ignore[artipacked] - the push step below needs them, and nothing else runs after it.

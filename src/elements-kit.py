@@ -26,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from bannerkit.drafting import RAINBOW, SPECTRUM  # noqa: E402
 from elementskit import elements as E  # noqa: E402
 from elementskit import measure as M  # noqa: E402
 
@@ -70,8 +71,9 @@ def validate(data: dict, lock: dict) -> list[str]:
     errors = []
     if not isinstance(data.get("elements"), dict) or not data["elements"]:
         return ["no `elements:` map in the data file"]
-    if data.get("print", "blueprint") not in E.PRINTS:
-        errors.append(f"unknown print {data.get('print')!r} (one of {', '.join(E.PRINTS)})")
+    tone = data.get("print", "blueprint")
+    if tone != RAINBOW and tone not in E.PRINTS:
+        errors.append(f"unknown print {tone!r} (one of {', '.join(E.PRINTS)}, or {RAINBOW})")
     for eid, d in merged(data, lock).items():
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", eid):
             errors.append(f"{eid}: an element's id must be kebab-case")
@@ -171,14 +173,56 @@ def run_measure(root: Path, data: dict, lock: dict, token: str | None) -> dict:
 
 # --- files and blocks ----------------------------------------------------------------------------
 
+# --- the rainbow ---------------------------------------------------------------------------------
+
+BANNERS_LOCK = Path(".github") / "banners.lock.json"
+
+
+def following(root: Path) -> str | None:
+    """The colour the banners beside these elements are drawn in, when they are a rainbowprint.
+
+    The banners kit remembers it in its lock; a page with no banners, or banners in one print, has none."""
+    path = root / BANNERS_LOCK
+    if not path.exists():
+        return None
+    try:
+        colour = json.loads(path.read_text(encoding="utf-8")).get("rainbow")
+    except (OSError, ValueError, AttributeError):
+        return None
+    return colour if colour in SPECTRUM else None
+
+
+def shade(data: dict, lock: dict, root: Path) -> str | None:
+    """The print a rainbowprint is drawn in now, or None for a page in one print.
+
+    The banners own a page's rainbow: when their lock records the colour their last update took,
+    the elements are drawn in the same one, so the header, the body and the footer change colour
+    together. Elements on a page without banners keep their own colour in their lock, from the
+    first of the spectrum, and `run` takes the next each time an update redraws them."""
+    if data.get("print", "blueprint") != RAINBOW:
+        return None
+    theirs = following(root)
+    if theirs:
+        return theirs
+    own = lock.get("rainbow")
+    return own if own in SPECTRUM else SPECTRUM[0]
+
+
+def next_shade(colour: str) -> str:
+    return SPECTRUM[(SPECTRUM.index(colour) + 1) % len(SPECTRUM)]
+
+
 def file_name(eid: str, variant: str, theme: str) -> str:
     v = "" if variant in ("wide", "half") else f"-{variant}"
     return f"{eid}{v}-{theme}.svg"
 
 
-def render_all(data: dict, lock: dict) -> dict[str, str]:
-    """{basename: svg} for every element, every variant, both themes."""
-    tone = data.get("print", "blueprint")
+def render_all(data: dict, lock: dict, tone: str | None = None) -> dict[str, str]:
+    """{basename: svg} for every element, every variant, both themes, in `tone`: the data file's print,
+    or the colour a rainbowprint is drawn in now (see `shade`)."""
+    tone = tone or data.get("print", "blueprint")
+    if tone == RAINBOW:
+        tone = SPECTRUM[0]
     elements = merged(data, lock)
     half = E.half_height(elements)
     files = {}
@@ -321,8 +365,11 @@ def _series(items: list[str]) -> str:
 
 
 def commit_message(subject: str, today: str, *, first: bool, drawn: list[str], pruned: list[str],
-                   blocks: int, readme: str) -> str:
-    """A Conventional Commit for a run: what was drawn, for whom, and why the files are committed."""
+                   blocks: int, readme: str, colour: str | None = None, follows: bool = False) -> str:
+    """A Conventional Commit for a run: what was drawn, for whom, and why the files are committed.
+
+    With `colour`, the elements are a rainbowprint drawn in it: the body says which colour of the
+    spectrum that is, and whether it follows the banners or takes the next one on the next update."""
     import textwrap
     head = f"chore(elements): {GITMOJI} "
     who = subject or "this repository"
@@ -341,6 +388,11 @@ def commit_message(subject: str, today: str, *, first: bool, drawn: list[str], p
         lines.append(f"{blocks} block{'s' if blocks != 1 else ''} rewritten in {readme}.")
     if pruned:
         lines.append(f"Pruned {_series(pruned)}: no element writes them now.")
+    if colour:
+        i = SPECTRUM.index(colour)
+        lines.append(f"As a rainbowprint, this drawing is the {colour}, colour {i + 1} of {len(SPECTRUM)}"
+                     + (", the colour the banners are drawn in." if follows
+                        else f"; the next update will be the {next_shade(colour)}."))
     body = textwrap.fill(" ".join(lines), 72)
     why = textwrap.fill("The elements are committed SVGs, so the page renders them with no request at view time. "
                         "This refresh is the kit's own commit and counts as a chore.", 72)
@@ -392,8 +444,10 @@ def main(argv: list[str] | None = None) -> int:
         for e in problems:
             print(f"::error::{data_path.name}: {e}", file=sys.stderr)
         return 1
+    colour = shade(data, lock, root)
+    follows = bool(colour) and following(root) is not None
     E.WARNINGS.clear()
-    files = render_all(data, lock)
+    files = render_all(data, lock, colour)
     for w in sorted(set(E.WARNINGS)):
         print(f"::warning::{w}; drawn as '?'")
     try:
@@ -436,6 +490,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     first = not on_disk
+    if args.command == "run" and colour:
+        if not follows and lock_before.get("rainbow") in SPECTRUM and (
+                new_text != text or any(not (out / n).exists() or (out / n).read_text(encoding="utf-8") != svg
+                                        for n, svg in files.items())):
+            # An update, on a page whose elements keep their own rainbow: the next colour of the spectrum.
+            colour = next_shade(colour)
+            files = render_all(data, lock, colour)
+        lock["rainbow"] = colour
     out.mkdir(parents=True, exist_ok=True)
     written = []
     for name, svg in files.items():
@@ -465,7 +527,8 @@ def main(argv: list[str] | None = None) -> int:
                 drawn = sorted({owner[n] for n in written}, key=list(elements).index)
                 args.commit_file.write_text(commit_message(
                     data.get("subject", ""), lock.get("today", ""), first=first or bootstrapped, drawn=drawn,
-                    pruned=orphans, blocks=rewritten, readme=readme.name), encoding="utf-8")
+                    pruned=orphans, blocks=rewritten, readme=readme.name, colour=colour, follows=follows),
+                    encoding="utf-8")
             elif args.commit_file.exists():
                 args.commit_file.unlink()
         print("Something moved; a commit is due." if changed else "Nothing moved since the last run.")

@@ -179,7 +179,9 @@ says its own theme:
 **`theme: rainbowprint`** draws each update in the next colour of the
 spectrum: a README whose banners were redrawn in greenprint today will be
 tealprint the next time something they show moves. The lock remembers where
-it is, and a quiet day keeps the colour it has.
+it is, and a quiet day keeps the colour it has. The elements follow: a page
+whose data file says `print: rainbowprint` draws its body in the colour the
+banners are in, so the whole page changes colour together.
 
 ---
 
