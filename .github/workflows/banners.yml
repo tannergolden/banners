@@ -168,7 +168,7 @@ jobs:
       # wrote for this run: a Conventional Commit per tannergolden/standards,
       # with a scope, a body that says why, and the values that make it
       # unique. The kit's folder stays for the elements below; the action
-      # keeps it out of git's view, and the pathspec keeps it out for sure.
+      # keeps it out of git's view, so `git add -A` never sees it.
       - name: Commit and push the banners
         if: ${{ steps.banners.outputs.changed == 'true' && inputs.commit != 'pr' }}
         shell: bash
@@ -180,7 +180,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A -- . ':!.banners-kit'
+          git add -A
           git commit --author="$AUTHOR" -F "$MESSAGE_FILE"
           # Another kit may have pushed since this run began: the umbrella in
           # tannergolden/markdown runs the kits in turn, and each writes only
@@ -216,7 +216,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A -- . ':!.banners-kit'
+          git add -A
           git commit --author="$AUTHOR" -F "$MESSAGE_FILE"
           git fetch origin "$BRANCH"
           git rebase "origin/$BRANCH"
