@@ -43,7 +43,7 @@
      ],
      [
       "21 SEP",
-      32
+      34
      ]
     ]
    },
@@ -52,7 +52,7 @@
     "parts": [
      [
       "SVG",
-      2697729
+      2724239
      ],
      [
       "PYTHON",
@@ -60,11 +60,11 @@
      ],
      [
       "JSON",
-      343687
+      344467
      ],
      [
       "MARKDOWN",
-      222590
+      222591
      ],
      [
       "OTHER",
@@ -79,7 +79,7 @@
     "span": 30,
     "major": 10,
     "minor": 5,
-    "sub": "V1.5.0  ·  26 SEP"
+    "sub": "V1.6.0  ·  26 SEP"
    },
    "counters": [
     [
@@ -431,7 +431,7 @@
    ]
   },
   "history": {
-   "caption": "11 RELEASES SINCE 25 SEP 2026",
+   "caption": "12 RELEASES SINCE 25 SEP 2026",
    "events": [
     {
      "date": "2026-09-25",
@@ -498,17 +498,22 @@
      "date": "2026-09-26",
      "tag": "V1.5.0",
      "major": true
+    },
+    {
+     "date": "2026-09-26",
+     "tag": "V1.6.0",
+     "major": true
     }
    ],
    "today": "2026-09-26"
   },
   "contributors": {
-   "caption": "32 COMMITS FROM 2 CONTRIBUTORS",
+   "caption": "34 COMMITS FROM 2 CONTRIBUTORS",
    "people": [
     {
      "name": "TANNER GOLDEN",
      "handle": "@TANNERGOLDEN",
-     "n": 32,
+     "n": 34,
      "first": "25 SEP 2026",
      "last": "26 SEP",
      "initials": "TG"
@@ -524,11 +529,11 @@
    ]
   },
   "conformance": {
-   "commit": "b894016",
+   "commit": "7a0c973",
    "checks": [
     [
      "CI passes on Development",
-     "Checks at b894016",
+     "Checks at 7a0c973",
      true
     ],
     [
@@ -548,7 +553,7 @@
     ],
     [
      "Conventional commits",
-     "32 of 32 subjects",
+     "34 of 34 subjects",
      true
     ]
    ]

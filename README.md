@@ -225,7 +225,7 @@ the releases and the words on the certificate's ring, which are set in
   <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/history-narrow-dark.svg">
   <source media="(max-width: 585px)" srcset="assets/elements/history-narrow-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/history-dark.svg">
-  <img alt="Milestones of tannergolden/banners. 11 releases of tannergolden/banners on a time line." src="assets/elements/history-day.svg">
+  <img alt="Milestones of tannergolden/banners. 12 releases of tannergolden/banners on a time line." src="assets/elements/history-day.svg">
 </picture>
 <!-- elements:history:end -->
 
@@ -234,7 +234,7 @@ the releases and the words on the certificate's ring, which are set in
 <!-- elements:contributors:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/contributors-dark.svg">
-  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 32 commits; CLAUDE: 27 commits." src="assets/elements/contributors-day.svg">
+  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 34 commits; CLAUDE: 27 commits." src="assets/elements/contributors-day.svg">
 </picture>
 <!-- elements:contributors:end -->
 <!-- elements:conformance:start -->
