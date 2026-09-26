@@ -1,20 +1,21 @@
 <!--
 title: '📐 ELEMENTS KIT'
 description: 'The body of a README, drawn for itself: a schematic, instruments, milestones, a roster, a certificate and placards, measured from the repository and drawn as committed SVGs.'
-tags: [readme, documentation, svg, blueprint, github-actions, reusable-workflow, diagram, timeline]
+tags: [elements, specification, svg, automation]
 category: docs
 -->
 
+<!-- markdownlint-disable MD041 -->
+
 <div align="center">
 
-# 📐 Elements Kit
+# 📐 ELEMENTS KIT
 
 <a name="top"></a>
 
 **The body of a README, drawn for itself.**
 
-A schematic, instruments, milestones, a roster, a certificate and placards:
-measured from the repository, drawn as committed SVGs, never fetched.
+_Measured, never typed._
 
 </div>
 
@@ -354,3 +355,13 @@ Condensed and Cinzel, under the same licence.
 > page: in the same palette, under the same rule. The engineering standards
 > these repositories follow are published in
 > [`tannergolden/standards`](https://github.com/tannergolden/standards).
+
+---
+
+<div align="center">
+
+**Measured from git. Drawn on the same paper.**
+
+[↑ Back to Top](#top)
+
+</div>

@@ -1,7 +1,7 @@
 <!--
 title: '🪧 BANNER KIT'
 description: 'The specification for the banner generator: the designs, the themes, the two modes, what is measured, the files it writes, the lock, and the contract every consumer relies on.'
-tags: [banners, specification, svg, automation, readme-header]
+tags: [banners, specification, svg, automation]
 category: docs
 -->
 
@@ -392,7 +392,23 @@ belongs in a new major line.
 
 ---
 
+## 🔗 See also
+
+> [!TIP]
+> The [README](../README.md) shows the banners in use and how to pin them, and
+> [`Elements-Kit.md`](Elements-Kit.md) specifies the body of the page drawn
+> between them. [`tannergolden/badges`](https://github.com/tannergolden/badges)
+> and [`tannergolden/trophies`](https://github.com/tannergolden/trophies) draw
+> the badges and the case on the same paper, and
+> [`tannergolden/markdown`](https://github.com/tannergolden/markdown) calls all
+> three kits from one stub. The standards this document follows are published
+> in [`tannergolden/standards`](https://github.com/tannergolden/standards).
+
+---
+
 <div align="center">
+
+**Two sheets, one measurement, nothing fetched.**
 
 [↑ Back to Top](#top)
 

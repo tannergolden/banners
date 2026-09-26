@@ -39,9 +39,10 @@ why they ship as seed content rather than as law.
 
 ## 🪧 This Project's Documents
 
-| Document                           | What it is                                                                                          |
-| :--------------------------------- | :-------------------------------------------------------------------------------------------------- |
-| [`Banner-Kit.md`](Banner-Kit.md)   | The specification: the designs, the themes, the two modes, what is measured, the lock, and the contract |
+| Document                             | What it is                                                                                              |
+| :----------------------------------- | :------------------------------------------------------------------------------------------------------ |
+| [`Banner-Kit.md`](Banner-Kit.md)     | The specification: the designs, the themes, the two modes, what is measured, the lock, and the contract |
+| [`Elements-Kit.md`](Elements-Kit.md) | The elements: six drawings for the body of the page, measured from git and GitHub, and how they run     |
 
 ---
 
