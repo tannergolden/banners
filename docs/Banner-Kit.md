@@ -384,8 +384,9 @@ calls `tannergolden/standards/.github/workflows/release.yml@v1`, called and
 never copied: it refuses a commit that is not on the default branch and a
 version that does not move forward, proves the files a consumer resolves at
 the tag exist and that `make check` passes, tags the version, force-moves the
-major, publishes the release with generated notes, and prunes the pages the
-release superseded. A change that alters what a banner looks like for
+major, publishes the release with generated notes, and prunes every release
+it superseded, page and tag, so the repository carries the major and the
+version it points at. A change that alters what a banner looks like for
 unchanged input bumps `KIT_VERSION`, so every README redraws on its next run;
 a change that removes an input, a mode, a design or a theme is breaking and
 belongs in a new major line.
