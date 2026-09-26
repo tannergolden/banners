@@ -1,7 +1,7 @@
 <!--
 title: '🪧 BANNERS'
 description: 'Blueprint headers, footers and body elements a README draws for itself: measured from GitHub and git on a schedule, drawn as committed SVGs, never fetched.'
-tags: [readme-header, readme-footer, banner, readme-elements, diagram, timeline, github-profile, profile-readme, github-actions, reusable-workflow, svg, blueprint]
+tags: [banner, readme-header, svg, github-actions]
 category: docs
 -->
 
@@ -68,6 +68,8 @@ badges, how [`tannergolden/trophies`](https://github.com/tannergolden/trophies)
 draws a case, and how [`tannergolden/standards`](https://github.com/tannergolden/standards)
 delivers automation; this draws the two ends of the page and its body, in
 the same palette, under the same rule.
+[`tannergolden/markdown`](https://github.com/tannergolden/markdown) calls all
+three kits from one stub.
 
 ---
 
@@ -286,6 +288,11 @@ the whole interface: with no config at all, the README gets H2 Section over
 F1 Title block, in blueprint, every word and figure read from GitHub, and
 [the body of the page](#-the-body-of-the-page) drawn between them.
 
+One stub per kit, or one for the whole page:
+[`tannergolden/markdown`](https://github.com/tannergolden/markdown) calls this
+kit, the badges and the trophies from a single workflow, each at its own hour,
+so a README that wants all three needs one stub rather than three.
+
 ```yaml
 name: Banners
 on:
@@ -442,6 +449,11 @@ and it prunes: a file the plan no longer names is deleted.
 
 ## 🧭 Layout
 
+The files a consumer resolves at the tag, and where everything else lives:
+
+<details>
+<summary>Every file, and what it is for</summary>
+
 ```bash
 banners/
 ├── action.yml                        the banners' composite action
@@ -477,6 +489,8 @@ banners/
     ├── Banner-Kit.md                 the banners' full specification
     └── Elements-Kit.md               the elements' full specification
 ```
+
+</details>
 
 ---
 
@@ -545,18 +559,20 @@ in `src/fonts/`.
 ## 🔗 See also
 
 > [!TIP]
-> The full specification is [`docs/Banner-Kit.md`](docs/Banner-Kit.md).
+> The full specification is [`docs/Banner-Kit.md`](docs/Banner-Kit.md), and
+> [`docs/Elements-Kit.md`](docs/Elements-Kit.md) is the elements'.
 > [`tannergolden/badges`](https://github.com/tannergolden/badges) draws the
 > badges a repository commits for itself, and
 > [`tannergolden/trophies`](https://github.com/tannergolden/trophies) draws a
 > profile's or a repository's trophies, the way this draws its banners: in the
-> same palette, under the same rule. The engineering standards this repository
-> follows are published in
+> same palette, under the same rule.
+> [`tannergolden/markdown`](https://github.com/tannergolden/markdown) calls all
+> three kits from one stub. The engineering standards this repository follows
+> are published in
 > [`tannergolden/standards`](https://github.com/tannergolden/standards), and it
 > was generated from [`tannergolden/path`](https://github.com/tannergolden/path).
 
 ---
-
 
 <!-- banners:footer:start -->
 <div align="center">
