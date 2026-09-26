@@ -18,7 +18,7 @@ category: docs
   <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="assets/banners/header-still-dark.svg">
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/banners/header-still-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/banners/header-dark.svg">
-  <img alt="banners: Blueprint headers and footers a README draws for itself. Measured nightly, never fetched, so they are up for as long as GitHub is. Drafted, never fetched. Project: tannergolden/banners. Release: v1.1.0. Stars: 0. Forks: 0. Open issues: 0. Language: Python. License: MIT." src="assets/banners/header-day.svg">
+  <img alt="banners: Blueprint headers and footers a README draws for itself. Measured nightly, never fetched, so they are up for as long as GitHub is. Drafted, never fetched. Project: tannergolden/banners. Release: v1.5.0. Stars: 0. Forks: 0. Open issues: 0. Language: Python. License: MIT." src="assets/banners/header-day.svg">
 </picture>
 
 </div>
@@ -566,7 +566,7 @@ in `src/fonts/`.
   <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/banners/footer-narrow-dark.svg">
   <source media="(max-width: 585px)" srcset="assets/banners/footer-narrow-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/banners/footer-dark.svg">
-  <img alt="Drawn at both ends. Fetched at neither. Back to Top. Built with love by @tannergolden. Distributed under the MIT License. Last updated September 25, 2026." src="assets/banners/footer-day.svg">
+  <img alt="Drawn at both ends. Fetched at neither. Back to Top. Built with love by @tannergolden. Distributed under the MIT License. Last updated September 26, 2026." src="assets/banners/footer-day.svg">
 </picture>
 </a>
 
