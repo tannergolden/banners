@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Tanner Golden
 # SPDX-License-Identifier: MIT
-"""The blueprint elements: eight drawings a README makes from its own repository.
+"""The blueprint elements: seven drawings a README makes from its own repository.
 
 Every element is drawn on the banners' paper, in one of its prints, lettered
 in the same outlines, and comes in the variants a README needs: a wide file

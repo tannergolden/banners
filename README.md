@@ -249,7 +249,7 @@ the releases and the words on the certificate's ring, which are set in
 ### A page that uses every element
 
 [driftmark](examples/driftmark/README.md) is a made-up project whose README
-uses all eight, the placards and the seal included, drawn by the kit from
+uses all seven, the placards and the seal included, drawn by the kit from
 [`examples/driftmark/.github/elements.yml`](examples/driftmark/.github/elements.yml).
 The schematic is the one element that is written by hand from end to end:
 you name the boxes and say which connects to which, and the kit lays them
