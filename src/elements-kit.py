@@ -57,8 +57,11 @@ def load_lock(path: Path) -> dict:
 REQUIRED = {
     "schematic": ("boxes", "wires"), "instruments": ("histogram", "dial", "materials", "counters"),
     "milestones": ("events",), "roster": ("people",), "certificate": ("checks", "ring_top", "ring_bottom", "name"),
-    "placard": ("owner", "name", "desc", "cells"), "seal": ("ring_top", "ring_bottom", "name"),
+    "placard": ("owner", "name", "desc", "cells"),
 }
+# Kinds the kit once drew, and the release that retired each, so a data file that still names one is
+# told what happened rather than that the kind is unknown.
+RETIRED = {"plan": "1.3.0", "seal": "1.4.0"}
 
 
 def validate(data: dict, lock: dict) -> list[str]:
@@ -73,8 +76,8 @@ def validate(data: dict, lock: dict) -> list[str]:
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", eid):
             errors.append(f"{eid}: an element's id must be kebab-case")
         kind = d.get("kind")
-        if kind == "plan":
-            errors.append(f"{eid}: the plan element was retired in banners v1.3.0; delete it from the data file")
+        if kind in RETIRED:
+            errors.append(f"{eid}: the {kind} element was retired in banners v{RETIRED[kind]}; delete it from the data file")
             continue
         if kind not in E.KINDS:
             errors.append(f"{eid}: unknown kind {kind!r} (one of {', '.join(E.KINDS)})")
@@ -176,12 +179,14 @@ def file_name(eid: str, variant: str, theme: str) -> str:
 def render_all(data: dict, lock: dict) -> dict[str, str]:
     """{basename: svg} for every element, every variant, both themes."""
     tone = data.get("print", "blueprint")
+    elements = merged(data, lock)
+    half = E.half_height(elements)
     files = {}
-    for eid, d in merged(data, lock).items():
+    for eid, d in elements.items():
         kind = d["kind"]
         for variant in E.variants(kind, d):
             for theme in ("day", "dark"):
-                files[file_name(eid, variant, theme)] = E.draw(kind, d, tone, theme, variant)
+                files[file_name(eid, variant, theme)] = E.draw(kind, d, tone, theme, variant, height=half)
     return files
 
 

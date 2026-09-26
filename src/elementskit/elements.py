@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Tanner Golden
 # SPDX-License-Identifier: MIT
-"""The blueprint elements: seven drawings a README makes from its own repository.
+"""The blueprint elements: six drawings a README makes from its own repository.
 
 Every element is drawn on the banners' paper, in one of its prints, lettered
 in the same outlines, and comes in the variants a README needs: a wide file
@@ -32,7 +32,7 @@ from .layout import Box, route, snake, timeline
 
 KIT_VERSION = "1"
 THEMES = {"day": DAY, "dark": DARK}
-WIDE, NARROW, HALF, SEAL = 830, 360, 404, 180
+WIDE, NARROW, HALF = 830, 360, 404
 # Bytes a file may weigh. A sheet carries a repository's own content, so it
 # is allowed more than a banner; a card is a banner's link chip grown up.
 BUDGET = {"sheet": 72_000, "card": 32_000}
@@ -719,15 +719,21 @@ def _medallion(cv, col, p: dict, mx: float, my: float, r: float) -> None:
         cv.add(icon(p.get("icon", "package"), mx - s / 2, my - s / 2, s, col["ink"], 1.8))
 
 
-def roster(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
+def roster_height(d: dict) -> float:
+    """How tall the half-page roster is on its own: a row of two people per 74 units under the title."""
+    return 54 + math.ceil(len(d["people"]) / 2) * 74 + 6
+
+
+def roster(d: dict, tone: str, th: dict, variant: str = "wide", height: float | None = None) -> str:
     """The people who drew it, each in a medallion, with their count and their first and last."""
     people = d["people"]
     most = max(p["n"] for p in people)
     if variant != "wide":
-        # Half a page: two to a row, the way the cards go, and what a phone gets.
+        # Half a page: two to a row, the way the cards go, and what a phone gets. Drawn taller than it
+        # needs, to stand level with the certificate beside it, the rows sit in the middle of the room.
         W, B = HALF, 10
-        rows = math.ceil(len(people) / 2)
-        H = 54 + rows * 74 + 6
+        H = max(roster_height(d), height or 0)
+        pad = (H - roster_height(d)) / 2
         cv, col = new("roster", variant, th, tone, W, H, d.get("title", "Contributors"), d.get("desc", ""))
         sheet(cv, col, W=W, H=H, border=B, zones=4)
         title(cv, col, dict(W=W, B=B, narrow=True), "DRAWN BY", d.get("subject", ""))
@@ -736,7 +742,7 @@ def roster(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
         colw = (W - 2 * B) / 2
         for i, p in enumerate(people):
             r, cc = divmod(i, 2)
-            x, y = B + cc * colw, 62 + r * 74
+            x, y = B + cc * colw, 62 + pad + r * 74
             if cc:
                 cv.add(_open(col, f"M{f1(x)} {y - 4}V{y + 66}", .4, ' stroke-width=".8"'))
             if r:
@@ -820,9 +826,10 @@ def placard(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
     return cv.svg()
 
 
-# --- seal and certificate -------------------------------------------------------------------------
+# --- certificate --------------------------------------------------------------------------------
 
 def _seal(cv, col, cx, cy, d: dict, scale: float = 1.0):
+    """The stamp the certificate carries: two rings of lettering round a check, the name and the commit."""
     line = c(col["line"])
     cv.add(f'<g transform="translate({f1(cx)} {f1(cy)}) scale({fx(scale)}) translate({f1(-cx)} {f1(-cy)})">')
     cv.add(f'<circle cx="{cx}" cy="{cy}" r="82" fill="{paper(col)}" stroke="{line}" stroke-width="2"/>'
@@ -842,17 +849,17 @@ def _seal(cv, col, cx, cy, d: dict, scale: float = 1.0):
     cv.add("</g>")
 
 
-def seal(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
-    cv, col = new("seal", variant, th, tone, SEAL, SEAL, d.get("title", "Seal"), d.get("desc", ""))
-    _seal(cv, col, SEAL / 2, SEAL / 2, d)
-    return cv.svg()
+def certificate_height(d: dict) -> float:
+    """How tall the half-page certificate is on its own: room for the seal, or 29 units a check."""
+    return max(196, 66 + 29 * len(d["checks"]) + 14)
 
 
-def certificate(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
+def certificate(d: dict, tone: str, th: dict, variant: str = "wide", height: float | None = None) -> str:
     checks = d["checks"]
     if variant != "wide":
         W, B = HALF, 10
-        H = max(196, 66 + 29 * len(checks) + 14)
+        H = max(certificate_height(d), height or 0)
+        pad = (H - certificate_height(d)) / 2
         cv, col = new("certificate", variant, th, tone, W, H, d.get("title", "Conformance"), d.get("desc", ""))
         sheet(cv, col, W=W, H=H, border=B, zones=4, plain=((B, B, 150, H - 2 * B),))
         cv.add(f'<path d="M{B + 150} {B}V{H - B}" {hair(col, .85)} stroke-width="1.2"/>')
@@ -860,7 +867,7 @@ def certificate(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
         x0 = B + 150
         plate(cv, col, "CONFORMANCE", x0 + 14, 24)
         cv.add(_open(col, f"M{x0} 50H{W - B}", .55, ' stroke-width=".8"'))
-        y = 72
+        y = 72 + pad
         for label, evidence, *ok in checks:
             label, evidence = str(label), str(evidence)
             passed = ok[0] if ok else True   # a row written by hand is a claim; a measured row says
@@ -902,16 +909,27 @@ KINDS = {
     "roster": (roster, ("wide", "narrow"), "sheet"),
     "certificate": (certificate, ("wide", "narrow"), "sheet"),
     "placard": (placard, ("wide",), "card"),
-    "seal": (seal, ("wide",), "card"),
 }
+
+
+HALF_HEIGHTS = {"roster": roster_height, "certificate": certificate_height}
 
 
 def variants(kind: str, d: dict) -> tuple[str, ...]:
     """The files an element writes. `size: half` makes a roster or certificate one half-page file."""
     _, vs, _ = KINDS[kind]
-    if d.get("size") == "half" and kind in ("roster", "certificate"):
+    if d.get("size") == "half" and kind in HALF_HEIGHTS:
         return ("half",)
     return vs
+
+
+def half_height(elements: dict[str, dict]) -> float | None:
+    """The one height every half-page element on a page is drawn at: the tallest of them on its own.
+
+    A roster and a certificate are set side by side, and a pair whose members differ in height does
+    not read as a pair, so each is drawn as tall as the tallest, with its content in the middle."""
+    heights = [HALF_HEIGHTS[d["kind"]](d) for d in elements.values() if variants(d["kind"], d) == ("half",)]
+    return max(heights) if heights else None
 
 
 def describe(kind: str, d: dict) -> dict:
@@ -937,19 +955,21 @@ def describe(kind: str, d: dict) -> dict:
         failed = [str(r[0]) for r in rows if len(r) > 2 and not r[2]]
         d.setdefault("desc", f"{len(rows)} checks on {subject}, with the evidence for each"
                      + (f"; not met: {', '.join(failed)}." if failed else ", each met."))
-    elif kind == "seal":
-        d.setdefault("title", f"Seal: {subject}")
-        d.setdefault("desc", f"{d.get('ring_top', '')}, {d.get('ring_bottom', '')}.")
     elif kind == "placard":
         d.setdefault("title", f"{d.get('owner', '')}/{d.get('name', '')}")
     return d
 
 
-def draw(kind: str, d: dict, tone: str, theme: str, variant: str) -> str:
-    """One finished file, checked against the banners lint and this kit's budget."""
+def draw(kind: str, d: dict, tone: str, theme: str, variant: str, height: float | None = None) -> str:
+    """One finished file, checked against the banners lint and this kit's budget.
+
+    `height` is the page's shared half-page height, from `half_height`, and is used only by a half file."""
     fn, _, klass = KINDS[kind]
     d = describe(kind, d)
-    svg = fn(d, tone, THEMES[theme], "narrow" if variant == "half" else variant)
+    if variant == "half":
+        svg = fn(d, tone, THEMES[theme], "narrow", height=height)
+    else:
+        svg = fn(d, tone, THEMES[theme], variant)
     problems = lint(svg, budget=BUDGET[klass])
     if problems:
         raise ValueError(f"{kind} {variant} {theme}: " + "; ".join(problems))

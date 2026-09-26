@@ -256,19 +256,6 @@ Apache-2.0. See [`LICENSE`](LICENSE).
 > driftmark is a made-up project. It was invented to show every blueprint element in one README, and its
 > numbers, contributors and history are fictional. `api.example.com` is a reserved example domain.
 
-<div align="center">
-
-<!-- elements:stamp:start -->
-<a href="https://github.com/tannergolden/standards">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/stamp-dark.svg">
-  <img alt="Seal: driftmark conforms to tannergolden/standards. The seal the certificate is stamped with, on its own, for the foot of the page." src="assets/elements/stamp-day.svg">
-</picture>
-</a>
-<!-- elements:stamp:end -->
-
-</div>
-
 <!-- banners:footer:start -->
 <div align="center">
 

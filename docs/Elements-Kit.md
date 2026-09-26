@@ -1,6 +1,6 @@
 <!--
 title: '📐 ELEMENTS KIT'
-description: 'The body of a README, drawn for itself: a schematic, instruments, milestones, a roster, a certificate, placards and a seal, measured from the repository and drawn as committed SVGs.'
+description: 'The body of a README, drawn for itself: a schematic, instruments, milestones, a roster, a certificate and placards, measured from the repository and drawn as committed SVGs.'
 tags: [readme, documentation, svg, blueprint, github-actions, reusable-workflow, diagram, timeline]
 category: docs
 -->
@@ -13,7 +13,7 @@ category: docs
 
 **The body of a README, drawn for itself.**
 
-A schematic, instruments, milestones, a roster, a certificate, placards and a seal:
+A schematic, instruments, milestones, a roster, a certificate and placards:
 measured from the repository, drawn as committed SVGs, never fetched.
 
 </div>
@@ -46,7 +46,6 @@ itself current. Seven elements:
 | **roster**      | Each contributor in a medallion, with their commits, first and last                             | Renames, if any                        | The log, co-authors included         |
 | **certificate** | The checks a checkout can answer, each with its evidence, under the seal                        | The words on the ring                  | Licence, security policy, pins, commit style, CI |
 | **placard**     | A card for a related repository: description, language, release, with a link                    | Owner, name, cells                     | From GitHub, given a token           |
-| **seal**        | The certificate's stamp on its own                                                              | The ring, the name                     | Nothing                              |
 
 Every element is written as a **day** file and a **dark** file, and most as
 a **narrow** file for a phone. The README shows the right one through a
@@ -60,7 +59,7 @@ It is one stub in your repository and one kit here, beside the banners:
 | `.github/workflows/elements.yml`  | **The workflow.** Checkout, kit, commit, push. What your stub calls.                        |
 | `elements/action.yml`             | **The action.** Runs the kit against the calling repository.                                |
 | `src/elements-kit.py`             | **The kit.** `run`, `init`, `measure`, `render`, `check` and `snippets`.                     |
-| `src/elementskit/elements.py`     | **The seven elements**, drawn with the banners' drafting tools and lettered with its faces. |
+| `src/elementskit/elements.py`     | **The six elements**, drawn with the banners' drafting tools and lettered with its faces. |
 | `src/elementskit/layout.py`       | **The layouts.** Layering, orthogonal routing, and the time line.                          |
 | `src/elementskit/measure.py`      | **The measurement.** What is read from git and GitHub, written out in full.                 |
 
@@ -114,24 +113,22 @@ due.
 The people who drew it, each in a medallion with their commits and their
 first and last, co-authors counted. Beside it, the checks the repository is
 held to, each with the evidence for it, under the seal. Both are drawn at
-half a page, so they sit side by side.
+half a page and at one height, the taller of the two, so they sit side by
+side as a pair.
 
 <div align="center">
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/contributors-dark.svg"><img alt="Contributors to driftmark: four people, each with their commits and their first and last." src="../examples/driftmark/assets/elements/contributors-day.svg"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/conformance-dark.svg"><img alt="Conformance of driftmark: five checks, each passing, with the evidence for it." src="../examples/driftmark/assets/elements/conformance-day.svg"></picture>
 </div>
 
-### Placards and the seal
+### Placards
 
 A placard is a card for a related repository: its description, language and
-release, read from GitHub, linked to the page. The seal is the certificate's
-stamp on its own, for the foot of a page.
+release, read from GitHub, linked to the page.
 
 <div align="center">
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/action-dark.svg"><img alt="driftmark/action: runs a survey in CI and fails the pull request that makes a region drift past your threshold." src="../examples/driftmark/assets/elements/action-day.svg"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/terraform-probes-dark.svg"><img alt="driftmark/terraform-probes: deploys a probe to every region you list." src="../examples/driftmark/assets/elements/terraform-probes-day.svg"></picture>
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/stamp-dark.svg"><img alt="Seal: driftmark conforms to tannergolden/standards." src="../examples/driftmark/assets/elements/stamp-day.svg"></picture>
 </div>
 
 ### On a phone
@@ -179,9 +176,9 @@ you like, between `<!-- elements:ID:start -->` and
 Once a day it measures again and redraws whatever moved; a day on which
 nothing moved commits nothing.
 
-Then open the data file. Add a schematic by naming its boxes and wires, a
-placard by naming a repository, a seal by writing its ring. Give any element
-a `title:`, a `caption:` or a `desc:` of your own.
+Then open the data file. Add a schematic by naming its boxes and wires, or
+a placard by naming a repository. Give any element a `title:`, a `caption:`
+or a `desc:` of your own.
 [`examples/stub-elements.yml`](../examples/stub-elements.yml) is the stub
 above with its options; `commit: pr` opens one evolving pull request instead
 of pushing. It sits beside the banners' stub, and the two can share a
@@ -231,7 +228,7 @@ today: 2026-09-25         # optional: the date the measurement is as of, for a r
 
 elements:
   ID:                     # the file names and the README markers: letters, digits and dashes
-    kind: milestones      # one of the seven
+    kind: milestones      # one of the six
     title: ...            # the file's accessible title; a sensible one is written when you give none
     desc: ...             # its accessible description, likewise
     caption: ...          # the small words at the top right of a sheet
@@ -252,7 +249,6 @@ What each kind takes:
 | **roster**      | `measure: {most: 4, bots: true, rename: {match: {name, handle, initials}}}`   | `people` as `{name, handle, initials, n, first, last, icon}`                                                                                                                         |
 | **certificate** | `measure: {ci: main}`, the branch CI is read for, given a token               | `checks` as `[label, evidence]`, `ring_top`, `ring_bottom`, `name`, `commit`                                                                                                         |
 | **placard**     | `measure: {repo: owner/name}`, given a token                                  | `owner`, `name`, `desc`, `icon`, `cells` as three `[label, value]` pairs                                                                                                             |
-| **seal**        | Nothing                                                                       | `ring_top`, `ring_bottom`, `name`, `commit`                                                                                                                                          |
 
 The specimen's [`elements.yml`](../examples/driftmark/.github/elements.yml)
 writes every field of every kind by hand, since driftmark has no git history

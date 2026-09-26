@@ -43,8 +43,8 @@ time, nothing to rate-limit, and nothing to keep in step by hand.
 
 The banners are the two ends of the page. The **elements**, the second kit
 in this repository, are its body: a schematic, instruments, milestones,
-a roster, a certificate, placards and a seal, measured from git
-where they can be and drawn on the same paper. [Below](#-the-body-of-the-page)
+a roster, a certificate and placards, measured from git where they can
+be and drawn on the same paper. [Below](#-the-body-of-the-page)
 they are drawn for this repository itself.
 
 It is one stub in your repository for each kit, and both kits here:
@@ -200,7 +200,6 @@ most with a narrow file for a phone:
 | **roster**      | Each contributor in a medallion, with their commits, first and last                             | Renames, if any                   | The log, co-authors included                     |
 | **certificate** | The checks a checkout can answer, each with its evidence, under the seal                        | The words on the ring             | Licence, security policy, pins, commit style, CI |
 | **placard**     | A card for a related repository: description, language, release, with a link                    | Owner, name, cells                | From GitHub, given a token                       |
-| **seal**        | The certificate's stamp on its own                                                              | The ring, the name                | Nothing                                          |
 
 ### This repository, measured
 
@@ -249,7 +248,7 @@ the releases and the words on the certificate's ring, which are set in
 ### A page that uses every element
 
 [driftmark](examples/driftmark/README.md) is a made-up project whose README
-uses all seven, the placards and the seal included, drawn by the kit from
+uses all six, the placards included, drawn by the kit from
 [`examples/driftmark/.github/elements.yml`](examples/driftmark/.github/elements.yml).
 The schematic is the one element that is written by hand from end to end:
 you name the boxes and say which connects to which, and the kit lays them
@@ -261,8 +260,6 @@ gap in the wire, clear of every other one.
 <div align="center">
 <picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/action-dark.svg"><img alt="driftmark/action: runs a survey in CI and fails the pull request that makes a region drift past your threshold." src="examples/driftmark/assets/elements/action-day.svg"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/terraform-probes-dark.svg"><img alt="driftmark/terraform-probes: deploys a probe to every region you list." src="examples/driftmark/assets/elements/terraform-probes-day.svg"></picture>
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="examples/driftmark/assets/elements/stamp-dark.svg"><img alt="Seal: driftmark conforms to tannergolden/standards." src="examples/driftmark/assets/elements/stamp-day.svg"></picture>
 </div>
 
 ### Use them in your README
@@ -291,7 +288,7 @@ The first run writes `.github/elements.yml` with the four elements that need
 nothing written by hand, puts a pair of markers for each at the foot of your
 README, measures the repository, draws every element into `assets/elements/`
 and commits. Move the markers wherever you like. Then open the data file to
-add a schematic, a placard or a seal, or to caption what was measured.
+add a schematic or a placard, or to caption what was measured.
 [`examples/stub-elements.yml`](examples/stub-elements.yml) is the stub with
 its options, and [`docs/Elements-Kit.md`](docs/Elements-Kit.md) is the whole
 kit: every element, every field, and how it runs.
@@ -482,7 +479,7 @@ banners/
 │   │   ├── lock.py                   what persists between runs
 │   │   └── preview.py, page/         the preview page, running this package in the browser
 │   ├── elementskit/
-│   │   ├── elements.py               the seven elements, drawn with bannerkit's drafting tools
+│   │   ├── elements.py               the six elements, drawn with bannerkit's drafting tools
 │   │   ├── layout.py                 layering, orthogonal routing, the time line
 │   │   └── measure.py                what is read from git, and from GitHub for a placard
 │   └── fonts/                        glyph outlines and their OFL licences

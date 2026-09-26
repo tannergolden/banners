@@ -141,13 +141,3 @@ elements:
     link: https://github.com/driftmark/baselines-spec
     desc: The Parquet schema a baseline is written in, versioned, so any tool can read a survey's history.
     cells: [[Format, PARQUET], [Spec, V1], [License, CC-BY-4.0]]
-
-  stamp:
-    kind: seal
-    title: "Seal: driftmark conforms to tannergolden/standards"
-    desc: The seal the certificate is stamped with, on its own, for the foot of the page.
-    link: https://github.com/tannergolden/standards
-    ring_top: CONFORMS TO TANNERGOLDEN/STANDARDS
-    ring_bottom: "V1  ·  2026"
-    name: DRIFTMARK
-    commit: 4f2c9a1

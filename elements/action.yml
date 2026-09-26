@@ -11,9 +11,9 @@
 # this same checkout, so nothing is fetched to draw.
 name: 'Blueprint Elements'
 description: >-
-  A README's schematic, instruments, milestones, roster, certificate,
-  placards and seal, measured from the repository and drawn as committed
-  SVGs, never fetched.
+  A README's schematic, instruments, milestones, roster, certificate and
+  placards, measured from the repository and drawn as committed SVGs,
+  never fetched.
 author: 'Tanner Golden'
 branding:
   icon: 'layout'

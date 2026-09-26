@@ -74,7 +74,7 @@ class EveryFile(unittest.TestCase):
                 w = int(re.search(r'width="(\d+)"', E.draw(kind, d, "blueprint", "day", variant)).group(1))
                 if variant == "narrow":
                     self.assertLessEqual(w, 404, (eid, variant))
-                elif variant in ("wide", "still") and kind not in ("placard", "seal"):
+                elif variant in ("wide", "still") and kind != "placard":
                     self.assertEqual(w, 830, (eid, variant))
 
     def test_night_lettering_follows_the_print(self):
@@ -140,7 +140,7 @@ class Elements(unittest.TestCase):
     def test_alt_text_comes_from_the_data(self):
         d = K.merged(DATA, LOCK)["how-it-runs"]
         self.assertTrue(E.alt("schematic", d).startswith("Schematic of driftmark"))
-        self.assertEqual(E.alt("seal", {"alt": "The seal"}), "The seal")
+        self.assertEqual(E.alt("placard", {"alt": "The card"}), "The card")
 
     def test_a_ring_shrinks_to_fit_its_arc(self):
         d = dict(K.merged(DATA, LOCK)["conformance"], ring_top="A VERY MUCH LONGER RING OF LETTERING THAN THE ARC HAS ROOM FOR")
@@ -168,7 +168,7 @@ class Cli(unittest.TestCase):
     def test_render_then_check_passes(self):
         code, out = self.kit("render")
         self.assertEqual(code, 0, out)
-        self.assertEqual(len(list(self.out.glob("*.svg"))), 26)
+        self.assertEqual(len(list(self.out.glob("*.svg"))), 24)
         self.assertEqual(self.kit("check")[0], 0)
 
     def test_render_is_idempotent(self):
@@ -222,7 +222,7 @@ class Cli(unittest.TestCase):
     def test_snippets_prints_a_block_per_element_and_writes_nothing(self):
         code, out = self.kit("snippets")
         self.assertEqual(code, 0)
-        self.assertEqual(out.count("<!-- elements:"), 20)
+        self.assertEqual(out.count("<!-- elements:"), 18)
         self.assertFalse(self.out.exists())
 
     def test_a_missing_marker_is_reported_not_silently_skipped(self):
@@ -235,10 +235,27 @@ class Cli(unittest.TestCase):
         self.assertIn("has no markers for: vitals", out)
         self.assertTrue((self.out / "vitals-day.svg").exists(), "the file is still drawn")
 
-    def test_a_retired_plan_in_a_data_file_is_named_precisely(self):
-        errors = K.validate({"elements": {"layout": {"kind": "plan", "measure": {}}}}, {"measured": {}})
-        self.assertEqual(len(errors), 1)
-        self.assertIn("plan element was retired", errors[0])
+    def test_a_retired_kind_in_a_data_file_is_named_precisely(self):
+        for eid, kind, release in (("layout", "plan", "1.3.0"), ("stamp", "seal", "1.4.0")):
+            errors = K.validate({"elements": {eid: {"kind": kind, "measure": {}}}}, {"measured": {}})
+            self.assertEqual(len(errors), 1, kind)
+            self.assertIn(f"{kind} element was retired in banners v{release}", errors[0])
+
+    def test_half_page_elements_on_one_page_stand_at_one_height(self):
+        elements = K.merged(DATA, LOCK)
+        roster, cert = elements["contributors"], elements["conformance"]
+        alone = {k: E.draw(d["kind"], d, "blueprint", "day", "half") for k, d in (("roster", roster), ("cert", cert))}
+        heights = {k: int(re.search(r'height="(\d+)"', svg).group(1)) for k, svg in alone.items()}
+        self.assertNotEqual(heights["roster"], heights["cert"], "the pair differ on their own, which is the point")
+        shared = E.half_height(elements)
+        self.assertEqual(shared, max(heights.values()))
+        for d in (roster, cert):
+            svg = E.draw(d["kind"], d, "blueprint", "day", "half", height=shared)
+            self.assertEqual(int(re.search(r'height="(\d+)"', svg).group(1)), shared, d["kind"])
+        files = K.render_all(DATA, LOCK)
+        self.assertEqual(re.search(r'height="(\d+)"', files["contributors-day.svg"]).group(1),
+                         re.search(r'height="(\d+)"', files["conformance-day.svg"]).group(1))
+        self.assertIsNone(E.half_height({"a": {"kind": "placard"}}), "a page with no half elements shares nothing")
 
     def test_bad_data_fails_with_a_precise_message(self):
         data = self.root / ".github" / "elements.yml"
