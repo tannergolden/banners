@@ -3,9 +3,10 @@
 #
 # The body of a README, drawn for itself: the second product in this
 # repository, beside the banners at the root. A consumer's stub calls the
-# reusable workflow, which runs this action against their checkout:
+# banners' reusable workflow, which runs the banners' action and then this
+# one against their checkout, in one run:
 #
-#   uses: tannergolden/banners/.github/workflows/elements.yml@v1
+#   uses: tannergolden/banners/.github/workflows/banners.yml@v1
 #
 # The kit letters with the banners' outlines, which sit one folder up in
 # this same checkout, so nothing is fetched to draw.

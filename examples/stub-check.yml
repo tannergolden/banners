@@ -1,8 +1,9 @@
 # Put this beside the banners workflow, at .github/workflows/banners-check.yml,
-# to gate pull requests on the committed banners.
+# to gate pull requests on the committed banners, and on the elements where
+# there is a data file for them.
 #
-# check measures nothing and commits nothing. The kit redraws the banners
-# from the measurement the lock remembers and fails the job if any file or
+# check measures nothing and commits nothing. Each kit redraws its files
+# from the measurement its lock remembers and fails the job if any file or
 # README block differs from what it draws: a hand-edited SVG, a stale
 # block, a missing file, a config changed without a run. No token is used
 # and no permission is needed, so it runs on a pull request from a fork.
@@ -15,6 +16,9 @@ on:
       - 'README.md'
       - '.github/banners.yml'
       - '.github/banners.lock.json'
+      - 'assets/elements/**'
+      - '.github/elements.yml'
+      - '.github/elements.lock.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -33,5 +37,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: tannergolden/banners@v1 # zizmor: ignore[unpinned-uses] - first-party action on its moving major, the way every stub calls it.
+        with:
+          mode: check
+      - if: ${{ hashFiles('.github/elements.yml') != '' }}
+        uses: tannergolden/banners/elements@v1 # zizmor: ignore[unpinned-uses] - first-party action on its moving major, the way every stub calls it.
         with:
           mode: check

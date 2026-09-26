@@ -36,7 +36,7 @@ one rule.
 
 The goal is a README people enjoy, made without effort: one stub in your
 repository, a data file the first run writes for you, and a page that keeps
-itself current. Seven elements:
+itself current. Six elements:
 
 | Element         | What it draws                                                                                   | You write                              | It measures                          |
 | :-------------- | :---------------------------------------------------------------------------------------------- | :------------------------------------- | :----------------------------------- |
@@ -52,11 +52,11 @@ a **narrow** file for a phone. The README shows the right one through a
 `<picture>` element that follows the viewer's theme and width, the method
 GitHub documents. Nothing is fetched at view time.
 
-It is one stub in your repository and one kit here, beside the banners:
+It is the banners' stub in your repository and one kit here, beside them:
 
 | Part                              | Job                                                                                         |
 | :-------------------------------- | :------------------------------------------------------------------------------------------ |
-| `.github/workflows/elements.yml`  | **The workflow.** Checkout, kit, commit, push. What your stub calls.                        |
+| `.github/workflows/banners.yml`   | **The workflow.** The banners', which draws the elements after them. What your stub calls.  |
 | `elements/action.yml`             | **The action.** Runs the kit against the calling repository.                                |
 | `src/elements-kit.py`             | **The kit.** `run`, `init`, `measure`, `render`, `check` and `snippets`.                     |
 | `src/elementskit/elements.py`     | **The six elements**, drawn with the banners' drafting tools and lettered with its faces. |
@@ -146,43 +146,46 @@ take two rows. GitHub picks it below 585 pixels.
 
 ## 🚀 Use It In Your README
 
-Add this as `.github/workflows/elements.yml` in any repository. That stub is
-the whole interface.
+The elements are drawn by the banners' stub: one workflow draws the two
+ends of the page and then its body, in one run. Add this as
+`.github/workflows/banners.yml` in any repository. That stub is the whole
+interface.
 
 ```yaml
-name: Elements
+name: Banners
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions: {}
 
 jobs:
-  elements:
+  banners:
     permissions:
       contents: write
       pull-requests: write
-    uses: tannergolden/banners/.github/workflows/elements.yml@v1
+    uses: tannergolden/banners/.github/workflows/banners.yml@v1
 ```
 
-Run it once from the Actions tab. The first run writes
+Run it once from the Actions tab. After the banners, the first run writes
 `.github/elements.yml` with the four elements that need nothing written by
 hand (instruments, milestones, roster and certificate), puts a pair of
 markers for each at the foot of your README, measures the repository, draws
-every element into `assets/elements/` and commits. Move the markers wherever
-you like, between `<!-- elements:ID:start -->` and
-`<!-- elements:ID:end -->`; later runs rewrite only what is between them.
-Once a day it measures again and redraws whatever moved; a day on which
-nothing moved commits nothing.
+every element into `assets/elements/` and commits them under their own
+`chore(elements)` commit. Move the markers wherever you like, between
+`<!-- elements:ID:start -->` and `<!-- elements:ID:end -->`; later runs
+rewrite only what is between them. Once a day it measures again and redraws
+whatever moved; a day on which nothing moved commits nothing. `elements:
+false` on the stub leaves the body of the page alone, and a profile README,
+which has no repository to measure, gets none either way.
 
 Then open the data file. Add a schematic by naming its boxes and wires, or
 a placard by naming a repository. Give any element a `title:`, a `caption:`
 or a `desc:` of your own.
-[`examples/stub-elements.yml`](../examples/stub-elements.yml) is the stub
-above with its options; `commit: pr` opens one evolving pull request instead
-of pushing. It sits beside the banners' stub, and the two can share a
-repository: each writes only between its own markers.
+[`examples/stub-repository.yml`](../examples/stub-repository.yml) is the
+stub above with its options; `commit: pr` opens one evolving pull request
+instead of pushing, carrying both kits' changes.
 
 **Who the commit is by.** Each refresh is authored by
 [@tannergolden](https://github.com/tannergolden), the author of the drawing,
@@ -198,7 +201,8 @@ Elements are committed files, so they can be checked like any other. With
 redraws the elements from the measurement the lock remembers and fails if
 any file or README block differs from what the kit draws. No token is used,
 so it runs on a pull request from a fork:
-[`examples/stub-elements-check.yml`](../examples/stub-elements-check.yml).
+[`examples/stub-check.yml`](../examples/stub-check.yml) checks the banners
+and, where there is a data file, the elements.
 
 ### Or by hand
 

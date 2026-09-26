@@ -1,10 +1,19 @@
 # SPDX-FileCopyrightText: 2026 Tanner Golden
 # SPDX-License-Identifier: MIT
 #
-# The reusable workflow a consumer calls. Their repository holds a stub that
-# names the schedule and nothing else; the checkout, the measurement, the
-# drawing and the commit all happen here, so a fix lands once and reaches
-# every README pinned to @v1.
+# The reusable workflow a consumer calls, for both kits in this repository:
+# the banners at the two ends of the page, then the elements between them,
+# in one run on one checkout. Their repository holds a stub that names the
+# schedule and nothing else; the checkout, the measurement, the drawing and
+# the commit all happen here, so a fix lands once and reaches every README
+# pinned to @v1.
+#
+# The banners draw first and commit; the elements draw second, on the tree
+# the banners just committed, and commit on their own. Each commit is the
+# kit's own, with its own scope, so the log says which kit moved. A
+# rainbowprint's colour is chosen by the banners and read by the elements
+# from the lock the banners wrote a step earlier, which is why the two are
+# one job and not two.
 #
 # Called, never copied: nothing with behavior in it is pasted into the
 # consumer's tree.
@@ -38,6 +47,16 @@ on:
           Empty reads the config.
         type: string
         default: ''
+      elements:
+        description: >-
+          Draw the elements too, the body of the page, after the banners in
+          the same run: true by default. The first run writes
+          .github/elements.yml and the README's markers; later runs measure
+          and redraw. A profile README has no repository to measure, so
+          profile mode draws none whatever this says. false leaves the body
+          of the page alone.
+        type: boolean
+        default: true
       commit:
         description: 'push (default) commits to the current branch; pr opens or updates one pull request.'
         type: string
@@ -64,23 +83,32 @@ on:
         default: 'Tanner Golden <24684994+tannergolden@users.noreply.github.com>'
       check:
         description: >-
-          true only checks: the committed banners are redrawn from the
-          measurement the lock remembers and the run fails if any file or
-          README block differs. Nothing is measured, written or committed,
-          and no token is used. For pull-request CI.
+          true only checks: the committed banners, and the elements when
+          there is a data file, are redrawn from the measurement each lock
+          remembers and the run fails if any file or README block differs.
+          Nothing is measured, written or committed, and no token is used.
+          For pull-request CI.
         type: boolean
         default: false
     secrets:
       BANNERS_TOKEN:
         description: 'Optional token to measure with instead of GITHUB_TOKEN; nothing a banner shows needs one.'
         required: false
+      ELEMENTS_TOKEN:
+        description: >-
+          Optional token for the elements; only a placard for another
+          repository needs one. BANNERS_TOKEN serves when this is unset.
+        required: false
     outputs:
       changed:
-        description: "'true' when the run committed something."
+        description: "'true' when the run committed something, the banners or the elements."
         value: ${{ jobs.banners.outputs.changed }}
       summary:
         description: 'One line about the banners.'
         value: ${{ jobs.banners.outputs.summary }}
+      elements-changed:
+        description: "'true' when the elements were committed."
+        value: ${{ jobs.banners.outputs.elements-changed }}
 
 permissions: {}
 
@@ -89,25 +117,29 @@ jobs:
     name: '🪧 Measure and draw'
     runs-on: ubuntu-latest
     permissions:
-      contents: write # the SVGs, the README blocks and the lock
+      contents: write # the SVGs, the README blocks, the elements' data file and both locks
       pull-requests: write # only used when commit is pr
     outputs:
-      changed: ${{ steps.kit.outputs.changed }}
-      summary: ${{ steps.kit.outputs.summary }}
+      changed: ${{ steps.banners.outputs.changed == 'true' || steps.elements.outputs.changed == 'true' }}
+      summary: ${{ steps.banners.outputs.summary }}
+      elements-changed: ${{ steps.elements.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # The branch as it is NOW, not as it was when the run was queued: a job chained after
-          # another kit's job reads what that job committed, such as the colour a rainbowprint
-          # is drawn in, and the push below replays onto the tip anyway.
+          # The branch as it is NOW, not as it was when the run was queued,
+          # so a run chained after another kit's reads what it committed,
+          # and the push below replays onto the tip anyway.
           ref: ${{ github.ref_name }}
-          # The bot commits the drawing and the lock's weekly snapshot must
-          # land, so the checkout keeps credentials for the push below.
-          persist-credentials: true # zizmor: ignore[artipacked] - the push step below needs them, and nothing else runs after it.
+          # The roster, the histogram and the milestones read the whole log
+          # and every tag.
+          fetch-depth: 0
+          # The bot commits the drawings and the locks, so the checkout keeps
+          # credentials for the pushes below.
+          persist-credentials: true # zizmor: ignore[artipacked] - the push steps below need them, and nothing else runs after them.
 
       # A reusable workflow runs against the CALLER's checkout, so the kit is
-      # fetched beside it and run by local path. The folder is kept out of
-      # the commit below; nothing of it reaches the consumer's tree.
+      # fetched beside it and run by local path. The action keeps the folder
+      # out of git's view; nothing of it reaches the consumer's tree.
       - name: Fetch the kit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -116,7 +148,8 @@ jobs:
           path: .banners-kit
           persist-credentials: false
 
-      - id: kit
+      - id: banners
+        name: The banners
         uses: ./.banners-kit
         with:
           mode: ${{ inputs.check && 'check' || 'run' }}
@@ -134,20 +167,20 @@ jobs:
       # moves the date the footer shows. The message is the one the kit
       # wrote for this run: a Conventional Commit per tannergolden/standards,
       # with a scope, a body that says why, and the values that make it
-      # unique.
-      - name: Commit and push
-        if: ${{ steps.kit.outputs.changed == 'true' && inputs.commit != 'pr' }}
+      # unique. The kit's folder stays for the elements below; the action
+      # keeps it out of git's view, and the pathspec keeps it out for sure.
+      - name: Commit and push the banners
+        if: ${{ steps.banners.outputs.changed == 'true' && inputs.commit != 'pr' }}
         shell: bash
         env:
-          MESSAGE_FILE: ${{ steps.kit.outputs.commit-file }}
+          MESSAGE_FILE: ${{ steps.banners.outputs.commit-file }}
           AUTHOR: ${{ inputs.author }}
           BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          rm -rf .banners-kit
-          git add -A
+          git add -A -- . ':!.banners-kit'
           git commit --author="$AUTHOR" -F "$MESSAGE_FILE"
           # Another kit may have pushed since this run began: the umbrella in
           # tannergolden/markdown runs the kits in turn, and each writes only
@@ -157,27 +190,82 @@ jobs:
           git rebase "origin/$BRANCH"
           git push origin "HEAD:$BRANCH"
 
-      - name: Drop the kit before the pull request is cut
+      # The body of the page, on the tree the banners just committed. A
+      # profile README has no repository to measure, so it gets none; a check
+      # runs only where there is a data file to check against.
+      - id: elements
+        name: The elements
+        if: >-
+          ${{ inputs.elements
+              && (inputs.check && hashFiles('.github/elements.yml') != ''
+                  || !inputs.check && steps.banners.outputs.banner-mode != 'profile') }}
+        uses: ./.banners-kit/elements
+        with:
+          mode: ${{ inputs.check && 'check' || 'run' }}
+          token: ${{ secrets.ELEMENTS_TOKEN || secrets.BANNERS_TOKEN || github.token }}
+
+      # The elements' own commit, under their own scope, the same way.
+      - name: Commit and push the elements
+        if: ${{ steps.elements.outputs.changed == 'true' && inputs.commit != 'pr' }}
+        shell: bash
+        env:
+          MESSAGE_FILE: ${{ steps.elements.outputs.commit-file }}
+          AUTHOR: ${{ inputs.author }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A -- . ':!.banners-kit'
+          git commit --author="$AUTHOR" -F "$MESSAGE_FILE"
+          git fetch origin "$BRANCH"
+          git rebase "origin/$BRANCH"
+          git push origin "HEAD:$BRANCH"
+
+      # A pull request carries both kits' changes as one commit, titled by
+      # the banners when they moved and by the elements otherwise, with each
+      # kit's own message in the body.
+      - name: Drop the kit and word the pull request
         id: author
-        if: ${{ steps.kit.outputs.changed == 'true' && inputs.commit == 'pr' }}
+        if: ${{ (steps.banners.outputs.changed == 'true' || steps.elements.outputs.changed == 'true') && inputs.commit == 'pr' }}
         shell: bash
         env:
           AUTHOR: ${{ inputs.author }}
+          BANNERS_CHANGED: ${{ steps.banners.outputs.changed }}
+          BANNERS_TITLE: ${{ steps.banners.outputs.commit-title }}
+          BANNERS_BODY: ${{ steps.banners.outputs.commit-body }}
+          ELEMENTS_CHANGED: ${{ steps.elements.outputs.changed }}
+          ELEMENTS_TITLE: ${{ steps.elements.outputs.commit-title }}
+          ELEMENTS_BODY: ${{ steps.elements.outputs.commit-body }}
         run: |
           set -euo pipefail
           rm -rf .banners-kit
           # "Name <email>" split for git's author variables
           name="${AUTHOR%%<*}"
           email="${AUTHOR#*<}"
+          if [ "$BANNERS_CHANGED" = 'true' ] && [ "$ELEMENTS_CHANGED" = 'true' ]; then
+            title="$BANNERS_TITLE"
+            body="$BANNERS_BODY"$'\n\n'"Also the elements: $ELEMENTS_TITLE"$'\n\n'"$ELEMENTS_BODY"
+          elif [ "$BANNERS_CHANGED" = 'true' ]; then
+            title="$BANNERS_TITLE"
+            body="$BANNERS_BODY"
+          else
+            title="$ELEMENTS_TITLE"
+            body="$ELEMENTS_BODY"
+          fi
           {
             echo "name=${name% }"
             echo "email=${email%>}"
+            echo "title=$title"
+            echo "body<<EOF"
+            printf '%s\n' "$body"
+            echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
       # open-pr commits with git, so the author variables reach it and name
       # the same author as the push above; the committer stays its own.
       - name: Open or update the pull request
-        if: ${{ steps.kit.outputs.changed == 'true' && inputs.commit == 'pr' }}
+        if: ${{ (steps.banners.outputs.changed == 'true' || steps.elements.outputs.changed == 'true') && inputs.commit == 'pr' }}
         uses: tannergolden/standards/actions/open-pr@v1 # zizmor: ignore[unpinned-uses] - first-party action on its moving major, the way every stub calls standards.
         env:
           GIT_AUTHOR_NAME: ${{ steps.author.outputs.name }}
@@ -185,5 +273,5 @@ jobs:
         with:
           token: ${{ github.token }}
           branch: ${{ inputs.commit-branch }}
-          commit-title: ${{ steps.kit.outputs.commit-title }}
-          commit-body: ${{ steps.kit.outputs.commit-body }}
+          commit-title: ${{ steps.author.outputs.title }}
+          commit-body: ${{ steps.author.outputs.body }}

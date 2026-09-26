@@ -67,6 +67,9 @@ outputs:
   changed:
     description: "'true' when the run modified any tracked file."
     value: ${{ steps.run.outputs.changed }}
+  banner-mode:
+    description: "'profile' or 'repository': the mode the run resolved, from its measurement or the lock. Empty in preview."
+    value: ${{ steps.run.outputs.banner-mode }}
   summary:
     description: 'One line: the subject, the designs, and the figures they show.'
     value: ${{ steps.run.outputs.summary }}
@@ -155,3 +158,23 @@ runs:
         else
           echo "changed=false" >> "$GITHUB_OUTPUT"
         fi
+
+        # The mode the run resolved, for the workflow to decide what follows:
+        # a profile README has no repository for the elements to measure.
+        # Read from the measurement this run saved, else from the lock a
+        # check read; a preview has neither.
+        mode="$("$PY" - "$RUNNER_TEMP/banners-measurement.json" "$root/.github/banners.lock.json" <<'MODE'
+        import json, sys
+        for path in sys.argv[1:]:
+            try:
+                d = json.load(open(path, encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if isinstance(d, dict) and isinstance(d.get("last"), dict):
+                d = d["last"]
+            if isinstance(d, dict) and d.get("mode") in ("profile", "repository"):
+                print(d["mode"])
+                break
+        MODE
+        )"
+        echo "banner-mode=$mode" >> "$GITHUB_OUTPUT"

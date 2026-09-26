@@ -1,14 +1,16 @@
 # SPDX-FileCopyrightText: 2026 Tanner Golden
 # SPDX-License-Identifier: MIT
 #
-# This repository's own banners, in repository mode: the kit eating its own
-# cooking. It calls the reusable workflow by LOCAL path, so a change to the
-# workflow or the action is exercised by the tree that carries it, the way
-# standards' self-checks do, rather than by the last release.
+# This repository's own banners and elements, in repository mode: both
+# kits eating their own cooking. It calls the reusable workflow by LOCAL
+# path, so a change to the workflow, either action or either kit is
+# exercised by the tree that carries it, the way standards' self-checks do,
+# rather than by the last release.
 #
-# Once a day, at midnight. Every run measures everything again, so a run
-# GitHub delays or drops loses nothing: the next one catches up. A day on
-# which nothing the banners show has moved writes nothing.
+# Once a day, at midnight: the two ends of the page, then its body, in one
+# run. Every run measures everything again, so a run GitHub delays or drops
+# loses nothing: the next one catches up. A day on which nothing they show
+# has moved writes nothing.
 
 name: '🪧 Own Banners'
 
@@ -27,7 +29,7 @@ jobs:
   banners:
     if: ${{ !github.event.repository.is_template }}
     permissions:
-      contents: write # the SVGs, the README blocks and the lock
+      contents: write # the SVGs, the README blocks, the elements' data file and both locks
       pull-requests: write # only used with commit: pr
     uses: ./.github/workflows/banners.yml
     with:

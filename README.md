@@ -47,18 +47,17 @@ a roster, a certificate and placards, measured from git where they can
 be and drawn on the same paper. [Below](#-the-body-of-the-page)
 they are drawn for this repository itself.
 
-It is one stub in your repository for each kit, and both kits here:
+It is one stub in your repository, and both kits here:
 
 | Part                                | Job                                                                          |
 | :---------------------------------- | :--------------------------------------------------------------------------- |
-| `.github/workflows/banners.yml`     | **The workflow.** Checkout, kit, commit, push. What your stub calls.         |
+| `.github/workflows/banners.yml`     | **The workflow.** Checkout, both kits, commit, push. What your stub calls.   |
 | `action.yml`                        | **The action.** Runs the kit against the calling repository.                 |
 | `src/banner-kit.py`                 | **The kit.** Measures over GitHub's API and draws the SVGs. Stdlib only.     |
 | `src/bannerkit/measure.py`          | **The measurement.** What is read from GitHub, written out in full.          |
 | `src/bannerkit/compose.py`          | **The composition.** What each field says: your config's words, or GitHub's. |
-| `.github/workflows/elements.yml`    | **The elements' workflow.** The banners' twin, for the body of the page.     |
 | `elements/action.yml`               | **The elements' action.** Runs the elements kit against the caller.          |
-| `src/elements-kit.py`               | **The elements kit.** Seven elements, measured from git, drawn on the paper. |
+| `src/elements-kit.py`               | **The elements kit.** Six elements, measured from git, drawn on the paper.   |
 | `.github/workflows/cut-release.yml` | **The release.** Cuts `vX.Y.Z` and moves `v1`, by calling the standards.     |
 
 **Called, never copied.** Your repository holds a stub that names the
@@ -191,7 +190,7 @@ A header and a footer frame a README; what a reader looks for sits between
 them. The elements kit draws that too, from what the repository can measure
 about itself, as engineering drawings on the same paper: how the code is laid
 out, how it runs, who drew it, how it has been released, and which checks it
-passes. Seven elements, each a committed SVG in a day file and a dark file,
+passes. Six elements, each a committed SVG in a day file and a dark file,
 most with a narrow file for a phone:
 
 | Element         | What it draws                                                                                   | You write                         | It measures                                      |
@@ -206,9 +205,9 @@ most with a narrow file for a phone:
 ### This repository, measured
 
 The four below are this repository, read from its git history by
-[`📐 Own Elements`](.github/workflows/own-elements.yml) at eight in the
-morning, eight hours after [`🪧 Own Banners`](.github/workflows/own-banners.yml)
-reads it at midnight. Nothing in them is written by hand except the notes on
+[`🪧 Own Banners`](.github/workflows/own-banners.yml) at midnight, in the
+same run that draws the two ends of the page, right after them. Nothing in
+them is written by hand except the notes on
 the releases and the words on the certificate's ring, which are set in
 [`.github/elements.yml`](.github/elements.yml).
 
@@ -266,34 +265,17 @@ gap in the wire, clear of every other one.
 
 ### Use them in your README
 
-The elements' stub is the banners' twin, and the two can share a repository,
-since each writes only between its own markers:
-
-```yaml
-name: Elements
-on:
-  schedule:
-    - cron: '0 8 * * *'
-  workflow_dispatch:
-
-permissions: {}
-
-jobs:
-  elements:
-    permissions:
-      contents: write
-      pull-requests: write
-    uses: tannergolden/banners/.github/workflows/elements.yml@v1
-```
-
-The first run writes `.github/elements.yml` with the four elements that need
-nothing written by hand, puts a pair of markers for each at the foot of your
-README, measures the repository, draws every element into `assets/elements/`
-and commits. Move the markers wherever you like. Then open the data file to
-add a schematic or a placard, or to caption what was measured.
-[`examples/stub-elements.yml`](examples/stub-elements.yml) is the stub with
-its options, and [`docs/Elements-Kit.md`](docs/Elements-Kit.md) is the whole
-kit: every element, every field, and how it runs.
+The banners' stub draws them: one workflow draws the two ends of the page
+and then its body, in one run, so a stub that calls it gets both. After
+the banners, the first run writes `.github/elements.yml` with the four
+elements that need nothing written by hand, puts a pair of markers for each
+at the foot of your README, measures the repository, draws every element
+into `assets/elements/` and commits them under their own `chore(elements)`
+commit. Move the markers wherever you like. Then open the data file to add
+a schematic or a placard, or to caption what was measured. `elements:
+false` on the stub leaves the body of the page alone.
+[`docs/Elements-Kit.md`](docs/Elements-Kit.md) is the whole kit: every
+element, every field, and how it runs.
 
 ---
 
@@ -301,7 +283,8 @@ kit: every element, every field, and how it runs.
 
 Add this as `.github/workflows/banners.yml` in any repository. That stub is
 the whole interface: with no config at all, the README gets H2 Section over
-F1 Title block, in blueprint, every word and figure read from GitHub.
+F1 Title block, in blueprint, every word and figure read from GitHub, and
+[the body of the page](#-the-body-of-the-page) drawn between them.
 
 ```yaml
 name: Banners
@@ -324,8 +307,10 @@ Run it once from the Actions tab. The first run puts the header block at the
 top of your README and the footer block at its foot, between
 `<!-- banners:header:start -->` and `<!-- banners:header:end -->` and the
 footer's pair (move the markers wherever you like; later runs rewrite only
-what is between them), draws into `assets/banners/`, and commits. Nothing is
-copied into your repository except that stub.
+what is between them), draws into `assets/banners/`, and commits. Then, in
+the same run, the elements: their data file, their markers at the foot of
+the README, their drawings under `assets/elements/`, and a commit of their
+own. Nothing is copied into your repository except that stub.
 
 **Who the commit is by.** Each refresh is authored by
 [@tannergolden](https://github.com/tannergolden), the author of the drawing,
@@ -461,10 +446,8 @@ and it prunes: a file the plan no longer names is deleted.
 banners/
 ├── action.yml                        the banners' composite action
 ├── elements/action.yml               the elements' composite action
-├── .github/workflows/banners.yml     the reusable workflow a banners stub calls
-├── .github/workflows/elements.yml    the reusable workflow an elements stub calls
-├── .github/workflows/own-banners.yml this README's own banners, at its own commit
-├── .github/workflows/own-elements.yml this README's own elements, likewise
+├── .github/workflows/banners.yml     the reusable workflow a stub calls: the banners, then the elements
+├── .github/workflows/own-banners.yml this README's own banners and elements, at its own commit
 ├── .github/workflows/cut-release.yml cuts a version and moves v1, via the standards
 ├── .github/banners.yml               this README's own banners config, and its lock beside it
 ├── .github/elements.yml              this README's own elements data, and its lock beside it

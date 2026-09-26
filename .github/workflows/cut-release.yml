@@ -49,5 +49,5 @@ jobs:
     with:
       version: ${{ inputs.version }}
       move-major: ${{ inputs.move-major }}
-      required-files: '.github/workflows/banners.yml action.yml src/banner-kit.py src/bannerkit/plan.py src/fonts/glyphs.json src/fonts/glyphs-extra.json .github/workflows/elements.yml elements/action.yml src/elements-kit.py src/elementskit/elements.py src/fonts/jetbrains-mono.json'
+      required-files: '.github/workflows/banners.yml action.yml src/banner-kit.py src/bannerkit/plan.py src/fonts/glyphs.json src/fonts/glyphs-extra.json elements/action.yml src/elements-kit.py src/elementskit/elements.py src/fonts/jetbrains-mono.json'
       check-command: 'make check'

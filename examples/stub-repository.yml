@@ -2,7 +2,10 @@
 # README gets a header and a footer that read the repository: its name and
 # description, and along the header's foot the release, stars, forks, open
 # issues, language and licence; in the footer, when a person last changed
-# it. Once a day it measures again and redraws whatever moved.
+# it; and between them the body of the page, the elements: commits per
+# week, the releases on a time line, who drew it and the checks it passes,
+# measured from git. Once a day it measures again and redraws whatever
+# moved.
 #
 # GITHUB_TOKEN already reads everything about its own repository, private
 # or not, so no extra token is needed.
@@ -24,4 +27,5 @@ jobs:
     with:
       mode: repository
       # theme: rainbowprint # or blueprint, the default; redprint, yellowprint and the rest of the spectrum
+      # elements: false # to draw the two ends of the page and leave its body alone
       commit: pr # or push, the default, to commit straight to the branch

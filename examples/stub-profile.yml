@@ -7,7 +7,9 @@
 # language and the year you joined. Once a day it measures again, and when
 # anything moved it redraws the SVGs and commits them. Nothing is copied
 # into your repository and there is no generator to keep current: a fix in
-# tannergolden/banners reaches you the moment v1 moves.
+# tannergolden/banners reaches you the moment v1 moves. A profile has no
+# repository to measure, so the elements, the body of a page, are not
+# drawn here.
 name: Banners
 
 on:
