@@ -57,51 +57,6 @@ elements:
       parts: [[RUST, 1284000], [MARKDOWN, 212000], [YAML, 61000], [OTHER, 82000]]
     counters: [[CRATES, 7], [REGIONS, 24], [TESTS, 612]]
 
-  layout:
-    kind: plan
-    title: Plan of driftmark
-    desc: "The repository as a floor plan: 286 tracked files in a Rust workspace of seven crates."
-    caption: "LEVEL 0: THE WORKSPACE ROOT  ·  NOT TO SCALE"
-    total: 286
-    entrance: "ENTRANCE  ·  README.MD"
-    rooms:
-      - key: crates
-        label: CRATES/
-        count: 148
-        lines: [[probe/, 31], [collector/, 28], [scheduler/, 19], [report/, 22], [baseline/, 17], [alert/, 14], [cli/, 17]]
-      - key: docs
-        label: DOCS/
-        count: 41
-        lines: [[guide/, 14], [reference/, 19], [adr/, 6], [README.md, ""], [SUMMARY.md, ""]]
-        notes: [[3, 0]]
-      - key: tests
-        label: TESTS/
-        count: 36
-        lines: [[integration/, 22], [regions/, 11], [fixtures.rs, ""]]
-      - key: deploy
-        label: DEPLOY/
-        count: 23
-        lines: [[terraform/, 17], [docker/, 4], [helm/, 2]]
-        notes: [[2, 0]]
-      - key: github
-        label: .GITHUB/
-        count: 14
-        lines: [[workflows/, 9], [ISSUE_TEMPLATE/, ""]]
-    lobby:
-      count: 10
-      lines: [[README.md, ""], [Cargo.toml, ""], [Cargo.lock, ""]]
-      far: [LICENSE, CHANGELOG.md, +5 DOTFILES]
-      notes: [[1, 1]]
-    closets:
-      - {label: EXAMPLES/, count: 6}
-      - {label: BENCHES/, count: 4}
-      - {label: FUZZ/, count: 3}
-      - {label: .CARGO/, count: 1}
-    notes:
-      - [1, "THE WORKSPACE: SEVEN CRATES, ONE BINARY"]
-      - [2, DEPLOYS A PROBE TO EACH REGION]
-      - [3, START HERE]
-
   history:
     kind: milestones
     title: Milestones of driftmark

@@ -150,9 +150,8 @@ the pull request that makes a region drift:
 
 ## The Repository
 
-Three sheets, drawn by CI from the repository itself and committed with it, so they are as current as the
-last push. The vitals are measured from `git log` and the tree, the plan from the tracked files, and the
-history from the tags.
+Two sheets, drawn by CI from the repository itself and committed with it, so they are as current as the
+last push. The vitals are measured from `git log` and the tree, and the history from the tags.
 
 ### Vitals
 
@@ -164,20 +163,6 @@ history from the tags.
   <img alt="Instruments for driftmark. 235 commits over ten weeks, tracked bytes by file type, seven days since v1.4.0, and 7 crates, 24 regions and 612 tests counted." src="assets/elements/vitals-day.svg">
 </picture>
 <!-- elements:vitals:end -->
-
-### Layout
-
-A Rust workspace of seven crates. Start at the entrance, `README.md`, then `docs/guide/`; the probe
-deploys from `deploy/terraform/`.
-
-<!-- elements:layout:start -->
-<picture>
-  <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/layout-narrow-dark.svg">
-  <source media="(max-width: 585px)" srcset="assets/elements/layout-narrow-day.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/layout-dark.svg">
-  <img alt="Plan of driftmark. The repository as a floor plan: 286 tracked files in a Rust workspace of seven crates." src="assets/elements/layout-day.svg">
-</picture>
-<!-- elements:layout:end -->
 
 ### History
 

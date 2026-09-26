@@ -1,6 +1,6 @@
 # Put this at .github/workflows/elements.yml in any repository. The first
-# run writes .github/elements.yml with the five elements that need nothing
-# written by hand (instruments, plan, milestones, roster and certificate),
+# run writes .github/elements.yml with the four elements that need nothing
+# written by hand (instruments, milestones, roster and certificate),
 # puts a pair of markers for each at the foot of the README, measures the
 # repository, draws every element into assets/elements/ and commits. Move
 # the markers wherever you like; later runs rewrite only what is between

@@ -28,7 +28,7 @@ from bannerkit.draw import icon
 from bannerkit.palette import ICONS
 from bannerkit.text import cap_height, f1, fit, flow, fx, width
 
-from .layout import Box, Room, doors, route, snake, snap, squarify, timeline
+from .layout import Box, route, snake, timeline
 
 KIT_VERSION = "1"
 THEMES = {"day": DAY, "dark": DARK}
@@ -516,206 +516,6 @@ def instruments(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
     return cv.svg()
 
 
-# --- plan ---------------------------------------------------------------------------------------
-
-WALL, OUTER = 6, 8   # wall thickness, in px: the poché is drawn this wide
-
-
-def _plan_rooms(d: dict, narrow: bool, x0: float, y0: float, x1: float) -> tuple[list[Room], dict, float]:
-    """Rooms weighted by the area their listing needs, packed as square as a few tries can make them.
-
-    The rooms come biggest first and the lobby last, which puts the lobby on
-    the plan's bottom wall, where its entrance goes. The lobby's weight and
-    the closets' place are tried a few ways and the packing with the least
-    stretched room is kept: a treemap's last item is otherwise a strip.
-    """
-    col_w = 150 if narrow else 170
-
-    def need(lines: int, far: int = 0) -> float:
-        return (44 + 14 * max(min(lines, 6), 1, far) + 10) * col_w
-
-    ordered = sorted(d.get("rooms", ()), key=lambda r: -r["count"])
-    lobby = d.get("lobby") or {"count": 0, "lines": []}
-    spec = {r["key"]: r for r in ordered}
-    spec["lobby"] = dict(lobby, key="lobby", label=lobby.get("label", "LOBBY"))
-    closets = d.get("closets") or ()
-    closet_w = (38 * math.ceil(len(closets) / 2) + 6) * 130 if closets else 0
-    best = None
-    for lobby_w in (need(len(lobby.get("lines", ())), len(lobby.get("far", ()))), need(4), need(3), need(6)):
-        for closet_at in ((len(ordered), len(ordered) - 1, max(len(ordered) - 2, 0)) if closets else (None,)):
-            rooms = [Room(r["key"], need(len(r.get("lines", ())))) for r in ordered]
-            if closets:
-                rooms.insert(closet_at, Room("closets", closet_w))
-            rooms.append(Room("lobby", lobby_w))
-            ph = max(248, round(sum(r.weight for r in rooms) * 1.08 / (x1 - x0) / 2) * 2)
-            squarify(rooms, x0, y0, x1 - x0, ph)
-            snap(rooms)
-            worst = max(max(r.w / r.h, r.h / r.w) for r in rooms)
-            lob = next(r for r in rooms if r.key == "lobby")
-            if abs(lob.y + lob.h - (y0 + ph)) > 1:
-                worst += 10   # the entrance wants the lobby on the bottom wall
-            if best is None or worst < best[0]:
-                best = (worst, rooms, ph)
-    _, rooms, ph = best
-    return rooms, spec, ph
-
-
-def _room(cv, col, room: Room, spec: dict, narrow: bool) -> None:
-    x, y, w, h = room.rect
-    inset = 13
-    label = str(spec["label"])
-    ls_ = fit(label, "num", w - 2 * inset - 4, 11 if narrow else 12.5, 8, 1)
-    say(cv, label, x=x + inset, y=y + 21, col=col, size=ls_, face="num", ls=1)
-    n = spec["count"]
-    count = f"{n} FILE{'S' if n != 1 else ''}"
-    far = [str(f) for f in spec.get("far", ())]
-    if width(label, "num", ls_, 1) + width(count, "meta", 7.5, 1.1) + 2 * inset + 12 <= w:
-        say(cv, count, x=x + w - 12, y=y + 21, col=col, size=7.5, anchor="end", ls=1.1, op=.66)
-    else:
-        far = [count] + far
-    cv.add(_open(col, f"M{f1(x + inset)} {f1(y + 27)}H{f1(x + w - 12)}", .3))
-    lines = [(str(a), str(b)) for a, b in spec.get("lines", ())]
-    fits = min(max(0, int((h - 41 - 6) // 14)), int(spec.get("most", 6)))
-    if len(lines) > fits:
-        lines = lines[:max(fits - 1, 0)] + ([("", f"+{len(spec['lines']) - max(fits - 1, 0)} MORE")] if fits else [])
-    wide_enough = w >= 190
-    if far and far[0] == count and not wide_enough and len(lines) < fits:
-        lines.append(("", count))   # the header had no room for it, and there is no far column to take it
-    yy = y + 41
-    for i, (name, extra) in enumerate(lines):
-        room = w - inset - 2 - 12 - (width(extra, "mono", 8) + 8 if extra else 0)
-        chars = max(4, int(room / mono_advance(9)))
-        if name:
-            shown = name if len(name) <= chars else name[:chars - 1] + "~"
-            say(cv, shown, x=x + inset + 2, y=yy, col=col, size=9, face="mono", op=.9)
-        if extra and (name or not wide_enough or not far):
-            say(cv, extra, x=x + w - 12, y=yy, col=col, size=8 if name else 7.5, face="mono" if name else "meta",
-                anchor="end", op=.6, ls=0 if name else 1)
-        for num, at in spec.get("notes", ()):
-            if name and (at == i or (isinstance(at, str) and at in (name, extra))):
-                bx = x + inset + 2 + width(shown, "mono", 9) + 10
-                if bx + 8 < x + w - 12 - (width(extra, "mono", 8) + 6 if extra else 0):
-                    bubble(cv, col, num, bx, yy - 3.2)
-        yy += 14
-    if wide_enough:
-        for i, name in enumerate(far[:fits]):
-            if i < len(lines) and lines[i][1] and lines[i][0]:
-                continue   # the near column's own extra sits there
-            say(cv, name, x=x + w - 12, y=y + 41 + 14 * i, col=col, size=9 if not name.endswith("FILES") else 7.5,
-                face="mono" if not name.endswith("FILES") else "meta", anchor="end", op=.6,
-                ls=1 if name.endswith("FILES") else 0)
-
-
-def _closets(cv, col, room: Room, closets: list) -> None:
-    x, y, w, h = room.rect
-    cols = 2 if w >= 100 else 1
-    cw, ch = w / cols, 38
-    rows = max(1, int(h // ch))
-    shown = closets[:cols * rows]
-    for i, cl in enumerate(shown):
-        r, cc = divmod(i, cols)
-        cx, cy = x + cc * cw + cw / 2, y + r * ch
-        if i:
-            cv.add(_open(col, f"M{f1(x + cc * cw)} {f1(cy)}h{f1(cw)}" if cc == 0 else
-                         f"M{f1(x + cc * cw)} {f1(cy)}v{f1(ch)}", .4))
-        label = cl["label"]
-        s = fit(label, "meta", cw - 8, 6.8, 5.5, .5)
-        say(cv, label, x=cx, y=cy + 16, col=col, size=s, anchor="middle", ls=.5, op=.8)
-        say(cv, str(cl["count"]), x=cx, y=cy + 29, col=col, size=8.5, face="mono", anchor="middle", op=.6)
-    if len(closets) > len(shown):
-        say(cv, f"+{len(closets) - len(shown)}", x=x + w - 6, y=y + h - 6, col=col, size=7, anchor="end", op=.6)
-
-
-def plan(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
-    """The repository as a floor plan: rooms behind poché walls, doors, the lobby and its entrance."""
-    g = geometry(variant)
-    W, B, narrow = g["W"], g["B"], g["narrow"]
-    if narrow:
-        x0, y0, x1 = B + 14, 84, W - B - 14
-    else:
-        x0, y0, x1 = 48, 86, W - 48
-    rooms, spec, ph = _plan_rooms(d, narrow, x0, y0, x1)
-    y1 = y0 + ph
-    ns = list(d.get("notes", ()))
-    note_rows, xx = (1 if ns else 0), x0 + 48
-    for _, text in ns:
-        w = 17 + width(str(text), "meta", 8 if narrow else 8.5, 1)
-        if xx + w > W - B - 12 and xx > x0 + 48:
-            xx, note_rows = x0 + 48, note_rows + 1
-        xx += w + 22
-    H = y1 + 48 + 14 * max(note_rows, 1)
-    cv, col = new("plan", variant, th, tone, W, H, d.get("title", "Plan"), d.get("desc", ""))
-    sheet(cv, col, W=W, H=H, border=B, zones=g["zones"])
-    title(cv, col, g, "PLAN", d.get("subject", ""), d.get("caption", ""))
-    dimension(cv, col, left=x0, right=x1, y=y0 - 18, near=y0 - 5, label=f"{d['total']} TRACKED FILES")
-    line = c(col["line"])
-    poche = hatch(cv, col, 45, 3.4, 1.0, 1.0)
-
-    def rect_path(x, y, w, h, o=0.0):
-        return f"M{f1(x - o)} {f1(y - o)}h{f1(w + 2 * o)}v{f1(h + 2 * o)}h{f1(-w - 2 * o)}z"
-
-    inner = "".join(rect_path(*r.rect) for r in rooms)
-    cv.add(f'<path d="{inner}" fill="none" stroke="url(#{poche})" stroke-width="{WALL}"/>'
-           + _open(col, "".join(rect_path(*r.rect, o) for r in rooms for o in (-WALL / 2, WALL / 2)), .95))
-    cv.add(f'<path d="{rect_path(x0, y0, x1 - x0, ph)}" fill="none" stroke="url(#{poche})" stroke-width="{OUTER}"/>'
-           + _open(col, "".join(rect_path(x0, y0, x1 - x0, ph, o) for o in (-OUTER / 2, OUTER / 2)), .95,
-                   ' stroke-width="1.1"'))
-    pc = paper(col)
-    lobby = next(r for r in rooms if r.key == "lobby")
-    ex_w = 24
-    if abs(lobby.y + lobby.h - y1) < 1:
-        entrance = (lobby.x + lobby.w / 2 - ex_w / 2, y1, True, ex_w, -1)
-        arrow = ("bottom", lobby.x + lobby.w / 2)
-    elif abs(lobby.x + lobby.w - x1) < 1:
-        entrance = (x1, lobby.y + lobby.h / 2 - ex_w / 2, False, ex_w, -1)
-        arrow = ("right", lobby.y + lobby.h / 2)
-    elif abs(lobby.y - y0) < 1:
-        entrance = (lobby.x + lobby.w / 2 - ex_w / 2, y0, True, ex_w, 1)
-        arrow = ("top", lobby.x + lobby.w / 2)
-    else:
-        entrance = (x0, lobby.y + lobby.h / 2 - ex_w / 2, False, ex_w, 1)
-        arrow = ("left", lobby.y + lobby.h / 2)
-    for x, y, horizontal, w, swing in doors(rooms) + [entrance]:
-        flag, t = (1 if swing > 0 else 0), OUTER + 2
-        if horizontal:
-            cv.add(f'<rect x="{f1(x)}" y="{f1(y - t / 2)}" width="{f1(w)}" height="{t}" fill="{pc}"/>',
-                   _open(col, f"M{f1(x)} {f1(y)}v{f1(-w * swing)}M{f1(x)} {f1(y - w * swing)}"
-                              f"a{f1(w)} {f1(w)} 0 0 {flag} {f1(w)} {f1(w * swing)}", .8))
-        else:
-            cv.add(f'<rect x="{f1(x - t / 2)}" y="{f1(y)}" width="{t}" height="{f1(w)}" fill="{pc}"/>',
-                   _open(col, f"M{f1(x)} {f1(y)}h{f1(w * swing)}M{f1(x + w * swing)} {f1(y)}"
-                              f"a{f1(w)} {f1(w)} 0 0 {flag} {f1(-w * swing)} {f1(w)}", .8))
-    for r in rooms:
-        if r.key == "closets":
-            _closets(cv, col, r, d["closets"])
-        else:
-            _room(cv, col, r, spec[r.key], narrow)
-    label = d.get("entrance", "ENTRANCE")
-    side, at = arrow
-    if side == "bottom":
-        cv.add(_open(col, f"M{f1(at)} {y1 + 34}V{y1 + 13}"), arrowhead(at, y1 + 9, -1, col, vertical=True))
-        say(cv, label, x=at + 10, y=y1 + 31, col=col, size=8.5, ls=1.2, op=.85,
-            anchor="start" if at + 10 + width(label, "meta", 8.5, 1.2) < W - B - 10 else "end")
-    elif side == "top":
-        cv.add(_open(col, f"M{f1(at)} {y0 - 30}V{y0 - 13}"), arrowhead(at, y0 - 9, 1, col, vertical=True))
-    else:
-        xa = min(x1 + 12, W - B - 5) if side == "right" else max(x0 - 12, B + 5)
-        cv.add(_open(col, f"M{f1(xa)} {f1(at - 20)}V{f1(at - 6)}"), arrowhead(xa, at - 3, 1, col, vertical=True))
-    if side != "bottom":
-        ns = [("", label)] + ns
-    cv.add(icon("compass", x0 - 2, y1 + 14, 22, col["ink"], 1.6))
-    say(cv, "N", x=x0 + 9, y=y1 + 46, col=col, size=8, anchor="middle", ls=1)
-    items = [(n, t) for n, t in ns if n]
-    plain = [t for n, t in ns if not n]
-    yy = y1 + 39
-    for t in plain:
-        say(cv, t, x=x0 + 48, y=yy, col=col, size=8.5, ls=1.2, op=.85)
-        yy += 14
-    if items:
-        notes(cv, col, items, x=x0 + 48, y=yy, right=W - B - 12, size=8.5 if not narrow else 8)
-    return cv.svg()
-
-
 # --- milestones ---------------------------------------------------------------------------------
 
 def _date(s) -> dt.date:
@@ -1098,7 +898,6 @@ def certificate(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
 KINDS = {
     "schematic": (schematic, ("wide", "narrow"), "sheet"),
     "instruments": (instruments, ("wide", "narrow"), "sheet"),
-    "plan": (plan, ("wide", "narrow"), "sheet"),
     "milestones": (milestones, ("wide", "narrow"), "sheet"),
     "roster": (roster, ("wide", "narrow"), "sheet"),
     "certificate": (certificate, ("wide", "narrow"), "sheet"),
@@ -1125,9 +924,6 @@ def describe(kind: str, d: dict) -> dict:
     elif kind == "instruments":
         d.setdefault("title", f"Instruments for {subject}")
         d.setdefault("desc", f"Commits per week, days since the last release, tracked bytes by file type and counts for {subject}.")
-    elif kind == "plan":
-        d.setdefault("title", f"Plan of {subject}")
-        d.setdefault("desc", f"{subject} as a floor plan: {d.get('total', 0)} tracked files in {len(d.get('rooms', ()))} rooms and a lobby.")
     elif kind == "milestones":
         n = sum(1 for e in d.get("events", ()) if not e.get("next") and not e.get("made"))
         d.setdefault("title", f"Milestones of {subject}")

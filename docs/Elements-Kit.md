@@ -1,7 +1,7 @@
 <!--
 title: '📐 ELEMENTS KIT'
-description: 'The body of a README, drawn for itself: a schematic, instruments, a floor plan, milestones, a roster, a certificate, placards and a seal, measured from the repository and drawn as committed SVGs.'
-tags: [readme, documentation, svg, blueprint, github-actions, reusable-workflow, diagram, floor-plan, timeline]
+description: 'The body of a README, drawn for itself: a schematic, instruments, milestones, a roster, a certificate, placards and a seal, measured from the repository and drawn as committed SVGs.'
+tags: [readme, documentation, svg, blueprint, github-actions, reusable-workflow, diagram, timeline]
 category: docs
 -->
 
@@ -13,7 +13,7 @@ category: docs
 
 **The body of a README, drawn for itself.**
 
-A schematic, instruments, a floor plan, milestones, a roster, a certificate, placards and a seal:
+A schematic, instruments, milestones, a roster, a certificate, placards and a seal:
 measured from the repository, drawn as committed SVGs, never fetched.
 
 </div>
@@ -25,8 +25,8 @@ measured from the repository, drawn as committed SVGs, never fetched.
 A README explains a project in prose, and in a few screenshots that are out
 of date by the second release. This draws the parts a reader actually looks
 for, as engineering drawings, from what the repository can measure about
-itself: how the code is laid out, how it runs, who drew it, how it has been
-released, and which checks it passes. The banners in this same repository
+itself: how it runs, how it has been released, who drew it, and which checks
+it passes. The banners in this same repository
 draw the two ends of a page, its header and its footer; the elements draw
 its body. Each is a **committed SVG** in one blueprint language, shared with
 [`tannergolden/badges`](https://github.com/tannergolden/badges) and
@@ -36,13 +36,12 @@ one rule.
 
 The goal is a README people enjoy, made without effort: one stub in your
 repository, a data file the first run writes for you, and a page that keeps
-itself current. Eight elements:
+itself current. Seven elements:
 
 | Element         | What it draws                                                                                   | You write                              | It measures                          |
 | :-------------- | :---------------------------------------------------------------------------------------------- | :------------------------------------- | :----------------------------------- |
 | **schematic**   | Boxes and the wires between them, layered, snaked across the sheet and routed around each other | The boxes, the wires, the notes        | Nothing                              |
 | **instruments** | Commits per week, days since the last release, tracked bytes by file type, three counters       | Globs for the counters                 | All of it, from git                  |
-| **plan**        | The repository as a floor plan: folders as rooms sized by file count, doors on shared walls     | Notes and the entrance                 | The tree, from git                   |
 | **milestones**  | Every version tag on a time line, quiet stretches cut, what is planned in outline               | Notes on the releases that matter      | The tags and their dates             |
 | **roster**      | Each contributor in a medallion, with their commits, first and last                             | Renames, if any                        | The log, co-authors included         |
 | **certificate** | The checks a checkout can answer, each with its evidence, under the seal                        | The words on the ring                  | Licence, security policy, pins, commit style, CI |
@@ -61,8 +60,8 @@ It is one stub in your repository and one kit here, beside the banners:
 | `.github/workflows/elements.yml`  | **The workflow.** Checkout, kit, commit, push. What your stub calls.                        |
 | `elements/action.yml`             | **The action.** Runs the kit against the calling repository.                                |
 | `src/elements-kit.py`             | **The kit.** `run`, `init`, `measure`, `render`, `check` and `snippets`.                     |
-| `src/elementskit/elements.py`     | **The eight elements**, drawn with the banners' drafting tools and lettered with its faces. |
-| `src/elementskit/layout.py`       | **The layouts.** Treemap, spanning tree, layering, orthogonal routing, the time line.       |
+| `src/elementskit/elements.py`     | **The seven elements**, drawn with the banners' drafting tools and lettered with its faces. |
+| `src/elementskit/layout.py`       | **The layouts.** Layering, orthogonal routing, and the time line.                          |
 | `src/elementskit/measure.py`      | **The measurement.** What is read from git and GitHub, written out in full.                 |
 
 **Called, never copied.** Your repository holds a stub that names the
@@ -99,16 +98,6 @@ last release as a dial, tracked bytes by file type as a section through the
 tree, and three counters for whatever you give a glob for.
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/vitals-dark.svg"><img alt="Instruments for driftmark: 235 commits over ten weeks, seven days since v1.4.0, tracked bytes by file type, and 7 crates, 24 regions and 612 tests counted." src="../examples/driftmark/assets/elements/vitals-day.svg"></picture>
-
-### Plan
-
-The repository as a floor plan. Each top-level folder is a room whose area
-is its share of the files, laid out as a treemap and squared up; the root is
-the lobby, and small folders are closets along one wall. Doors are cut where
-rooms share a wall, on a spanning tree, so every room can be reached and no
-wall has two. Numbered notes call out what to look at.
-
-<picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/layout-dark.svg"><img alt="Plan of driftmark: 286 tracked files in a Rust workspace of seven crates, drawn as rooms around a lobby." src="../examples/driftmark/assets/elements/layout-day.svg"></picture>
 
 ### Milestones
 
@@ -148,12 +137,12 @@ stamp on its own, for the foot of a page.
 ### On a phone
 
 Each element has a file drawn for a narrow page, not the wide one shrunk:
-the schematic stacks, the plan re-flows its rooms, the milestones become a
-list, and the instruments take two rows. GitHub picks it below 585 pixels.
+the schematic stacks, the milestones become a list, and the instruments
+take two rows. GitHub picks it below 585 pixels.
 
 <div align="center">
 <img alt="The schematic, drawn for a phone: one box to a row, the wires that skip a row carried down a channel at the right." src="../examples/driftmark/assets/elements/how-it-runs-narrow-day.svg" width="360">
-<img alt="The plan, drawn for a phone." src="../examples/driftmark/assets/elements/layout-narrow-day.svg" width="360">
+<img alt="The instruments, drawn for a phone." src="../examples/driftmark/assets/elements/vitals-narrow-day.svg" width="360">
 </div>
 
 ---
@@ -181,8 +170,8 @@ jobs:
 ```
 
 Run it once from the Actions tab. The first run writes
-`.github/elements.yml` with the five elements that need nothing written by
-hand (instruments, plan, milestones, roster and certificate), puts a pair of
+`.github/elements.yml` with the four elements that need nothing written by
+hand (instruments, milestones, roster and certificate), puts a pair of
 markers for each at the foot of your README, measures the repository, draws
 every element into `assets/elements/` and commits. Move the markers wherever
 you like, between `<!-- elements:ID:start -->` and
@@ -242,7 +231,7 @@ today: 2026-09-25         # optional: the date the measurement is as of, for a r
 
 elements:
   ID:                     # the file names and the README markers: letters, digits and dashes
-    kind: plan            # one of the eight
+    kind: milestones      # one of the seven
     title: ...            # the file's accessible title; a sensible one is written when you give none
     desc: ...             # its accessible description, likewise
     caption: ...          # the small words at the top right of a sheet
@@ -252,17 +241,13 @@ elements:
 ```
 
 Anything you write for an element wins over what was measured for it, so a
-measured element can still carry your caption, or a hand-written line. A
-measured plan takes notes on its rooms by key: `rooms: [{key: src, notes:
-[[1, 0]]}]` puts note 1 on the first line of the measured `src/` room, and
-a room written in full, with its `count`, is added beside the measured ones.
+measured element can still carry your caption, or a hand-written line.
 What each kind takes:
 
 | Kind            | Measured with                                                                 | Written by hand                                                                                                                                                                      |
 | :-------------- | :---------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **schematic**   | Nothing                                                                       | `boxes` as `key: {title, path, icon, note, in}`, `wires` as `[from, to, label]`, `groups` as `key: label` for a dashed enclosure, `notes` as `[number, text]`                        |
 | **instruments** | `measure: {weeks: 10, count: {label: "glob", ...}}`, up to three counters     | `histogram {label, sum, peak, ticks, bars: [[label, n]]}`, `dial {label, value, span, major, minor, sub}`, `materials {label, total, parts: [[label, bytes]]}`, `counters [[label, n]]` |
-| **plan**        | `measure: {hide: [paths]}`                                                    | `total`, `entrance`, `rooms` as `{key, label, count, lines: [[name, n]], notes: [[number, line]], far}`, `lobby`, `closets` as `{label, count}`, `notes`                              |
 | **milestones**  | `measure: {notable: {v1.0.0: [A NOTE, ANOTHER]}, planned: [{tag, date, when, above}]}` | `start`, `end`, `events` as `{date, tag, above: [lines], major, big, next, when}`                                                                                              |
 | **roster**      | `measure: {most: 4, bots: true, rename: {match: {name, handle, initials}}}`   | `people` as `{name, handle, initials, n, first, last, icon}`                                                                                                                         |
 | **certificate** | `measure: {ci: main}`, the branch CI is read for, given a token               | `checks` as `[label, evidence]`, `ring_top`, `ring_bottom`, `name`, `commit`                                                                                                         |
@@ -329,8 +314,8 @@ make elements                                          # redraw this README's ow
 ```
 
 The tests draw every element in every variant, theme and print and lint each
-one, exercise the layouts on their edge cases (a plan with one room, a
-schematic with a cycle, a time line with nothing quiet enough to cut), and
+one, exercise the layouts on their edge cases (a schematic with a cycle, a
+time line with nothing quiet enough to cut), and
 run the command line end to end on a copy of the specimen and on this
 checkout: `run` on a bare copy writes the data file and the markers,
 measures, draws, words its commit, and is quiet the second time. A release

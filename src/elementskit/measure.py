@@ -34,42 +34,6 @@ KINDS = {"yml": "YAML", "yaml": "YAML", "md": "MARKDOWN", "py": "PYTHON", "sh": 
          "html": "HTML", "css": "CSS", "svg": "SVG", "tf": "HCL"}
 
 
-def tree(root: Path, ref: str = "HEAD", *, rooms: int = 6, closet: int = 3, hide: tuple = ()) -> dict:
-    """The plan's rooms: the top-level folders by file count, the root as the lobby, small folders as closets."""
-    files = git(root, "ls-tree", "-r", "--name-only", ref).split("\n")
-    files = [f for f in files if f and not any(f == h or f.startswith(h + "/") for h in hide)]
-    top: dict[str, list[str]] = {}
-    lobby: list[str] = []
-    for f in files:
-        head, _, rest = f.partition("/")
-        (top.setdefault(head, []) if rest else lobby).append(rest if rest else head)
-    order = sorted(top, key=lambda k: (-len(top[k]), k))
-    out_rooms, closets = [], []
-    for k in order:
-        members = top[k]
-        if len(members) <= closet or len(out_rooms) >= rooms:
-            closets.append({"label": k.upper() + "/", "count": len(members)})
-            continue
-        subs: Counter = Counter()
-        loose: list[str] = []
-        for m in members:
-            h, _, r = m.partition("/")
-            if r:
-                subs[h + "/"] += 1
-            else:
-                loose.append(h)
-        lines = [[name, str(n)] for name, n in sorted(subs.items(), key=lambda kv: (-kv[1], kv[0]))]
-        lines += [[name, ""] for name in sorted(loose)]
-        out_rooms.append({"key": re.sub(r"[^a-z0-9]+", "-", k.lower()).strip("-") or "room", "label": k.upper() + "/",
-                          "count": len(members), "lines": lines})
-    visible = sorted(f for f in lobby if not f.startswith("."))
-    dots = [f for f in lobby if f.startswith(".")]
-    return {"total": len(files), "rooms": out_rooms,
-            "lobby": {"count": len(lobby), "lines": [[f, ""] for f in visible[:6]],
-                      "far": ([f"+{len(dots)} DOTFILES"] if dots else []) + [f"+{len(visible) - 6} MORE"] * (len(visible) > 6)},
-            "closets": closets}
-
-
 def histogram(root: Path, ref: str = "HEAD", *, weeks: int = 10, today: dt.date | None = None) -> dict:
     """Commits per ISO week for the last `weeks`, ending with the week of `today`."""
     today = today or dt.date.today()

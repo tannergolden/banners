@@ -101,19 +101,6 @@ class Elements(unittest.TestCase):
         self.assertEqual(len(re.findall(r'<rect x="\d+" y="252" width="18" height="28" rx="2"', svg)), 4 + 3 + 3)
         self.assertEqual(lint(svg, budget=E.BUDGET["sheet"]), [])
 
-    def test_plan_puts_the_lobby_on_the_bottom_wall_and_reaches_every_room(self):
-        d = K.merged(DATA, LOCK)["layout"]
-        for narrow in (False, True):
-            x0, y0, x1 = (24, 84, 336) if narrow else (48, 86, 782)
-            rooms, spec, ph = E._plan_rooms(d, narrow, x0, y0, x1)
-            lobby = next(r for r in rooms if r.key == "lobby")
-            self.assertAlmostEqual(lobby.y + lobby.h, y0 + ph, delta=1)
-            doors = L.doors(rooms)
-            self.assertEqual(len(doors), len(rooms) - 1, "a spanning tree of doors")
-            # No two rooms overlap, and together they fill the plan.
-            area = sum(r.w * r.h for r in rooms)
-            self.assertAlmostEqual(area, (x1 - x0) * ph, delta=4 * len(rooms))
-
     def test_schematic_wires_never_cross_a_box(self):
         d = K.merged(DATA, LOCK)["how-it-runs"]
         keys = list(d["boxes"])
@@ -126,27 +113,12 @@ class Elements(unittest.TestCase):
             for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
                 self.assertFalse(L._crosses(x0, y0, x1, y1, boxes, (a, b)), (a, b, pts))
 
-    def test_a_plan_with_one_room_and_a_schematic_with_a_cycle_still_draw(self):
-        one = {"kind": "plan", "subject": "x/y", "total": 3,
-               "rooms": [{"key": "src", "label": "SRC/", "count": 2, "lines": [["a.py", ""], ["b.py", ""]]}],
-               "lobby": {"count": 1, "lines": [["README.md", ""]]}}
-        many = {"kind": "plan", "subject": "x/y", "total": 900,
-                "rooms": [{"key": f"r{i}", "label": f"ROOM-{i}/", "count": 10 + 40 * i,
-                           "lines": [[f"file-{j}.py", j] for j in range(9)]} for i in range(8)],
-                "lobby": {"count": 3, "lines": [["README.md", ""]]},
-                "closets": [{"label": f"C{i}/", "count": i + 1} for i in range(6)]}
+    def test_a_schematic_with_a_cycle_still_draws(self):
         cyc = {"kind": "schematic", "subject": "x/y",
                "boxes": {"a": {"title": "A", "path": "a"}, "b": {"title": "B", "path": "b"}, "c": {"title": "C", "path": "c"}},
                "wires": [["a", "b", "ONE"], ["b", "c", "TWO"], ["c", "a", "BACK"]]}
-        for kind, d in (("plan", one), ("plan", many), ("schematic", cyc)):
-            for variant in ("wide", "narrow"):
-                svg = E.draw(kind, d, "blueprint", "day", variant)   # draw lints and budgets, and raises if either fails
-                minidom.parseString(svg)
-        for narrow in (False, True):
-            x0, y0, x1 = (24, 84, 336) if narrow else (48, 86, 782)
-            rooms, _, _ = E._plan_rooms(one, narrow, x0, y0, x1)
-            self.assertEqual({r.key for r in rooms}, {"src", "lobby"})
-            self.assertEqual(len(L.doors(rooms)), 1)
+        for variant in ("wide", "narrow"):
+            minidom.parseString(E.draw("schematic", cyc, "blueprint", "day", variant))
         self.assertEqual(L.layers(["a", "b", "c"], [("a", "b"), ("b", "c"), ("c", "a")]), {"a": 0, "b": 1, "c": 2})
 
     def test_timeline_cuts_only_a_quiet_stretch_and_keeps_the_scale_monotonic(self):
@@ -196,7 +168,7 @@ class Cli(unittest.TestCase):
     def test_render_then_check_passes(self):
         code, out = self.kit("render")
         self.assertEqual(code, 0, out)
-        self.assertEqual(len(list(self.out.glob("*.svg"))), 30)
+        self.assertEqual(len(list(self.out.glob("*.svg"))), 26)
         self.assertEqual(self.kit("check")[0], 0)
 
     def test_render_is_idempotent(self):
@@ -250,7 +222,7 @@ class Cli(unittest.TestCase):
     def test_snippets_prints_a_block_per_element_and_writes_nothing(self):
         code, out = self.kit("snippets")
         self.assertEqual(code, 0)
-        self.assertEqual(out.count("<!-- elements:"), 22)
+        self.assertEqual(out.count("<!-- elements:"), 20)
         self.assertFalse(self.out.exists())
 
     def test_a_missing_marker_is_reported_not_silently_skipped(self):
@@ -262,6 +234,11 @@ class Cli(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("has no markers for: vitals", out)
         self.assertTrue((self.out / "vitals-day.svg").exists(), "the file is still drawn")
+
+    def test_a_retired_plan_in_a_data_file_is_named_precisely(self):
+        errors = K.validate({"elements": {"layout": {"kind": "plan", "measure": {}}}}, {"measured": {}})
+        self.assertEqual(len(errors), 1)
+        self.assertIn("plan element was retired", errors[0])
 
     def test_bad_data_fails_with_a_precise_message(self):
         data = self.root / ".github" / "elements.yml"
@@ -316,7 +293,7 @@ class Measured(unittest.TestCase):
             code, out = run(["init", "--root", str(root)])
             self.assertEqual(code, 0, out)
             self.assertIn("Wrote .github/elements.yml", out)
-            self.assertIn("Added markers to README.md for: vitals, layout, history, contributors, conformance", out)
+            self.assertIn("Added markers to README.md for: vitals, history, contributors, conformance", out)
             data = (root / ".github" / "elements.yml").read_text()
             self.assertIn("subject: tannergolden/banners", data)
             self.assertIn("name: BANNERS", data)
@@ -330,7 +307,7 @@ class Measured(unittest.TestCase):
             self.assertEqual(run(["check", "--root", str(root)])[0], 0)
             readme = (root / "README.md").read_text()
             self.assertTrue(readme.startswith("# banners\n\nA line about it.\n"), "what was there is kept")
-            self.assertEqual(readme.count("<picture>"), 5)
+            self.assertEqual(readme.count("<picture>"), 4)
             self.assertNotIn("kit.py", readme)
 
     def test_run_bootstraps_a_bare_checkout_and_is_quiet_the_second_time(self):
@@ -354,13 +331,13 @@ class Measured(unittest.TestCase):
             self.assertFalse(msg.exists(), "no message when there is nothing to commit")
             # A README block someone deleted by hand comes back, and the commit names the element.
             readme = (root / "README.md").read_text()
-            a, b = readme.index("<!-- elements:layout:start -->") + len("<!-- elements:layout:start -->"), readme.index("<!-- elements:layout:end -->")
+            a, b = readme.index("<!-- elements:vitals:start -->") + len("<!-- elements:vitals:start -->"), readme.index("<!-- elements:vitals:end -->")
             (root / "README.md").write_text(readme[:a] + "\n" + readme[b:])
-            (root / "assets" / "elements" / "layout-day.svg").unlink()
+            (root / "assets" / "elements" / "vitals-day.svg").unlink()
             code, out = run(["run", "--root", str(root), "--commit-file", str(msg)])
             self.assertEqual(code, 0, out)
             text = msg.read_text()
-            self.assertTrue(text.startswith("chore(elements): \U0001F4D0 redraw layout\n"), text)
+            self.assertTrue(text.startswith("chore(elements): \U0001F4D0 redraw vitals\n"), text)
             self.assertIn("1 block rewritten in README.md", " ".join(text.split()))
 
     def test_measure_then_render_then_check(self):
@@ -372,7 +349,6 @@ class Measured(unittest.TestCase):
             (root / ".github" / "elements.json").write_text(json.dumps({
                 "print": "greenprint", "subject": "tannergolden/banners", "today": "2026-09-25",
                 "elements": {
-                    "layout": {"kind": "plan", "measure": {}, "entrance": "ENTRANCE  ·  README.MD"},
                     "vitals": {"kind": "instruments", "measure": {"count": {"workflows": ".github/workflows/*.yml",
                                                                               "tests": "tests/test_*.py",
                                                                               "docs": "docs/*.md"}}},
@@ -383,19 +359,17 @@ class Measured(unittest.TestCase):
                 }}))
             (root / "README.md").write_text("# banners\n\n" + "\n\n".join(
                 f"<!-- elements:{eid}:start -->\n<!-- elements:{eid}:end -->"
-                for eid in ("layout", "vitals", "people", "history", "conformance")) + "\n")
+                for eid in ("vitals", "people", "history", "conformance")) + "\n")
             code, out = run(["render", "--root", str(root)])
             self.assertEqual(code, 1, "measured fields are missing until measure runs")
             self.assertIn("run `elements-kit.py measure` first", out)
             code, out = run(["measure", "--root", str(root)])
             self.assertEqual(code, 0, out)
             lock = json.loads((root / ".github" / "elements.lock.json").read_text())
-            tracked = M.git(ROOT, "ls-tree", "-r", "--name-only", "HEAD").split()
-            self.assertEqual(lock["measured"]["layout"]["total"], len(tracked))
             code, out = run(["render", "--root", str(root)])
             self.assertEqual(code, 0, out)
             self.assertEqual(run(["check", "--root", str(root)])[0], 0)
-            svg = (root / "assets" / "elements" / "layout-day.svg").read_text()
+            svg = (root / "assets" / "elements" / "vitals-day.svg").read_text()
             self.assertIn("#22773E", svg, "drawn in the greenprint")
             self.assertEqual(lint(svg, budget=E.BUDGET["sheet"]), [])
             # The lock is enough: a second machine with no git history renders the same bytes.
@@ -456,8 +430,6 @@ class Measured(unittest.TestCase):
 
     def test_measurements_have_the_shapes_the_elements_want(self):
         root = ROOT
-        t = M.tree(root)
-        self.assertTrue(all({"key", "label", "count", "lines"} <= set(r) for r in t["rooms"]))
         h = M.histogram(root, weeks=6)
         self.assertEqual(len(h["bars"]), 6)
         m = M.materials(root)

@@ -15,17 +15,6 @@ elements:
     measure:
       count: {tests: "tests/test_*.py", workflows: ".github/workflows/*.yml", examples: "examples/*.yml"}
 
-  layout:
-    kind: plan
-    entrance: "ENTRANCE  ·  README.MD"
-    measure: {}
-    notes:
-      - [1, "THE TWO KITS: BANNERS AND ELEMENTS"]
-      - [2, "THE STUBS, AND DRIFTMARK, A README THAT USES EVERY ELEMENT"]
-    rooms:
-      - {key: src, notes: [[1, 0]]}
-      - {key: examples, notes: [[2, 0]]}
-
   history:
     kind: milestones
     measure:

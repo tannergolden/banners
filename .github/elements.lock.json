@@ -43,7 +43,7 @@
      ],
      [
       "21 SEP",
-      22
+      25
      ]
     ]
    },
@@ -52,15 +52,15 @@
     "parts": [
      [
       "SVG",
-      3239288
+      3244614
      ],
      [
       "PYTHON",
-      424013
+      426156
      ],
      [
       "JSON",
-      343606
+      343978
      ],
      [
       "MARKDOWN",
@@ -68,18 +68,18 @@
      ],
      [
       "OTHER",
-      284982
+      285868
      ]
     ],
     "total": "4.5 MB"
    },
    "dial": {
     "label": "DAYS SINCE THE LAST RELEASE",
-    "value": 0,
+    "value": 1,
     "span": 30,
     "major": 10,
     "minor": 5,
-    "sub": "V1.2.3  ·  25 SEP"
+    "sub": "V1.1.0  ·  25 SEP"
    },
    "counters": [
     [
@@ -95,7 +95,7 @@
      6
     ]
    ],
-   "caption": "MEASURED 25 SEP 2026"
+   "caption": "MEASURED 26 SEP 2026"
   },
   "layout": {
    "total": 283,
@@ -431,7 +431,7 @@
    ]
   },
   "history": {
-   "caption": "6 RELEASES SINCE 25 SEP 2026",
+   "caption": "2 RELEASES SINCE 25 SEP 2026",
    "events": [
     {
      "date": "2026-09-25",
@@ -450,40 +450,17 @@
      "above": [
       "FOUR LINK BUTTONS"
      ]
-    },
-    {
-     "date": "2026-09-25",
-     "tag": "V1.2.0",
-     "major": true,
-     "above": [
-      "THE ELEMENTS"
-     ]
-    },
-    {
-     "date": "2026-09-25",
-     "tag": "V1.2.1",
-     "major": false
-    },
-    {
-     "date": "2026-09-25",
-     "tag": "V1.2.2",
-     "major": false
-    },
-    {
-     "date": "2026-09-25",
-     "tag": "V1.2.3",
-     "major": false
     }
    ],
-   "today": "2026-09-25"
+   "today": "2026-09-26"
   },
   "contributors": {
-   "caption": "22 COMMITS FROM 2 CONTRIBUTORS",
+   "caption": "25 COMMITS FROM 2 CONTRIBUTORS",
    "people": [
     {
      "name": "TANNER GOLDEN",
      "handle": "@TANNERGOLDEN",
-     "n": 22,
+     "n": 25,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "TG"
@@ -491,7 +468,7 @@
     {
      "name": "CLAUDE",
      "handle": "CO-AUTHOR",
-     "n": 19,
+     "n": 21,
      "first": "25 SEP 2026",
      "last": "25 SEP",
      "initials": "C"
@@ -499,8 +476,13 @@
    ]
   },
   "conformance": {
-   "commit": "ee44140",
+   "commit": "4951a5b",
    "checks": [
+    [
+     "CI passes on Development",
+     "Checks at 4951a5b",
+     true
+    ],
     [
      "Licensed",
      "LICENSE",
@@ -518,11 +500,11 @@
     ],
     [
      "Conventional commits",
-     "22 of 22 subjects",
+     "25 of 25 subjects",
      true
     ]
    ]
   }
  },
- "today": "2026-09-25"
+ "today": "2026-09-26"
 }

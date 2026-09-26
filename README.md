@@ -1,7 +1,7 @@
 <!--
 title: '🪧 BANNERS'
 description: 'Blueprint headers, footers and body elements a README draws for itself: measured from GitHub and git on a schedule, drawn as committed SVGs, never fetched.'
-tags: [readme-header, readme-footer, banner, readme-elements, diagram, floor-plan, timeline, github-profile, profile-readme, github-actions, reusable-workflow, svg, blueprint]
+tags: [readme-header, readme-footer, banner, readme-elements, diagram, timeline, github-profile, profile-readme, github-actions, reusable-workflow, svg, blueprint]
 category: docs
 -->
 
@@ -42,8 +42,8 @@ language and licence. On a profile it reads you instead. No request at view
 time, nothing to rate-limit, and nothing to keep in step by hand.
 
 The banners are the two ends of the page. The **elements**, the second kit
-in this repository, are its body: a schematic, instruments, a floor plan,
-milestones, a roster, a certificate, placards and a seal, measured from git
+in this repository, are its body: a schematic, instruments, milestones,
+a roster, a certificate, placards and a seal, measured from git
 where they can be and drawn on the same paper. [Below](#-the-body-of-the-page)
 they are drawn for this repository itself.
 
@@ -58,7 +58,7 @@ It is one stub in your repository for each kit, and both kits here:
 | `src/bannerkit/compose.py`          | **The composition.** What each field says: your config's words, or GitHub's. |
 | `.github/workflows/elements.yml`    | **The elements' workflow.** The banners' twin, for the body of the page.     |
 | `elements/action.yml`               | **The elements' action.** Runs the elements kit against the caller.          |
-| `src/elements-kit.py`               | **The elements kit.** Eight elements, measured from git, drawn on the paper. |
+| `src/elements-kit.py`               | **The elements kit.** Seven elements, measured from git, drawn on the paper. |
 | `.github/workflows/cut-release.yml` | **The release.** Cuts `vX.Y.Z` and moves `v1`, by calling the standards.     |
 
 **Called, never copied.** Your repository holds a stub that names the
@@ -189,14 +189,13 @@ A header and a footer frame a README; what a reader looks for sits between
 them. The elements kit draws that too, from what the repository can measure
 about itself, as engineering drawings on the same paper: how the code is laid
 out, how it runs, who drew it, how it has been released, and which checks it
-passes. Eight elements, each a committed SVG in a day file and a dark file,
+passes. Seven elements, each a committed SVG in a day file and a dark file,
 most with a narrow file for a phone:
 
 | Element         | What it draws                                                                                   | You write                         | It measures                                      |
 | :-------------- | :---------------------------------------------------------------------------------------------- | :-------------------------------- | :----------------------------------------------- |
 | **schematic**   | Boxes and the wires between them, layered, snaked across the sheet and routed around each other | The boxes, the wires, the notes   | Nothing                                          |
 | **instruments** | Commits per week, days since the last release, tracked bytes by file type, three counters       | Globs for the counters            | All of it, from git                              |
-| **plan**        | The repository as a floor plan: folders as rooms sized by file count, doors on shared walls     | Notes and the entrance            | The tree, from git                               |
 | **milestones**  | Every version tag on a time line, quiet stretches cut, what is planned in outline               | Notes on the releases that matter | The tags and their dates                         |
 | **roster**      | Each contributor in a medallion, with their commits, first and last                             | Renames, if any                   | The log, co-authors included                     |
 | **certificate** | The checks a checkout can answer, each with its evidence, under the seal                        | The words on the ring             | Licence, security policy, pins, commit style, CI |
@@ -205,11 +204,11 @@ most with a narrow file for a phone:
 
 ### This repository, measured
 
-The five below are this repository, read from its git history by
+The four below are this repository, read from its git history by
 [`📐 Own Elements`](.github/workflows/own-elements.yml) at eight in the
 morning, eight hours after [`🪧 Own Banners`](.github/workflows/own-banners.yml)
-reads it at midnight. Nothing in them is written by hand except the two notes on the plan
-and the words on the certificate's ring, which are set in
+reads it at midnight. Nothing in them is written by hand except the notes on
+the releases and the words on the certificate's ring, which are set in
 [`.github/elements.yml`](.github/elements.yml).
 
 <!-- elements:vitals:start -->
@@ -221,21 +220,12 @@ and the words on the certificate's ring, which are set in
 </picture>
 <!-- elements:vitals:end -->
 
-<!-- elements:layout:start -->
-<picture>
-  <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/layout-narrow-dark.svg">
-  <source media="(max-width: 585px)" srcset="assets/elements/layout-narrow-day.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="assets/elements/layout-dark.svg">
-  <img alt="Plan of tannergolden/banners. tannergolden/banners as a floor plan: 283 tracked files in 6 rooms and a lobby." src="assets/elements/layout-day.svg">
-</picture>
-<!-- elements:layout:end -->
-
 <!-- elements:history:start -->
 <picture>
   <source media="(max-width: 585px) and (prefers-color-scheme: dark)" srcset="assets/elements/history-narrow-dark.svg">
   <source media="(max-width: 585px)" srcset="assets/elements/history-narrow-day.svg">
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/history-dark.svg">
-  <img alt="Milestones of tannergolden/banners. 6 releases of tannergolden/banners on a time line." src="assets/elements/history-day.svg">
+  <img alt="Milestones of tannergolden/banners. 2 releases of tannergolden/banners on a time line." src="assets/elements/history-day.svg">
 </picture>
 <!-- elements:history:end -->
 
@@ -244,13 +234,13 @@ and the words on the certificate's ring, which are set in
 <!-- elements:contributors:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/contributors-dark.svg">
-  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 22 commits; CLAUDE: 19 commits." src="assets/elements/contributors-day.svg">
+  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 25 commits; CLAUDE: 21 commits." src="assets/elements/contributors-day.svg">
 </picture>
 <!-- elements:contributors:end -->
 <!-- elements:conformance:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/conformance-dark.svg">
-  <img alt="Conformance of tannergolden/banners. 4 checks on tannergolden/banners, with the evidence for each, each met." src="assets/elements/conformance-day.svg">
+  <img alt="Conformance of tannergolden/banners. 5 checks on tannergolden/banners, with the evidence for each, each met." src="assets/elements/conformance-day.svg">
 </picture>
 <!-- elements:conformance:end -->
 
@@ -297,7 +287,7 @@ jobs:
     uses: tannergolden/banners/.github/workflows/elements.yml@v1
 ```
 
-The first run writes `.github/elements.yml` with the five elements that need
+The first run writes `.github/elements.yml` with the four elements that need
 nothing written by hand, puts a pair of markers for each at the foot of your
 README, measures the repository, draws every element into `assets/elements/`
 and commits. Move the markers wherever you like. Then open the data file to
@@ -492,8 +482,8 @@ banners/
 │   │   ├── lock.py                   what persists between runs
 │   │   └── preview.py, page/         the preview page, running this package in the browser
 │   ├── elementskit/
-│   │   ├── elements.py               the eight elements, drawn with bannerkit's drafting tools
-│   │   ├── layout.py                 treemap, spanning tree, layering, routing, the time line
+│   │   ├── elements.py               the seven elements, drawn with bannerkit's drafting tools
+│   │   ├── layout.py                 layering, orthogonal routing, the time line
 │   │   └── measure.py                what is read from git, and from GitHub for a placard
 │   └── fonts/                        glyph outlines and their OFL licences
 ├── assets/banners/                   this README's committed banners

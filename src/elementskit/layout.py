@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 """Layout the kit computes, so a data file never carries a coordinate.
 
-A plan packs its rooms from their file counts and hangs a door on every
 shared wall. A schematic layers its boxes along the wires and snakes the
 layers across the sheet, routing every wire orthogonally. A time line cuts
 the quiet stretches out of the calendar so the busy ones have room.
@@ -11,131 +10,6 @@ from __future__ import annotations
 
 import datetime as dt
 from dataclasses import dataclass, field
-
-
-# --- a plan's rooms ---------------------------------------------------------------------------
-
-@dataclass
-class Room:
-    key: str
-    weight: float
-    x: float = 0
-    y: float = 0
-    w: float = 0
-    h: float = 0
-
-    @property
-    def rect(self) -> tuple[float, float, float, float]:
-        return self.x, self.y, self.w, self.h
-
-
-def _worst(row: list[float], side: float, total: float) -> float:
-    """The worst aspect ratio in a row of areas laid along `side`."""
-    if not row or side == 0:
-        return float("inf")
-    s = sum(row)
-    return max(max(side * side * r / (s * s), s * s / (side * side * r)) for r in row)
-
-
-def squarify(rooms: list[Room], x: float, y: float, w: float, h: float) -> None:
-    """Bruls, Huizing and van Wijk's squarified treemap: rooms as near square as their shares allow.
-
-    Rooms come in the order they are given, which is by weight descending
-    here, so the biggest room lands top left and the smallest bottom right,
-    the way a plan reads.
-    """
-    total = sum(r.weight for r in rooms)
-    if not rooms or total <= 0:
-        return
-    scale = w * h / total
-    items = [(r, r.weight * scale) for r in rooms]
-    while items:
-        side = min(w, h)
-        row: list[tuple[Room, float]] = []
-        while items:
-            trial = row + [items[0]]
-            if row and _worst([a for _, a in trial], side, total) > _worst([a for _, a in row], side, total):
-                break
-            row.append(items.pop(0))
-        area = sum(a for _, a in row)
-        if w >= h:
-            cw = area / h
-            yy = y
-            for r, a in row:
-                r.x, r.y, r.w, r.h = x, yy, cw, a / cw
-                yy += a / cw
-            x, w = x + cw, w - cw
-        else:
-            rh = area / w
-            xx = x
-            for r, a in row:
-                r.x, r.y, r.w, r.h = xx, y, a / rh, rh
-                xx += a / rh
-            y, h = y + rh, h - rh
-
-
-def snap(rooms: list[Room], grid: float = 2.0) -> None:
-    """Round every edge to the grid, closing the hairline gaps floating point leaves between rooms."""
-    for r in rooms:
-        x1, y1 = round((r.x + r.w) / grid) * grid, round((r.y + r.h) / grid) * grid
-        r.x, r.y = round(r.x / grid) * grid, round(r.y / grid) * grid
-        r.w, r.h = x1 - r.x, y1 - r.y
-
-
-def shared_walls(a: Room, b: Room) -> tuple[bool, float, float, float] | None:
-    """The wall two rooms share: (vertical, at, lo, hi), or None. `at` is the wall's line, lo..hi its run."""
-    eps = 1.5
-    if abs(a.x + a.w - b.x) < eps or abs(b.x + b.w - a.x) < eps:
-        at = a.x + a.w if abs(a.x + a.w - b.x) < eps else a.x
-        lo, hi = max(a.y, b.y), min(a.y + a.h, b.y + b.h)
-        if hi - lo > 0:
-            return True, at, lo, hi
-    if abs(a.y + a.h - b.y) < eps or abs(b.y + b.h - a.y) < eps:
-        at = a.y + a.h if abs(a.y + a.h - b.y) < eps else a.y
-        lo, hi = max(a.x, b.x), min(a.x + a.w, b.x + b.w)
-        if hi - lo > 0:
-            return False, at, lo, hi
-    return None
-
-
-def doors(rooms: list[Room], width: float = 18) -> list[tuple]:
-    """A door on the longest wall between rooms wherever one is needed to walk into every room: a spanning tree.
-
-    Returns (x, y, horizontal, width, swing) in the drawing's terms: the
-    hinge, the wall's direction, the leaf's length, and which side it opens
-    to, into the larger room. Kruskal over the shared walls, longest first,
-    so every room is reached by the fewest doors, hung on the walls with
-    the most room for them.
-    """
-    parent = {r.key: r.key for r in rooms}
-
-    def find(k: str) -> str:
-        while parent[k] != k:
-            parent[k] = parent[parent[k]]
-            k = parent[k]
-        return k
-
-    pairs = []
-    for i, a in enumerate(rooms):
-        for b in rooms[i + 1:]:
-            shared = shared_walls(a, b)
-            if shared and shared[3] - shared[2] >= width + 8:
-                pairs.append((shared[3] - shared[2], a, b, shared))
-    pairs.sort(key=lambda p: -p[0])
-    out: list[tuple] = []
-    for run, a, b, (vertical, at, lo, hi) in pairs:
-        if find(a.key) == find(b.key):
-            continue
-        parent[find(a.key)] = find(b.key)
-        # Hung at the far end of the wall, where a room's listing has run out: the foot of a vertical
-        # wall, the right end of a horizontal one, swinging up into the room above, whose foot is empty.
-        end = hi - width - 10 if hi - lo >= width + 20 else (lo + hi) / 2 - width / 2
-        big = a if a.w * a.h >= b.w * b.h else b
-        if vertical:
-            out.append((at, end, False, width, 1 if big.x >= at else -1))
-        else:
-            out.append((end, at, True, width, 1))
-    return out
 
 
 # --- a schematic's boxes and wires ------------------------------------------------------------

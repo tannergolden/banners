@@ -56,7 +56,7 @@ def load_lock(path: Path) -> dict:
 
 REQUIRED = {
     "schematic": ("boxes", "wires"), "instruments": ("histogram", "dial", "materials", "counters"),
-    "plan": ("rooms",), "milestones": ("events",), "roster": ("people",), "certificate": ("checks", "ring_top", "ring_bottom", "name"),
+    "milestones": ("events",), "roster": ("people",), "certificate": ("checks", "ring_top", "ring_bottom", "name"),
     "placard": ("owner", "name", "desc", "cells"), "seal": ("ring_top", "ring_bottom", "name"),
 }
 
@@ -73,6 +73,9 @@ def validate(data: dict, lock: dict) -> list[str]:
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", eid):
             errors.append(f"{eid}: an element's id must be kebab-case")
         kind = d.get("kind")
+        if kind == "plan":
+            errors.append(f"{eid}: the plan element was retired in banners v1.3.0; delete it from the data file")
+            continue
         if kind not in E.KINDS:
             errors.append(f"{eid}: unknown kind {kind!r} (one of {', '.join(E.KINDS)})")
             continue
@@ -102,17 +105,6 @@ def merged(data: dict, lock: dict) -> dict:
     for eid, spec in data["elements"].items():
         d = dict(lock["measured"].get(eid, {}))
         own = {k: v for k, v in spec.items() if k != "measure"}
-        if spec.get("kind") == "plan" and "rooms" in d and "rooms" in own:
-            # A room the file names by key adds to the measured one (a note, a label) rather than replacing
-            # the plan; a room the file describes in full, with its count, is added beside the measured ones.
-            rooms = [dict(r) for r in d["rooms"]]
-            by = {r.get("key"): r for r in rooms}
-            for r in own.pop("rooms"):
-                if r.get("key") in by:
-                    by[r["key"]].update(r)
-                elif "count" in r:
-                    rooms.append(dict(r))
-            d["rooms"] = rooms
         d.update(own)
         d.setdefault("subject", data.get("subject", ""))
         if data.get("today"):
@@ -131,9 +123,7 @@ def run_measure(root: Path, data: dict, lock: dict, token: str | None) -> dict:
         if req is None:
             continue   # `measure: {}` asks for the defaults; no key at all asks for nothing
         kind, out = spec["kind"], {}
-        if kind == "plan":
-            out = M.tree(root, ref, hide=tuple(req.get("hide", ())) if isinstance(req, dict) else ())
-        elif kind == "instruments":
+        if kind == "instruments":
             req = req if isinstance(req, dict) else {}
             out["histogram"] = M.histogram(root, ref, weeks=req.get("weeks", 10), today=today)
             out["materials"] = M.materials(root, ref)
@@ -253,10 +243,6 @@ elements:
     kind: instruments
     measure:
       count: {{tests: "tests/**", workflows: ".github/workflows/*"}}
-
-  layout:
-    kind: plan
-    measure: {{}}
 
   history:
     kind: milestones
