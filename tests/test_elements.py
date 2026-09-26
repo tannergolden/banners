@@ -32,7 +32,8 @@ spec.loader.exec_module(K)
 SPECIMEN = ROOT / "examples" / "driftmark"
 DATA = K.load_data(SPECIMEN / ".github" / "elements.yml")
 LOCK = {"measured": {}}
-DASHES = ("–", "—", "―")
+# The banned dashes, spelled by code point so this file never carries one.
+DASHES = ("\u2013", "\u2014", "\u2015")
 
 
 def run(argv) -> tuple[int, str]:
