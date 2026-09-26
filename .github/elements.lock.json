@@ -43,7 +43,7 @@
      ],
      [
       "21 SEP",
-      25
+      32
      ]
     ]
    },
@@ -52,34 +52,34 @@
     "parts": [
      [
       "SVG",
-      3244614
+      2697729
      ],
      [
       "PYTHON",
-      426156
+      415751
      ],
      [
       "JSON",
-      343978
+      343687
      ],
      [
       "MARKDOWN",
-      226685
+      222590
      ],
      [
       "OTHER",
-      285868
+      281550
      ]
     ],
-    "total": "4.5 MB"
+    "total": "4.0 MB"
    },
    "dial": {
     "label": "DAYS SINCE THE LAST RELEASE",
-    "value": 1,
+    "value": 0,
     "span": 30,
     "major": 10,
     "minor": 5,
-    "sub": "V1.1.0  ·  25 SEP"
+    "sub": "V1.5.0  ·  26 SEP"
    },
    "counters": [
     [
@@ -88,11 +88,11 @@
     ],
     [
      "WORKFLOWS",
-     17
+     15
     ],
     [
      "EXAMPLES",
-     6
+     4
     ]
    ],
    "caption": "MEASURED 26 SEP 2026"
@@ -431,7 +431,7 @@
    ]
   },
   "history": {
-   "caption": "2 RELEASES SINCE 25 SEP 2026",
+   "caption": "11 RELEASES SINCE 25 SEP 2026",
    "events": [
     {
      "date": "2026-09-25",
@@ -450,37 +450,85 @@
      "above": [
       "FOUR LINK BUTTONS"
      ]
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.0",
+     "major": true,
+     "above": [
+      "THE ELEMENTS"
+     ]
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.1",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.2",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.3",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.4",
+     "major": false
+    },
+    {
+     "date": "2026-09-25",
+     "tag": "V1.2.5",
+     "major": false
+    },
+    {
+     "date": "2026-09-26",
+     "tag": "V1.3.0",
+     "major": true
+    },
+    {
+     "date": "2026-09-26",
+     "tag": "V1.4.0",
+     "major": true
+    },
+    {
+     "date": "2026-09-26",
+     "tag": "V1.5.0",
+     "major": true
     }
    ],
    "today": "2026-09-26"
   },
   "contributors": {
-   "caption": "25 COMMITS FROM 2 CONTRIBUTORS",
+   "caption": "32 COMMITS FROM 2 CONTRIBUTORS",
    "people": [
     {
      "name": "TANNER GOLDEN",
      "handle": "@TANNERGOLDEN",
-     "n": 25,
+     "n": 32,
      "first": "25 SEP 2026",
-     "last": "25 SEP",
+     "last": "26 SEP",
      "initials": "TG"
     },
     {
      "name": "CLAUDE",
      "handle": "CO-AUTHOR",
-     "n": 21,
+     "n": 27,
      "first": "25 SEP 2026",
-     "last": "25 SEP",
+     "last": "26 SEP",
      "initials": "C"
     }
    ]
   },
   "conformance": {
-   "commit": "4951a5b",
+   "commit": "b894016",
    "checks": [
     [
      "CI passes on Development",
-     "Checks at 4951a5b",
+     "Checks at b894016",
      true
     ],
     [
@@ -495,12 +543,12 @@
     ],
     [
      "Actions pinned to a tag or a commit",
-     "36 of 36 uses:",
+     "32 of 32 uses:",
      true
     ],
     [
      "Conventional commits",
-     "25 of 25 subjects",
+     "32 of 32 subjects",
      true
     ]
    ]
