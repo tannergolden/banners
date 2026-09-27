@@ -325,7 +325,7 @@ class Themes(unittest.TestCase):
         with self.assertRaisesRegex(drafting.ThemeError, "JSON"):
             drafting.use_themes(self.root)
 
-    def test_one_repositorys_themes_never_reach_the_next(self):
+    def test_themes_from_one_repository_never_reach_the_next(self):
         self.themes(self.GOLD)
         self.assertEqual(drafting.use_themes(self.root), ("goldprint",))
         self.assertIn("goldprint", drafting.PRINTS)
