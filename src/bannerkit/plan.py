@@ -93,6 +93,8 @@ def facts(p: dict) -> dict:
                            ("description", "a new description")):
             if h.get(field):
                 shown[field] = (h.caps if field == "title" else h.get(field), say.format(h.caps))
+        for i, text in enumerate(h.shown_notes, start=2 if h.on("motto") else 1):
+            shown[f"note:{i}"] = (text, "a new note")
         for label, value in h.shown_figures:
             key = keys.get(label, label.lower())
             shown["figure:" + key] = (value, _phrase(mode, key, value))

@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import re
 
-from .compose import FIGURES, MAX_LINKS
+from .compose import FIGURES, MAX_LINKS, MAX_NOTES
 from .content import FOOTER_FIELDS, HEADER_FIELDS
 from .drafting import DEFAULT_PRINT, PRINTS, RAINBOW
 
@@ -32,7 +32,8 @@ DEFAULTS = {
     "theme": DEFAULT_PRINT,    # the print the set is drawn in: blueprint, redprint, ... or rainbowprint
     "title": "",               # empty: the repository's name, or the person's name
     "tagline": "",             # empty: the repository's description, or the bio
-    "motto": "",               # the sheet's one general note; empty: none, or in profile mode the status message
+    "motto": "",               # the sheet's first general note; empty: none, or in profile mode the status message
+    "notes": [],               # up to two more general notes, numbered after the motto
     "description": "",         # a longer line under the note; empty: none
     "figures": [],             # which figures, in order; empty means the mode's defaults
     "closing": "",             # the footer's closing phrase; empty: none
@@ -190,6 +191,18 @@ def _links(value) -> list:
     return out
 
 
+def _notes(value) -> list:
+    """`notes` as a list of the text of each: one note may be written as a line, and an empty item is dropped."""
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list):
+        raise ConfigError("notes: expected a list of notes, each a line of text")
+    out = [str(n).strip() for n in value if n is not None and str(n).strip()]
+    if len(out) > MAX_NOTES:
+        raise ConfigError(f"notes: at most {MAX_NOTES} after the motto ({len(out)} given)")
+    return out
+
+
 def validate(given: dict, where: str = "the config") -> dict:
     """The full config: defaults under what was given, every key and value checked."""
     cfg = {k: (list(v) if isinstance(v, list) else v) for k, v in DEFAULTS.items()}
@@ -220,6 +233,7 @@ def validate(given: dict, where: str = "the config") -> dict:
     for k in cfg["hide"]:
         if k not in fields:
             raise ConfigError(f"hide: {k!r} is not a field ({', '.join(sorted(fields))})")
+    cfg["notes"] = _notes(cfg["notes"])
     cfg["links"] = _links(cfg["links"]) if cfg["links"] else []
     if not isinstance(cfg["lock"], bool):
         raise ConfigError("lock: expected true or false")
@@ -256,6 +270,10 @@ def dump(cfg: dict) -> str:
         if k == "links":
             lines.append("links:")
             lines += [f"  {_yaml(label)}: {_yaml(url)}" for label, url in v]
+        elif k == "notes":
+            # A block list, since a note may hold a comma that an inline one would split on.
+            lines.append("notes:")
+            lines += [f"  - {_yaml(n)}" for n in v]
         else:
             lines.append(f"{k}: {_yaml(v)}")
     return "\n".join(lines) + ("\n" if lines else "")

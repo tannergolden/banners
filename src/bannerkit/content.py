@@ -4,9 +4,10 @@
 
 A header follows the standards' header matrix, less its emoji: a FULLY CAPPED
 title, a bold one-line description (the tagline here), an italic principle
-(the motto), and optionally a longer description. Under them runs a row of
-figures, each a label and a value: the repository or the account, then what
-GitHub says about it (the release, stars, forks, followers and so on).
+(the motto) with up to two more general notes after it, and optionally a
+longer description. Under them runs a row of figures, each a label and a
+value: the repository or the account, then what GitHub says about it (the
+release, stars, forks, followers and so on).
 `compose` fills all of it from a measurement; nothing here knows where the
 values came from. A footer follows the footer composition: a closing
 phrase, the way back to the top, and the attribution line.
@@ -18,7 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 
-HEADER_FIELDS = ("title", "tagline", "motto", "description", "figures")
+HEADER_FIELDS = ("title", "tagline", "motto", "notes", "description", "figures")
 FOOTER_FIELDS = ("closing", "top", "built", "license", "updated", "links")
 
 MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -45,6 +46,8 @@ class Header:
     title: str = "Banners"
     tagline: str = "Headers and footers a README draws for itself."
     motto: str = "Drawn, never fetched."
+    # More general notes, numbered after the motto.
+    notes: tuple = ()
     description: str = "Committed SVGs, drawn from one data file, with nothing requested when the page is read."
     # (LABEL, value) pairs, in the order they are drawn.
     figures: tuple = (("PROJECT", "tannergolden/banners"), ("RELEASE", "v1.0.0"), ("LANGUAGE", "Python"),
@@ -54,8 +57,8 @@ class Header:
     off: frozenset = field(default_factory=frozenset)
 
     def on(self, name: str) -> bool:
-        if name == "figures":
-            return name not in self.off and bool(self.figures)
+        if name in ("figures", "notes"):
+            return name not in self.off and bool(getattr(self, name))
         return name not in self.off and bool(str(getattr(self, name)).strip())
 
     def get(self, name: str) -> str:
@@ -70,6 +73,11 @@ class Header:
         return self.get("title").upper()
 
     @property
+    def shown_notes(self) -> tuple:
+        """The general notes drawn after the motto, in their order."""
+        return tuple(n for n in self.notes if n.strip()) if self.on("notes") else ()
+
+    @property
     def shown_figures(self) -> tuple:
         return self.figures if self.on("figures") else ()
 
@@ -78,7 +86,8 @@ class Header:
 
     def spoken(self) -> str:
         """Everything the image shows after its title, as sentences."""
-        parts = [sentence(self.get(k)) for k in ("tagline", "motto", "description")]
+        parts = [sentence(self.get(k)) for k in ("tagline", "motto")]
+        parts += [sentence(n) for n in self.shown_notes] + [sentence(self.get("description"))]
         parts += [sentence(f"{label.capitalize()}: {value}") for label, value in self.shown_figures]
         return " ".join(p for p in parts if p) or self.spoken_title()
 

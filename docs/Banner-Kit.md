@@ -193,7 +193,8 @@ empty is **read from GitHub**; a field it sets **wins**; a field listed under
 | :------------ | :---------------------------------------------------------------------- |
 | `title`       | The repository's name, or the person's name (their login if the letters cannot draw it) |
 | `tagline`     | The repository's description, or the bio                                |
-| `motto`       | Nothing, or in profile mode the status message: the sheet's one note    |
+| `motto`       | Nothing, or in profile mode the status message: the sheet's first note  |
+| `notes`       | Nothing: up to two more notes after the motto, from the config alone    |
 | `figures`     | The mode's defaults, below                                              |
 | footer        | The handle, the licence and the last change; the closing phrase is the config's |
 | `links`       | The first four pages a developer reaches for, below                     |
@@ -244,7 +245,8 @@ lists every key at its default.
 | `theme`       | `blueprint`      | Any print above, or `rainbowprint`.                                               |
 | `title`       | from GitHub      | The title, set fully capped.                                                      |
 | `tagline`     | from GitHub      | The line under the title.                                                         |
-| `motto`       | none             | The sheet's one general note, in capitals.                                        |
+| `motto`       | none             | The sheet's first general note, in capitals.                                      |
+| `notes`       | `[]`             | Up to two more general notes, numbered after the motto, in capitals.              |
 | `description` | none             | A longer line under the note.                                                     |
 | `figures`     | the mode's       | Which figures, in order.                                                          |
 | `closing`     | none             | The footer's closing phrase.                                                      |

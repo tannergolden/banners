@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -83,6 +84,58 @@ class Config(unittest.TestCase):
     def test_links_from_the_config_replace_the_defaults(self):
         _, f, _ = composed(sample.REPOSITORY, links={"Docs": "docs/", "Changelog": "CHANGELOG.md"})
         self.assertEqual(f.links, (("Docs", "docs/"), ("Changelog", "CHANGELOG.md")))
+
+
+class Notes(unittest.TestCase):
+    """Up to two more general notes after the motto: read, validated, spoken, drawn and numbered in turn."""
+
+    def test_more_notes_follow_the_motto_in_their_order(self):
+        h, _, _ = composed(sample.REPOSITORY, motto="Drawn, never fetched.", notes=["All times in EST.", "Not to scale."],
+                           description="A longer line.")
+        self.assertEqual(h.notes, ("All times in EST.", "Not to scale."))
+        self.assertIn("Drawn, never fetched. All times in EST. Not to scale. A longer line.", h.alt())
+
+    def test_notes_are_a_short_list_of_lines(self):
+        self.assertEqual(config.validate({})["notes"], [])
+        self.assertEqual(config.validate({"notes": "One note."})["notes"], ["One note."])
+        self.assertEqual(config.validate({"notes": ["  a  ", "", None, "b"]})["notes"], ["a", "b"])
+        with self.assertRaisesRegex(config.ConfigError, "notes: at most 2"):
+            config.validate({"notes": ["a", "b", "c"]})
+        with self.assertRaisesRegex(config.ConfigError, "notes: expected a list"):
+            config.validate({"notes": {"a": "b"}})
+
+    def test_hidden_notes_are_neither_drawn_nor_spoken(self):
+        h, _, _ = composed(sample.REPOSITORY, notes=["All times in EST."], hide=["notes"])
+        self.assertFalse(h.on("notes"))
+        self.assertEqual(h.shown_notes, ())
+        self.assertNotIn("EST", h.alt())
+
+    def test_a_note_is_made_drawable_and_clipped_like_the_motto(self):
+        h, _, notes = composed(sample.REPOSITORY, notes=["Fast \u2014 and :rocket: " + "word " * 40])
+        self.assertTrue(h.notes[0].startswith("Fast - and word"))
+        self.assertLessEqual(len(h.notes[0]), c.LIMITS["motto"])
+        self.assertEqual(notes, [])
+
+    def test_every_general_note_gets_its_own_bubble_on_every_sheet(self):
+        def drawn(header, **given):
+            files = plan.plan(sample.PROFILE, config.validate(dict(given, header=header)))["files"]
+            svg = next(v for k, v in files.items() if k.endswith("header-day.svg"))
+            return svg.count("<circle "), float(re.search(r'height="([\d.]+)"', svg).group(1))
+        for header in ("sheet", "section", "strip"):
+            (one, short), (three, tall) = (drawn(header, motto="Built to be rebuilt."),
+                                           drawn(header, motto="Built to be rebuilt.", notes=["All times in EST.", "Not to scale."]))
+            self.assertEqual(three - one, 2, header)
+            self.assertGreater(tall, short, header)
+
+    def test_notes_are_numbered_after_the_motto_or_from_one_without_it(self):
+        with_motto = plan.facts(plan.plan(sample.REPOSITORY, config.validate({"motto": "Built.", "notes": ["Second."]})))
+        alone = plan.facts(plan.plan(sample.REPOSITORY, config.validate({"notes": ["First."]})))
+        self.assertEqual((with_motto["note:2"][0], alone["note:1"][0]), ("Second.", "First."))
+
+    def test_a_note_holding_a_comma_survives_the_written_config(self):
+        cfg = config.validate({"motto": "Built.", "notes": ["Times, all of them, in EST."]})
+        self.assertIn("notes:\n  - Times, all of them, in EST.", config.dump(cfg))
+        self.assertEqual(config.validate(config.parse_yaml(config.dump(cfg))), cfg)
 
 
 class Drawable(unittest.TestCase):

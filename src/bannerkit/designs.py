@@ -24,7 +24,7 @@ from .layout import Design
 
 HEADERS: dict[str, Design] = {
     d.code: d for d in (
-        Design("H1", "sheet", "Sheet", "A cover sheet: the title centred and dimensioned with its own width, the motto as its one note, and the figures GitHub gives ruled along its foot.",
+        Design("H1", "sheet", "Sheet", "A cover sheet: the title centred and dimensioned with its own width, the motto and any further notes as its general notes, and the figures GitHub gives ruled along its foot.",
                True, ("F1",), headers.sheet_design),
         Design("H2", "section", "Section", "The default. The title drawn as a cut solid: outlined, hatched at 45 degrees, dimensioned both ways, and plotted in as the page opens, with the figures GitHub gives ruled along its foot.",
                True, ("F1",), headers.section),

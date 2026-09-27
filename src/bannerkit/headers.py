@@ -37,7 +37,7 @@ def _canvas(h: Header, code: str, th: dict, wide: bool, motion: bool) -> Canvas:
 
 def _lines(cv: Canvas, h: Header, col: dict, f: Flow, *, x0: float, room: float, wide: bool, draws: list,
            small: bool = False, centre: float | None = None) -> None:
-    """What a sheet says under its title: the tagline, the motto as its one general note, the description.
+    """What a sheet says under its title: the tagline, its general notes (the motto first), the description.
 
     Set from `x0`, or centred on `centre` for a cover sheet.
     """
@@ -49,9 +49,14 @@ def _lines(cv: Canvas, h: Header, col: dict, f: Flow, *, x0: float, room: float,
             cv.add(cv.L.text(line, face="meta", size=size, x=x, y=f.line(size, lead=1.08), anchor=anchor,
                              fill=c(col["ink"]), opacity=.94))
         f.gap(8 if small else 10)
-    if h.on("motto"):
-        draws += note(cv, col, f, x=x0, text=h.get("motto"), size=10.5 if (small or not wide) else 11.5, room=room,
-                      centre=centre)
+    said = ([h.get("motto")] if h.on("motto") else []) + list(h.shown_notes)
+    size = 10.5 if (small or not wide) else 11.5
+    for i, text in enumerate(said, start=1):
+        if i > 1:
+            # One bubble's width (1.64 of the size) and 4 px between them, less the capitals' rise (0.70).
+            f.gap(size * .94 + 4)
+        draws += note(cv, col, f, x=x0, text=text, size=size, room=room, centre=centre, number=str(i))
+    if said:
         f.gap(10 if small else 12)
     if h.on("description"):
         top = 12.5 if small else 14 if wide else 13
@@ -86,7 +91,7 @@ def sheet_design(h: Header, th: dict, wide: bool = True, motion: bool = True) ->
 
     Its colours are a print's: blue lines on white by day and a blueprint by
     night, or the sepia, black-line and coloured prints of the same trade.
-    The motto is the sheet's one general note, and the figures are ruled
+    The motto is the sheet's first general note, and the figures are ruled
     along its foot. When the page opens, the dimensions and the rules are
     drawn in, the way a plotter would.
     """

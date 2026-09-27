@@ -12,7 +12,9 @@ changes, and one who writes a title keeps that title.
   title        the config's, else the repository's name, or the person's name
   tagline      the config's, else the repository's description, or the bio
   motto        the config's, else in profile mode the status message: the
-               one general note on the sheet
+               sheet's first general note
+  notes        the config's, up to two more general notes, numbered after
+               the motto
   figures      the ones the config names, in its order, else the mode's
                defaults; one whose value GitHub does not have is left out
   footer       the handle, the licence and the last change, from GitHub;
@@ -60,6 +62,8 @@ DEFAULT_FIGURES = {
 LIMITS = {"title": 40, "tagline": 160, "motto": 80, "value": 40}
 # The row under a footer holds this many buttons at most.
 MAX_LINKS = 4
+# More general notes after the motto, so a sheet carries three at most.
+MAX_NOTES = 2
 TOP = "Back to Top"
 
 # Characters a measured line may carry that the letters do not: each is
@@ -262,6 +266,8 @@ def compose(m: dict, cfg: dict) -> tuple[Header, Footer, list[str]]:
         title=clip(drawable(_pick(cfg, "title", title), "num", notes, "title"), LIMITS["title"]),
         tagline=clip(drawable(_pick(cfg, "tagline", told), "meta", notes, "tagline"), LIMITS["tagline"]),
         motto=clip(drawable(_pick(cfg, "motto", note), "meta", notes, "motto"), LIMITS["motto"]),
+        notes=tuple(n for n in (clip(drawable(text, "meta", notes, "notes"), LIMITS["motto"])
+                                for text in cfg.get("notes") or ()) if n),
         description=drawable(_pick(cfg, "description", ""), "meta", notes, "description"),
         figures=figures(mode, m, cfg.get("figures"), notes),
         tone=tone,

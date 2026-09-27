@@ -150,7 +150,7 @@ person made, and the way back to the top. **F2 Scale bar** sits under H3.
 ### A profile, read from the person
 
 In a profile repository the same header reads a person: their name, their
-bio, their status as the sheet's one note, and along the foot their
+bio, their status as the sheet's first note, and along the foot their
 followers, repositories, the stars those earned, their contributions in the
 last year, their main language and the year they joined. The snapshot below
 was read without GitHub's GraphQL API, the only one that knows a status or a
@@ -359,7 +359,8 @@ Everything is optional, and an empty text field is read from GitHub. A
 | `theme`       | `blueprint`       | Any of the eleven prints, or `rainbowprint`.                                                   |
 | `title`       | from GitHub       | The repository's name, or your name.                                                           |
 | `tagline`     | from GitHub       | The repository's description, or your bio.                                                     |
-| `motto`       | none              | The sheet's one general note. On a profile, your status message.                               |
+| `motto`       | none              | The sheet's first general note. On a profile, your status message.                             |
+| `notes`       | `[]`              | Up to two more general notes, numbered after the motto.                                        |
 | `description` | none              | A longer line under the note.                                                                  |
 | `figures`     | the mode's        | Which figures run along the foot, in order.                                                    |
 | `closing`     | none              | The footer's closing phrase.                                                                   |
