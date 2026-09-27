@@ -10,6 +10,11 @@
 # tannergolden/banners reaches you the moment v1 moves. A profile has no
 # repository to measure, so the elements, the body of a page, are not
 # drawn here.
+#
+# Using the badges or the trophies too? Use tannergolden/markdown's stub
+# instead of this one: a single workflow that runs any mix of the kits,
+# each at its own hour, so the repository never needs a stub per kit. Not
+# both: a kit named there that also has its own stub runs twice.
 name: Banners
 
 on:

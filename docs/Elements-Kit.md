@@ -151,7 +151,10 @@ take two rows. GitHub picks it below 585 pixels.
 The elements are drawn by the banners' stub: one workflow draws the two
 ends of the page and then its body, in one run. Add this as
 `.github/workflows/banners.yml` in any repository. That stub is the whole
-interface.
+interface. A repository that also uses the badges or the trophies uses the
+[Markdown stub](https://github.com/tannergolden/markdown#-use-it-in-your-readme) instead,
+which runs the banners and their elements with the other kits from one
+workflow, rather than a stub per kit.
 
 ```yaml
 name: Banners

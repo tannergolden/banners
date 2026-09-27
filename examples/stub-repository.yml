@@ -9,6 +9,11 @@
 #
 # GITHUB_TOKEN already reads everything about its own repository, private
 # or not, so no extra token is needed.
+#
+# Using the badges or the trophies too? Use tannergolden/markdown's stub
+# instead of this one: a single workflow that runs any mix of the kits,
+# each at its own hour, so the repository never needs a stub per kit. Not
+# both: a kit named there that also has its own stub runs twice.
 name: Banners
 
 on:

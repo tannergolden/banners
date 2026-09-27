@@ -7,6 +7,9 @@
 # README block differs from what it draws: a hand-edited SVG, a stale
 # block, a missing file, a config changed without a run. No token is used
 # and no permission is needed, so it runs on a pull request from a fork.
+#
+# A page drawn by tannergolden/markdown's one stub is checked by that
+# repository's check stub instead, which checks every kit the page uses.
 name: Banners check
 
 on:

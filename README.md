@@ -301,10 +301,15 @@ the whole interface: with no config at all, the README gets H2 Section over
 F1 Title block, in blueprint, every word and figure read from GitHub, and
 [the body of the page](#-the-body-of-the-page) drawn between them.
 
-One stub per kit, or one for the whole page:
-[`tannergolden/markdown`](https://github.com/tannergolden/markdown) calls this
-kit, the badges and the trophies from a single workflow, each at its own hour,
-so a README that wants all three needs one stub rather than three.
+> [!TIP]
+> **One stub for every kit you use.** The stub below runs the banners on
+> their own. To run them with the badges, the trophies or both, add the
+> [Markdown stub](https://github.com/tannergolden/markdown#-use-it-in-your-readme)
+> instead: one workflow that runs each kit at its own hour, so a repository
+> never needs a stub per kit. It fits any mix of the kits, not only all
+> three: give it a cron for each kit you use and leave the rest out. It also
+> takes one `theme` for the whole page. Use one stub or the other for a kit,
+> never both, or the kit runs twice.
 
 ```yaml
 name: Banners
