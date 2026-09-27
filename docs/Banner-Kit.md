@@ -139,9 +139,11 @@ other print. It needs `lock: true`.
 ### Your own themes
 
 The prints are data. The kit's own are
-[`src/bannerkit/themes.json`](../src/bannerkit/themes.json), one a line, so a
-print for everyone is a line there. A repository adds its own in
-`.github/themes.json`, in the same shape: each theme's name, and its colours.
+[`src/bannerkit/themes.json`](../src/bannerkit/themes.json), one a line, which
+the elements draw from too and the badges' catalog matches line for line, so a
+print for everyone is the same line in each. A repository adds its own in
+`.github/themes.json`, in the same shape, with no change to any kit: each
+theme's name, and its colours.
 
 ```json
 {
