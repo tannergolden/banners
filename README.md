@@ -184,6 +184,19 @@ it is, and a quiet day keeps the colour it has. The elements follow: a page
 whose data file says `print: rainbowprint` draws its body in the colour the
 banners are in, so the whole page changes colour together.
 
+**Your own theme.** The prints are data, and a repository adds its own in
+`.github/themes.json`: a name, and a colour for the lines, the lettering and
+the night sheet, each a palette token or `#RRGGBB`. `theme: goldprint` then
+draws the set in it, and the elements and the badges read the same file, so
+one theme serves the whole page.
+[`docs/Banner-Kit.md`](docs/Banner-Kit.md#your-own-themes) has the fields.
+
+```json
+{
+  "goldprint": {"label": "Goldprint", "line": "#B8860B", "ink": "#5C4400", "sheet": "#7A5B00"}
+}
+```
+
 ---
 
 ## 📐 The Body Of The Page
@@ -356,7 +369,7 @@ Everything is optional, and an empty text field is read from GitHub. A
 | `subject`     | this repository   | A login, or `owner/name`. Empty means this repository, or its owner.                           |
 | `header`      | `section`         | `section` (H2), `sheet` (H1), `strip` (H3) or `none`.                                          |
 | `footer`      | the header's pair | `title-block` (F1), `scale-bar` (F2) or `none`.                                                |
-| `theme`       | `blueprint`       | Any of the eleven prints, or `rainbowprint`.                                                   |
+| `theme`       | `blueprint`       | Any of the eleven prints, `rainbowprint`, or a theme of `.github/themes.json`.                 |
 | `title`       | from GitHub       | The repository's name, or your name.                                                           |
 | `tagline`     | from GitHub       | The repository's description, or your bio.                                                     |
 | `motto`       | none              | The sheet's first general note. On a profile, your status message.                             |
@@ -377,7 +390,8 @@ The list of fields not drawn is `hide`, not `off`: YAML reads a bare `off` as
 `theme`, `commit` (`push` or `pr`), `commit-branch`, `kit-ref` (the banners ref
 to run, `v1` by default), `author` (who the refresh commit is by) and `check`
 (verify the committed banners instead of refreshing them) as inputs, for the
-common cases without a config file.
+common cases without a config file. Its `theme` draws the elements too, in
+place of their data file's print, so one input themes the page.
 
 ---
 

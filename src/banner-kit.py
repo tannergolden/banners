@@ -42,7 +42,7 @@ from bannerkit import config, lock, plan, readme, sample  # noqa: E402
 from bannerkit.compose import CompositionError, compose  # noqa: E402
 from bannerkit.content import Footer, Header  # noqa: E402
 from bannerkit.designs import DESIGNS, check as lint_files, render  # noqa: E402
-from bannerkit.drafting import PRINTS, RAINBOW, SPECTRUM  # noqa: E402
+from bannerkit.drafting import PRINTS, RAINBOW, SPECTRUM, ThemeError, use_themes  # noqa: E402
 
 LOCK = Path(".github") / "banners.lock.json"
 DRAWN = re.compile(r"^(header|footer|link)-[a-z0-9-]+\.svg$")
@@ -54,6 +54,7 @@ def _today(args) -> str:
 
 def _cfg(args) -> dict:
     root = Path(args.root)
+    use_themes(root)  # a repository's own themes, beside the kit's, before its config names one
     cfg = config.load(root / (args.config or ".github/banners.yml"))
     for key in ("mode", "subject", "header", "footer", "theme", "out"):
         v = getattr(args, key, None)
@@ -365,7 +366,7 @@ def main(argv: list[str] | None = None) -> int:
         sp.add_argument("--subject", default="", help="a login, or owner/name in repository mode")
         sp.add_argument("--header", choices=sorted(config.CHOICES["header"]))
         sp.add_argument("--footer", choices=sorted(c for c in config.CHOICES["footer"] if c))
-        sp.add_argument("--theme", choices=[*PRINTS, RAINBOW])
+        sp.add_argument("--theme", help=f"{', '.join(PRINTS)}, {RAINBOW}, or one of .github/themes.json")
         sp.add_argument("--out", default="")
         sp.add_argument("--today", default="", help="YYYY-MM-DD, for reproducible runs")
 
@@ -396,7 +397,7 @@ def main(argv: list[str] | None = None) -> int:
                 "draw": cmd_draw}
     try:
         return commands[args.cmd](args)
-    except (config.ConfigError, CompositionError) as exc:
+    except (config.ConfigError, CompositionError, ThemeError) as exc:
         print(f"::error::{exc}" if os.environ.get("GITHUB_ACTIONS") else f"config: {exc}", file=sys.stderr)
         return 2
 

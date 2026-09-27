@@ -29,7 +29,7 @@ DEFAULTS = {
     "subject": "",             # a login, or owner/name; empty means this repository, or its owner
     "header": "section",       # section | sheet | strip | none; section is what a config that says nothing gets
     "footer": "",              # title-block | scale-bar | none; empty means the one made for the header
-    "theme": DEFAULT_PRINT,    # the print the set is drawn in: blueprint, redprint, ... or rainbowprint
+    "theme": DEFAULT_PRINT,    # the print the set is drawn in: blueprint, redprint, ..., rainbowprint, or one of .github/themes.json
     "title": "",               # empty: the repository's name, or the person's name
     "tagline": "",             # empty: the repository's description, or the bio
     "motto": "",               # the sheet's first general note; empty: none, or in profile mode the status message
@@ -49,7 +49,6 @@ CHOICES = {
     "mode": {"auto", "profile", "repository"},
     "header": {"sheet", "section", "strip", "none"},
     "footer": {"", "title-block", "scale-bar", "none"},
-    "theme": set(PRINTS) | {RAINBOW},
     "readme": {"manage", "none"},
 }
 # What 1.0 read and this version sets aside, rather than fail a config written for it: keys, and names under `hide`.
@@ -219,6 +218,9 @@ def validate(given: dict, where: str = "the config") -> dict:
     for k, allowed in CHOICES.items():
         if cfg[k] not in allowed:
             raise ConfigError(f"{k}: {cfg[k]!r} is not one of {sorted(a for a in allowed if a)}")
+    if cfg["theme"] != RAINBOW and cfg["theme"] not in PRINTS:
+        raise ConfigError(f"theme: {cfg['theme']!r} is not one of {', '.join(PRINTS)} or {RAINBOW}; "
+                          "a repository adds its own in .github/themes.json")
     for k in ("figures", "hide"):
         if isinstance(cfg[k], str):
             cfg[k] = [cfg[k]]

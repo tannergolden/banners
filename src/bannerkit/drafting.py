@@ -13,9 +13,13 @@ block's frame, then its rules and the dimensions, and the grid finest.
 """
 from __future__ import annotations
 
+import json
 import math
+import re
+from pathlib import Path
 
 from .canvas import Canvas, c
+from .palette import DECLARED, HEX, is_colour
 from .draw import clip_rect, grain
 from .text import cap_height, f1, fit, flow, fx, width
 
@@ -29,25 +33,80 @@ from .text import cap_height, f1, fit, flow, fx, width
 # to read on white. By night the sheet is `sheet`, lettered in `night`:
 # white on the deep sheets, black on the two bright ones, yellow and
 # orange, which white could not be read on.
-PRINTS = {
-    "redprint": dict(label="Redprint", line="cherry", ink="maroon", sheet="cherry"),
-    "orangeprint": dict(label="Orangeprint", line="tangerine", ink="brick", sheet="tangerine", night="black"),
-    "yellowprint": dict(label="Yellowprint", line="mustard", ink="charcoal", sheet="mustard", night="black"),
-    "greenprint": dict(label="Greenprint", line="forest", ink="forest", sheet="forest"),
-    "tealprint": dict(label="Tealprint", line="teal", ink="ocean", sheet="ocean"),
-    "blueprint": dict(label="Blueprint", line="cobalt", ink="navy", sheet="navy"),
-    "indigoprint": dict(label="Indigoprint", line="iris", ink="indigo", sheet="indigo"),
-    "purpleprint": dict(label="Purpleprint", line="plum", ink="amethyst", sheet="amethyst"),
-    "pinkprint": dict(label="Pinkprint", line="magenta", ink="ruby", sheet="ruby"),
-    "brownprint": dict(label="Brownprint", line="brown", ink="brown", sheet="brown"),
-    "blackprint": dict(label="Blackprint", line="charcoal", ink="black", sheet="charcoal"),
-}
+#
+# The prints are data: themes.json beside this module holds the kit's own, one
+# a line, and a repository adds its own in .github/themes.json in the same
+# shape, a theme's name for each set of colours (see `use_themes`). A colour
+# is a palette token or #RRGGBB; `label` and `night` may be left out.
+CATALOG = Path(__file__).with_name("themes.json")
+THEMES_FILE = Path(".github") / "themes.json"
+THEME_FIELDS = ("label", "line", "ink", "sheet", "night")
+
+
+class ThemeError(ValueError):
+    pass
+
+
+def _theme(name: str, spec: dict) -> dict:
+    return {"label": spec.get("label") or name.capitalize(),
+            **{k: spec[k] for k in ("line", "ink", "sheet", "night") if k in spec}}
+
+
+PRINTS = {name: _theme(name, spec) for name, spec in json.loads(CATALOG.read_text(encoding="utf-8")).items()}
+BUILTIN = tuple(PRINTS)
 DEFAULT_PRINT = "blueprint"
 # The rainbow, in order. A banner in `rainbowprint` is drawn in one of these
 # and moves to the next each time an update redraws it.
 SPECTRUM = ("redprint", "orangeprint", "yellowprint", "greenprint", "tealprint", "blueprint", "indigoprint",
             "purpleprint", "pinkprint")
 RAINBOW = "rainbowprint"
+_ADDED: set[str] = set()
+
+
+def theme_errors(name: object, spec: object) -> list[str]:
+    """What is wrong with one theme a repository defines, each said precisely."""
+    if not isinstance(name, str) or not re.fullmatch(r"[a-z][a-z0-9-]*", name):
+        return [f"{name!r}: a theme's name is lowercase letters, digits and hyphens"]
+    if name in BUILTIN or name == RAINBOW:
+        return [f"{name}: the kits already draw a theme by that name; give yours another"]
+    if not isinstance(spec, dict):
+        return [f"{name}: expected a map of its colours"]
+    out = [f"{name}: {k!r} is not a field (one of {', '.join(THEME_FIELDS)})" for k in spec if k not in THEME_FIELDS]
+    out += [f"{name}: no {k!r}" for k in ("line", "ink", "sheet") if k not in spec]
+    out += [f"{name}: {k} {spec[k]!r} is neither a palette token nor #RRGGBB"
+            for k in ("line", "ink", "sheet", "night") if k in spec and not is_colour(spec[k])]
+    if "label" in spec and not isinstance(spec["label"], str):
+        out.append(f"{name}: label is text")
+    return out
+
+
+def use_themes(root: Path | None) -> tuple[str, ...]:
+    """The prints: the kit's own and the ones the repository at `root` defines in .github/themes.json.
+
+    Replaces whatever another repository added before, so the prints are always the kit's and this
+    one's. Returns the repository's names; raises ThemeError naming everything wrong with the file.
+    """
+    for name in _ADDED:
+        PRINTS.pop(name, None)
+    _ADDED.clear()
+    DECLARED.clear()
+    path = Path(root) / THEMES_FILE if root is not None else None
+    if path is None or not path.is_file():
+        return ()
+    try:
+        given = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ThemeError(f"{THEMES_FILE}: cannot read it as JSON ({exc})") from exc
+    if not isinstance(given, dict):
+        raise ThemeError(f"{THEMES_FILE}: expected a map of each theme's name to its colours")
+    problems = [p for name, spec in given.items() for p in theme_errors(name, spec)]
+    if problems:
+        raise ThemeError(f"{THEMES_FILE}: " + "; ".join(problems))
+    for name, spec in given.items():
+        PRINTS[name] = _theme(name, spec)
+        _ADDED.add(name)
+        DECLARED.update(v.upper() for v in spec.values() if isinstance(v, str) and HEX.fullmatch(v))
+    return tuple(given)
 
 
 def colours(tone: str, th: dict) -> dict:

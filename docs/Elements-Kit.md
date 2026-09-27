@@ -220,7 +220,8 @@ python3 src/elements-kit.py snippets --root ~/my-repo  # print each element's <p
 python3 src/elements-kit.py run --root ~/my-repo       # init when there is no data file, then measure and render
 ```
 
-Every command takes `--root` (this checkout when omitted), `--data`, `--out`, `--readme` and `--lock`.
+Every command takes `--root` (this checkout when omitted), `--data`, `--out`, `--readme` and `--lock`,
+and `--theme`, which draws every element in one print in place of the data file's.
 The data file is YAML, read with PyYAML, which GitHub's runners already have;
 write `elements.json` instead and nothing beyond the standard library is
 needed.
@@ -228,7 +229,7 @@ needed.
 ### The data file
 
 ```yaml
-print: blueprint          # any of the eleven prints below, or rainbowprint
+print: blueprint          # any of the eleven prints below, rainbowprint, or one of .github/themes.json
 subject: owner/name       # what the title blocks say; the first run reads it from origin
 today: 2026-09-25         # optional: the date the measurement is as of, for a reproducible page
 
@@ -281,6 +282,13 @@ spectrum their last update took, and the elements are drawn in the same one,
 so the header, the body and the footer change colour together. Elements on
 a page without banners keep their own colour in their lock, from the
 redprint, and take the next each time an update redraws them.
+
+**One theme for the page.** The banners' workflow passes its `theme` input
+to the elements, and the elements action takes one of its own, so a stub
+that names a theme draws the header, the body and the footer in it, in place
+of the data file's `print`. A theme a repository defines in
+`.github/themes.json` is drawn here as it is in the banners; the
+[banners' specification](Banner-Kit.md#your-own-themes) has its fields.
 
 ---
 

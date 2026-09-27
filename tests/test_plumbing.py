@@ -18,7 +18,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from bannerkit import config, plan, readme, sample  # noqa: E402
+from bannerkit import config, drafting, plan, readme, sample  # noqa: E402
 from bannerkit.drafting import PRINTS  # noqa: E402
 from bannerkit.palette import PALETTE  # noqa: E402
 
@@ -260,6 +260,77 @@ class TopLink(unittest.TestCase):
 
     def test_with_no_footer_nothing_is_added(self):
         self.assertEqual(self.blocks(header="none", footer="none"), {})
+
+
+class Themes(unittest.TestCase):
+    """The prints are data: the kit's own catalog, and a repository's own in .github/themes.json."""
+
+    GOLD = {"goldprint": {"label": "Goldprint", "line": "#B8860B", "ink": "#5C4400", "sheet": "#7A5B00"}}
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        (self.root / ".github").mkdir()
+        (self.root / "README.md").write_text("# Banners\n", encoding="utf-8")
+        self.addCleanup(drafting.use_themes, None)  # the next test starts from the kit's own prints
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def themes(self, given: dict) -> None:
+        (self.root / ".github" / "themes.json").write_text(json.dumps(given), encoding="utf-8")
+
+    def draw(self, *extra: str) -> tuple[int, str]:
+        return run(["run", "--root", str(self.root), "--today", "2026-09-25", *extra], sample.REPOSITORY)
+
+    def test_the_catalog_is_the_kits_eleven_prints_in_its_order(self):
+        catalog = json.loads(drafting.CATALOG.read_text(encoding="utf-8"))
+        self.assertEqual((list(catalog), len(catalog)), (list(drafting.BUILTIN), 11))
+        for name, spec in catalog.items():
+            self.assertEqual(drafting.theme_errors("x" + name, spec), [], name)
+            self.assertTrue(all(v in PALETTE for k, v in spec.items() if k != "label"), f"{name} is drawn in tokens")
+        self.assertLessEqual(set(drafting.SPECTRUM), set(drafting.BUILTIN))
+
+    def test_a_repository_theme_draws_the_banners_in_its_own_colours(self):
+        self.themes(self.GOLD)
+        (self.root / ".github" / "banners.yml").write_text("theme: goldprint\n", encoding="utf-8")
+        code, out = self.draw()
+        self.assertEqual(code, 0, out)
+        self.assertIn("#B8860B", (self.root / "assets" / "banners" / "header-day.svg").read_text(encoding="utf-8"))
+        self.assertIn("#7A5B00", (self.root / "assets" / "banners" / "header-dark.svg").read_text(encoding="utf-8"))
+        self.assertEqual(run(["check", "--root", str(self.root)])[0], 0, "and check draws it the same way")
+
+    def test_the_theme_option_can_name_a_repository_theme(self):
+        self.themes(self.GOLD)
+        code, out = self.draw("--theme", "goldprint")
+        self.assertEqual(code, 0, out)
+        self.assertIn("#5C4400", (self.root / "assets" / "banners" / "header-day.svg").read_text(encoding="utf-8"))
+
+    def test_a_theme_nobody_defined_points_at_the_themes_file(self):
+        self.assertEqual(self.draw("--theme", "goldprint")[0], 2)
+        with self.assertRaisesRegex(config.ConfigError, r"\.github/themes\.json"):
+            config.validate({"theme": "goldprint"})
+
+    def test_a_themes_file_is_checked_and_every_fault_named(self):
+        self.themes({"blackprint": {"line": "#000000", "ink": "#000000", "sheet": "#000000"},
+                     "Gold Print": {"line": "iris", "ink": "indigo", "sheet": "indigo"},
+                     "tinprint": {"line": "tin", "ink": "black", "sheet": "black"},
+                     "irisprint": {"line": "iris", "ink": "indigo"},
+                     "oddprint": {"line": "iris", "ink": "indigo", "sheet": "indigo", "shade": "black"}})
+        with self.assertRaises(drafting.ThemeError) as err:
+            drafting.use_themes(self.root)
+        for fault in ("blackprint: the kits already draw", "'Gold Print'", "'tin' is neither", "no 'sheet'", "'shade' is not"):
+            self.assertIn(fault, str(err.exception))
+        (self.root / ".github" / "themes.json").write_text("{not json", encoding="utf-8")
+        with self.assertRaisesRegex(drafting.ThemeError, "JSON"):
+            drafting.use_themes(self.root)
+
+    def test_one_repositorys_themes_never_reach_the_next(self):
+        self.themes(self.GOLD)
+        self.assertEqual(drafting.use_themes(self.root), ("goldprint",))
+        self.assertIn("goldprint", drafting.PRINTS)
+        self.assertEqual(drafting.use_themes(self.root / "elsewhere"), ())
+        self.assertEqual(list(drafting.PRINTS), list(drafting.BUILTIN))
 
 
 class Config(unittest.TestCase):

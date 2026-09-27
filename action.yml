@@ -48,8 +48,9 @@ inputs:
     description: >-
       The print the banners are drawn in: blueprint, redprint, orangeprint,
       yellowprint, greenprint, tealprint, indigoprint, purpleprint,
-      pinkprint, brownprint or blackprint; or rainbowprint, which draws each
-      update in the next colour of the spectrum. Empty reads the config.
+      pinkprint, brownprint or blackprint; rainbowprint, which draws each
+      update in the next colour of the spectrum; or a theme of the
+      repository's own .github/themes.json. Empty reads the config.
     required: false
     default: ''
   config:

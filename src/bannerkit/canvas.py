@@ -16,7 +16,7 @@ import re
 from html import escape
 
 from . import KIT_VERSION
-from .palette import HEXES, hexof
+from .palette import DECLARED, HEXES, hexof
 from .text import Lettering
 
 # The two themes GitHub paints behind a README, as ink roles. Every role is a
@@ -164,14 +164,14 @@ def lint(svg: str, *, budget: int, text_ok: bool = False) -> list[str]:
         problems.append("no description")
     for hexc in (m.group(1) for m in _matches(_HEX, svg, ("#",), lambda i, n: i + 8)):
         full = hexc if len(hexc) == 6 else "".join(ch * 2 for ch in hexc)
-        if f"#{full.upper()}" not in HEXES:
+        if f"#{full.upper()}" not in HEXES and f"#{full.upper()}" not in DECLARED:
             problems.append(f"#{hexc} is not a badges token")
     # A paint's value ends at the first of " ; } after it, which is the second after the name when an = opens it.
     paints = _matches(_PAINT, svg, ("fill", "stroke", "stop-color", "flood-color", "lighting-color", "color"),
                       lambda i, n: _stop(svg, _stop(svg, i + len(n), '";}'), '";}'))
     for prop, value in (m.groups() for m in paints):
         value = value.strip()
-        if value == "none" or value.startswith("url(#") or value.upper() in HEXES:
+        if value == "none" or value.startswith("url(#") or value.upper() in HEXES or value.upper() in DECLARED:
             continue
         if prop == "fill" and value in ("freeze", "remove"):
             continue   # SMIL's own `fill`, which says what an animation leaves behind, not a colour

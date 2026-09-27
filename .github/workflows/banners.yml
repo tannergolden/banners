@@ -41,10 +41,12 @@ on:
         default: ''
       theme:
         description: >-
-          blueprint, redprint, orangeprint, yellowprint, greenprint,
-          tealprint, indigoprint, purpleprint, pinkprint, brownprint,
-          blackprint, or rainbowprint for the next colour on every update.
-          Empty reads the config.
+          The print the banners and the elements are drawn in: blueprint,
+          redprint, orangeprint, yellowprint, greenprint, tealprint,
+          indigoprint, purpleprint, pinkprint, brownprint, blackprint,
+          rainbowprint for the next colour on every update, or a theme of the
+          repository's own .github/themes.json. Empty reads the config and the
+          elements' data file.
         type: string
         default: ''
       elements:
@@ -202,6 +204,7 @@ jobs:
         uses: ./.banners-kit/elements
         with:
           mode: ${{ inputs.check && 'check' || 'run' }}
+          theme: ${{ inputs.theme }} # one theme for the page: the elements are drawn in the banners' print
           token: ${{ secrets.ELEMENTS_TOKEN || secrets.BANNERS_TOKEN || github.token }}
 
       # The elements' own commit, under their own scope, the same way.

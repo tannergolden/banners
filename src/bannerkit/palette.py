@@ -14,6 +14,8 @@ is present, so they cannot drift apart unnoticed.
 """
 from __future__ import annotations
 
+import re
+
 PALETTE = {
     # --- Role anchors (brand-fixed; the doc-style color roles) --------------
     "black": "#000000",   # static label (doc-style: labelColor 000000)
@@ -160,8 +162,19 @@ ICONS = {
 
 # Uppercase, so the lint can compare what a file says with what a token is.
 HEXES = frozenset(v.upper() for v in PALETTE.values())
+# The colours a repository's own themes give as #RRGGBB rather than as tokens
+# (see `drafting.use_themes`): declared, so the lint allows them like a token's.
+DECLARED: set[str] = set()
+HEX = re.compile(r"#[0-9A-Fa-f]{6}")
+
+
+def is_colour(value: object) -> bool:
+    """A palette token, or a colour written #RRGGBB."""
+    return isinstance(value, str) and (value in PALETTE or bool(HEX.fullmatch(value)))
 
 
 def hexof(token: str) -> str:
-    """The hex a token stands for. An unknown token is a design bug, so it raises."""
+    """The hex a token stands for, or a #RRGGBB as it is. An unknown token is a design bug, so it raises."""
+    if HEX.fullmatch(token):
+        return token.upper()
     return PALETTE[token]

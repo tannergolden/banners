@@ -40,6 +40,15 @@ inputs:
     description: 'The README whose blocks are written.'
     required: false
     default: 'README.md'
+  theme:
+    description: >-
+      The print every element is drawn in, instead of the data file's print:
+      blueprint, redprint, orangeprint, yellowprint, greenprint, tealprint,
+      indigoprint, purpleprint, pinkprint, brownprint, blackprint,
+      rainbowprint, or a theme of the repository's own .github/themes.json.
+      Empty: the data file's. The banners' workflow passes its theme here.
+    required: false
+    default: ''
   token:
     description: "A token for what only GitHub knows: placards and the certificate's CI verdict. Optional."
     required: false
@@ -72,6 +81,7 @@ runs:
         KIT_DATA: ${{ inputs.data }}
         KIT_OUT: ${{ inputs.out }}
         KIT_README: ${{ inputs.readme }}
+        KIT_THEME: ${{ inputs.theme }}
         KIT_PATH: ${{ github.action_path }}
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
@@ -95,6 +105,7 @@ runs:
         msg="$RUNNER_TEMP/elements-commit.txt"
         rm -f "$msg"
         if [ "$KIT_MODE" = "run" ]; then args+=( --commit-file "$msg" ); fi
+        if [ -n "$KIT_THEME" ]; then args+=( --theme "$KIT_THEME" ); fi
         python3 "$KIT_PATH/../src/elements-kit.py" "$KIT_MODE" "${args[@]}"
 
         {

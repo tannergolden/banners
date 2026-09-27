@@ -26,7 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from bannerkit.drafting import RAINBOW, SPECTRUM  # noqa: E402
+from bannerkit.drafting import RAINBOW, SPECTRUM, ThemeError, use_themes  # noqa: E402
 from elementskit import elements as E  # noqa: E402
 from elementskit import measure as M  # noqa: E402
 
@@ -73,7 +73,8 @@ def validate(data: dict, lock: dict) -> list[str]:
         return ["no `elements:` map in the data file"]
     tone = data.get("print", "blueprint")
     if tone != RAINBOW and tone not in E.PRINTS:
-        errors.append(f"unknown print {tone!r} (one of {', '.join(E.PRINTS)}, or {RAINBOW})")
+        errors.append(f"unknown print {tone!r} (one of {', '.join(E.PRINTS)}, or {RAINBOW}; "
+                      "a repository adds its own in .github/themes.json)")
     for eid, d in merged(data, lock).items():
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", eid):
             errors.append(f"{eid}: an element's id must be kebab-case")
@@ -409,6 +410,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--readme", type=Path, default=None, help="default README.md")
     ap.add_argument("--lock", type=Path, default=None, help="default .github/elements.lock.json")
     ap.add_argument("--token", default=os.environ.get("GITHUB_TOKEN") or None)
+    ap.add_argument("--theme", default="", metavar="PRINT",
+                    help="draw every element in this print instead of the data file's: a print, rainbowprint, "
+                         "or one of .github/themes.json")
     ap.add_argument("--commit-file", type=Path, default=None,
                     help="run only: where the commit message for what changed is written; absent when nothing did")
     args = ap.parse_args(argv)
@@ -427,7 +431,14 @@ def main(argv: list[str] | None = None) -> int:
     if not data_path.exists():
         print(f"::error::no {data_path.relative_to(root) if data_path.is_relative_to(root) else data_path}")
         return 1
+    try:
+        use_themes(root)  # a repository's own themes, beside the kit's
+    except ThemeError as exc:
+        print(f"::error::{exc}", file=sys.stderr)
+        return 1
     data = load_data(data_path)
+    if args.theme:
+        data["print"] = args.theme  # one theme for the page, chosen by the caller
     lock = load_lock(lock_path)
     lock_before = json.loads(json.dumps(lock))
 

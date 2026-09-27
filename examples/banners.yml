@@ -7,6 +7,7 @@ header: section # section (H2) | sheet (H1) | strip (H3) | none
 footer: '' # title-block | scale-bar | none; empty means the one made for the header
 theme: blueprint # redprint | orangeprint | yellowprint | greenprint | tealprint | blueprint | indigoprint | purpleprint
                  # | pinkprint | brownprint | blackprint | rainbowprint, the spectrum in turn, one colour per update
+                 # | a theme of your own, defined in .github/themes.json
 title: '' # empty: the repository's name, or your name
 tagline: '' # empty: the repository's description, or your bio
 motto: '' # the sheet's first general note; empty: none, or in profile mode your status message

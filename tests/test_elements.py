@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from elementskit import elements as E  # noqa: E402
 from elementskit import layout as L  # noqa: E402
 from elementskit import measure as M  # noqa: E402
+from bannerkit import drafting as D  # noqa: E402
 from bannerkit.canvas import lint  # noqa: E402
 
 import importlib.util  # noqa: E402
@@ -195,6 +196,27 @@ class Cli(unittest.TestCase):
         self.assertEqual(code, 0, out)
         self.assertEqual(len(list(self.out.glob("*.svg"))), 24)
         self.assertEqual(self.kit("check")[0], 0)
+
+    def test_a_theme_draws_every_element_in_its_print_instead_of_the_data_files(self):
+        code, out = self.kit("render", "--theme", "blackprint")
+        self.assertEqual(code, 0, out)
+        themed = {p.name: p.read_bytes() for p in self.out.glob("*.svg")}
+        data = self.root / ".github" / "elements.yml"
+        text = data.read_text(encoding="utf-8")
+        self.assertIn("\nprint: blueprint\n", text, "the specimen names its own print")
+        data.write_text(text.replace("\nprint: blueprint\n", "\nprint: blackprint\n"), encoding="utf-8")
+        self.assertEqual(self.kit("render")[0], 0)
+        self.assertEqual(themed, {p.name: p.read_bytes() for p in self.out.glob("*.svg")})
+        self.assertEqual(self.kit("check", "--theme", "blackprint")[0], 0)
+
+    def test_a_repository_theme_draws_the_elements_and_passes_the_lint(self):
+        (self.root / ".github" / "themes.json").write_text(
+            '{"goldprint": {"line": "#B8860B", "ink": "#5C4400", "sheet": "#7A5B00"}}', encoding="utf-8")
+        self.addCleanup(D.use_themes, None)
+        code, out = self.kit("render", "--theme", "goldprint")
+        self.assertEqual(code, 0, out)
+        self.assertIn("#B8860B", (self.out / "how-it-runs-day.svg").read_text(encoding="utf-8"))
+        self.assertEqual(self.kit("render", "--theme", "nosuchprint")[0], 1)
 
     def test_render_is_idempotent(self):
         self.kit("render")

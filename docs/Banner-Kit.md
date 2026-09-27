@@ -136,6 +136,36 @@ keeps the colour it has. After `pinkprint` it comes round to `redprint`.
 `check` and `render` use the lock's colour, so a rainbow is checked like any
 other print. It needs `lock: true`.
 
+### Your own themes
+
+The prints are data. The kit's own are
+[`src/bannerkit/themes.json`](../src/bannerkit/themes.json), one a line, so a
+print for everyone is a line there. A repository adds its own in
+`.github/themes.json`, in the same shape: each theme's name, and its colours.
+
+```json
+{
+  "goldprint": {"label": "Goldprint", "line": "#B8860B", "ink": "#5C4400", "sheet": "#7A5B00"},
+  "duskprint": {"line": "iris", "ink": "navy", "sheet": "indigo"}
+}
+```
+
+| Field   | Required | Meaning                                                       |
+| :------ | :------- | :------------------------------------------------------------ |
+| `line`  | yes      | The lines by day.                                             |
+| `ink`   | yes      | The lettering by day.                                         |
+| `sheet` | yes      | The sheet by night.                                           |
+| `night` | no       | The lettering on that sheet; `white` when left out.           |
+| `label` | no       | The name a drawing says; the theme's name, capitalised.       |
+
+A colour is a palette token, as the kit's own are, or `#RRGGBB`. A name is
+lowercase letters, digits and hyphens, and cannot be one the kits already
+draw, `rainbowprint` included. Then `theme: goldprint`, in the config or as
+the workflow's input, draws the set in it. The elements and the badges read
+the same file, so one theme serves the whole page. The file is read on every
+run, and a mistake in it fails the run with every fault named rather than
+drawing in a colour nobody chose.
+
 ---
 
 ## 📏 Measurement
@@ -242,7 +272,7 @@ lists every key at its default.
 | `subject`     | this repository  | A login, or `owner/name`. Empty means this repository, or its owner.              |
 | `header`      | `section`        | `section`, `sheet`, `strip` or `none`.                                            |
 | `footer`      | the header's pair | `title-block`, `scale-bar` or `none`.                                            |
-| `theme`       | `blueprint`      | Any print above, or `rainbowprint`.                                               |
+| `theme`       | `blueprint`      | Any print above, `rainbowprint`, or a theme of `.github/themes.json`.             |
 | `title`       | from GitHub      | The title, set fully capped.                                                      |
 | `tagline`     | from GitHub      | The line under the title.                                                         |
 | `motto`       | none             | The sheet's first general note, in capitals.                                      |
@@ -330,7 +360,8 @@ python3 src/banner-kit.py lint
 
 Every subcommand that touches a repository takes `--root`, `--config`,
 `--mode`, `--subject`, `--header`, `--footer`, `--theme`, `--out` and
-`--today YYYY-MM-DD`, which fixes the date for reproducible runs. The action
+`--today YYYY-MM-DD`, which fixes the date for reproducible runs. `--theme`
+names any print, a repository's own included. The action
 calls `run` with `--commit-file`, which writes the Conventional Commit for the
 run when something changed; `preview` draws the built-in sample measurement
 with no network and is what the tests use.
