@@ -122,6 +122,18 @@ class Elements(unittest.TestCase):
             minidom.parseString(E.draw("schematic", cyc, "blueprint", "day", variant))
         self.assertEqual(L.layers(["a", "b", "c"], [("a", "b"), ("b", "c"), ("c", "a")]), {"a": 0, "b": 1, "c": 2})
 
+    def test_a_history_of_patch_releases_alone_still_draws_its_newest_on_a_phone(self):
+        # Pruning leaves one tag per repository; when it is a patch, no event is a major.
+        d = {"kind": "milestones", "subject": "x/y", "today": "2026-09-27",
+             "events": [{"date": "2026-09-20", "tag": "V1.6.1", "major": False},
+                        {"date": "2026-09-26", "tag": "V1.6.2", "major": False}]}
+        for variant in ("wide", "narrow"):
+            svg = E.draw("milestones", d, "blueprint", "day", variant)
+            minidom.parseString(svg)
+            self.assertEqual(lint(svg, budget=E.BUDGET["sheet"]), [], variant)
+        planned = dict(d, events=d["events"] + [{"date": "2026-10-30", "tag": "V1.7.0", "major": False, "next": True}])
+        minidom.parseString(E.draw("milestones", planned, "blueprint", "day", "narrow"))
+
     def test_timeline_cuts_only_a_quiet_stretch_and_keeps_the_scale_monotonic(self):
         import datetime as dt
         s = L.timeline(dt.date(2026, 7, 22), dt.date(2026, 10, 8),

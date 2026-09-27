@@ -538,7 +538,10 @@ def milestones(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
     end = _date(d["end"]) if d.get("end") else _date(max(str(events[-1]["date"]), str(today))) + dt.timedelta(days=21)
     line_hex = None
     if narrow:
-        majors = [e for e in events if e.get("major", True) or e.get("made")]
+        # A phone lists the majors. Where every release is a patch, as when pruning has left one
+        # tag, it lists the newest release instead of nothing.
+        majors = ([e for e in events if e.get("major", True) or e.get("made")]
+                  or [e for e in events if not e.get("next")][-1:] or events[-1:])
         rows = [(e, 1 + len(e.get("above", ()))) for e in majors]
         H = 96 + sum(30 + 11 * (n - 1) for _, n in rows) + 20
         cv, col = new("milestones", variant, th, tone, W, H, d.get("title", "Milestones"), d.get("desc", ""))
