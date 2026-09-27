@@ -279,8 +279,8 @@ def schematic(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
     by = {b.key: b for b in boxes}
     bh = 52
     groups = d.get("groups", {})
-    grouped = any(d["boxes"][k].get("in") for k in keys)
     wires: list[tuple] = []
+    lift = 0
     if narrow:
         left, top, bw, gap_y = B + 14, 78, 276, 44
         from .layout import layers as _layers
@@ -309,10 +309,15 @@ def schematic(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
                 channel += 1
                 wires.append(([(A.x + A.w, A.cy), (chx, A.cy), (chx, Bx.cy), (Bx.x + Bx.w, Bx.cy)], label, True))
     else:
-        left, top = 46, 100
+        left, top = 46, 78
         gap_x, gap_y = 72, 64
-        placed = snake(boxes, edges, left=left, top=top + (18 if grouped else 0), width=W - 2 * left,
+        placed = snake(boxes, edges, left=left, top=top, width=W - 2 * left,
                        per_row=3, box_w=224, box_h=bh, gap_x=gap_x, gap_y=gap_y)
+        # The first row sits as close under the title as a phone's does, unless a group drawn
+        # around one of its boxes needs the room above it for its label.
+        lift = 18 if any(d["boxes"][b.key].get("in") and b.y == top for b in boxes) else 0
+        for b in boxes:
+            b.y += lift
         # Wires that would share a channel take lanes in it, 8 px apart, centred on the channel.
         first = {}
         for a, b, *rest in d["wires"]:
@@ -334,7 +339,7 @@ def schematic(d: dict, tone: str, th: dict, variant: str = "wide") -> str:
             if xx + w > right and xx > left:
                 xx, rows = left, rows + 1
             xx += w + 22
-    H = top + (0 if narrow else (18 if grouped else 0)) + placed + 34 + (rows * 14 if rows else 0) + B
+    H = top + lift + placed + 34 + (rows * 14 if rows else 0) + B
     cv, col = new("schematic", variant, th, tone, W, H, d.get("title", "Schematic"), d.get("desc", ""))
     sheet(cv, col, W=W, H=H, border=B, zones=g["zones"])
     title(cv, col, g, "SCHEMATIC", d.get("subject", ""), d.get("caption", ""))

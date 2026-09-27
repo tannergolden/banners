@@ -85,9 +85,10 @@ measured elements drawn live for a real one.
 Boxes and the wires between them. You name the boxes and say which connects
 to which; the kit layers them along the wires, snakes the rows across the
 sheet so every wire is short, routes each one around the boxes in its way and
-sets its label in a gap in its longest run, clear of every other wire. A
-phone gets one box to a row, with the wires that skip a row carried down a
-channel at the right.
+sets its label in a gap in its longest run, clear of every other wire. The
+rows start just under the sheet's title, a little lower when a dashed group
+encloses a box in the first row, so its label has room. A phone gets one box
+to a row, with the wires that skip a row carried down a channel at the right.
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="../examples/driftmark/assets/elements/how-it-runs-dark.svg"><img alt="Schematic of driftmark: the survey file drives the scheduler, which runs a probe in each region; the collector compares results with the baselines, writes the report and raises alerts past the threshold." src="../examples/driftmark/assets/elements/how-it-runs-day.svg"></picture>
 

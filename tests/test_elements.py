@@ -114,6 +114,18 @@ class Elements(unittest.TestCase):
             for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
                 self.assertFalse(L._crosses(x0, y0, x1, y1, boxes, (a, b)), (a, b, pts))
 
+    def test_the_first_row_sits_under_the_title_unless_a_group_needs_the_room(self):
+        def first_row(boxes: dict) -> float:
+            d = {"kind": "schematic", "subject": "x/y", "boxes": boxes, "groups": {"g": "GROUP"},
+                 "wires": [["a", "b", "ONE"], ["b", "c", "TWO"], ["c", "d", "THREE"]]}
+            svg = E.draw("schematic", d, "blueprint", "day", "wide")
+            return min(float(y) for y in re.findall(r'<rect x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="52" rx="3"', svg))
+        plain = {k: {"title": k.upper(), "path": k} for k in "abcd"}
+        # Three layers to a row: a, b and c are the first row, d starts the second.
+        self.assertEqual(first_row(plain), 78)
+        self.assertEqual(first_row(dict(plain, d=dict(plain["d"], **{"in": "g"}))), 78)
+        self.assertEqual(first_row(dict(plain, b=dict(plain["b"], **{"in": "g"}))), 96)
+
     def test_a_schematic_with_a_cycle_still_draws(self):
         cyc = {"kind": "schematic", "subject": "x/y",
                "boxes": {"a": {"title": "A", "path": "a"}, "b": {"title": "B", "path": "b"}, "c": {"title": "C", "path": "c"}},
