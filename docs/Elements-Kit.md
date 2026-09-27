@@ -229,6 +229,10 @@ elements on a schedule of its own or from more than one data file:
 | `theme`  | the data file's        | Any of the eleven prints, `rainbowprint`, or a theme of `.github/themes.json`.                       |
 | `token`  | `github.token`         | What only GitHub knows: placards and the certificate's CI verdict. Optional.                         |
 
+The action draws and commits nothing: its `changed` output says whether a
+file moved, and `commit-file` holds the Conventional Commit for what did, for
+a step of yours to commit with `git commit -F`, as the banners' workflow does.
+
 ### Or by hand
 
 The kit is one Python file and its package, in a clone of this repository.
