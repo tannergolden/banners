@@ -27,4 +27,4 @@ jobs:
     uses: tannergolden/banners/.github/workflows/banners.yml@v1
     with:
       mode: profile
-      # theme: rainbowprint # or blueprint, the default; redprint, yellowprint and the rest of the spectrum
+      # theme: rainbowprint # or blueprint, the default; any of the eleven prints, or your own in .github/themes.json

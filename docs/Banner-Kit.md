@@ -401,6 +401,9 @@ What a consumer pinned to `v1` can rely on:
 6. A quiet day writes nothing, except the weekly lock snapshot.
 7. `check` never needs a token: committed banners can be verified against
    the measurement their lock remembers, in pull-request CI, by anyone.
+8. A theme is chosen once: the `theme` input wins over the config and over
+   the elements' data file, and a theme of the repository's own, in
+   `.github/themes.json`, is held to the same rules by every kit that reads it.
 
 ---
 

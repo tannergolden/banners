@@ -356,7 +356,8 @@ Banners are committed files, so they can be checked like any other. With
 redraws the banners from the measurement the lock remembers and fails if any
 file or README block differs from what the kit draws. No token is used, so it
 runs on a pull request from a fork:
-[`examples/stub-check.yml`](examples/stub-check.yml).
+[`examples/stub-check.yml`](examples/stub-check.yml). A stub that names a
+`theme` gives the check the same one, so the check redraws what it drew.
 
 ### Options
 
@@ -487,6 +488,7 @@ banners/
 │   │   ├── compose.py, config.py     each field's words, and the config file
 │   │   ├── headers.py, footers.py    the three headers and two footers
 │   │   ├── drafting.py               the sheet, dimensions, schedule and prints
+│   │   ├── themes.json               the prints, one a line; a repository adds its own in .github/themes.json
 │   │   ├── plan.py, readme.py        the plan of files, the README blocks, the commit message
 │   │   ├── lock.py                   what persists between runs
 │   │   └── preview.py, page/         the preview page, running this package in the browser

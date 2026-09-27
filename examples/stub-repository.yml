@@ -26,6 +26,7 @@ jobs:
     uses: tannergolden/banners/.github/workflows/banners.yml@v1
     with:
       mode: repository
-      # theme: rainbowprint # or blueprint, the default; redprint, yellowprint and the rest of the spectrum
+      # theme: rainbowprint # or blueprint, the default; any of the eleven prints, or your own in .github/themes.json;
+      #                       the elements are drawn in it too, in place of their data file's print
       # elements: false # to draw the two ends of the page and leave its body alone
       commit: pr # or push, the default, to commit straight to the branch

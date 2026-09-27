@@ -204,7 +204,30 @@ redraws the elements from the measurement the lock remembers and fails if
 any file or README block differs from what the kit draws. No token is used,
 so it runs on a pull request from a fork:
 [`examples/stub-check.yml`](../examples/stub-check.yml) checks the banners
-and, where there is a data file, the elements.
+and, where there is a data file, the elements. A stub that names a `theme`
+gives the check the same one, so the check redraws what it drew.
+
+### Or the action on its own
+
+The action the workflow runs is yours to call too, for a page that draws its
+elements on a schedule of its own or from more than one data file:
+
+```yaml
+- uses: actions/checkout@v5
+- uses: tannergolden/banners/elements@v1
+  with:
+    mode: run            # or init, measure, render, check, snippets
+    theme: blackprint    # optional: every element in this print, in place of the data file's
+```
+
+| Input    | Default                | Meaning                                                                                              |
+| :------- | :--------------------- | :--------------------------------------------------------------------------------------------------- |
+| `mode`   | `run`                  | `run` writes a starter data file and markers when there are none, then measures and draws; `init`, `measure`, `render`, `check` and `snippets` are the kit's own commands, one at a time. |
+| `data`   | `.github/elements.yml` | The data file, relative to the repository root.                                                      |
+| `out`    | `assets/elements`      | Where the SVGs are written. A render prunes drawings its data file does not name, so give each data file its own. |
+| `readme` | `README.md`            | The README whose blocks are written.                                                                 |
+| `theme`  | the data file's        | Any of the eleven prints, `rainbowprint`, or a theme of `.github/themes.json`.                       |
+| `token`  | `github.token`         | What only GitHub knows: placards and the certificate's CI verdict. Optional.                         |
 
 ### Or by hand
 

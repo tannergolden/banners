@@ -39,7 +39,9 @@ jobs:
       - uses: tannergolden/banners@v1 # zizmor: ignore[unpinned-uses] - first-party action on its moving major, the way every stub calls it.
         with:
           mode: check
+          # theme: rainbowprint # the theme your stub draws in, if it names one, so the check redraws what it drew
       - if: ${{ hashFiles('.github/elements.yml') != '' }}
         uses: tannergolden/banners/elements@v1 # zizmor: ignore[unpinned-uses] - first-party action on its moving major, the way every stub calls it.
         with:
           mode: check
+          # theme: rainbowprint # the same theme
