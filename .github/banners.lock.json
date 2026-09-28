@@ -19,8 +19,8 @@
    "owner": "tannergolden",
    "private": false,
    "pulls": 0,
-   "release": "v1.6.2",
-   "released": "2026-09-26",
+   "release": "v1.8.0",
+   "released": "2026-09-27",
    "releases": 1,
    "stars": 0,
    "topics": [
@@ -29,12 +29,12 @@
     "readme",
     "repository"
    ],
-   "updated": "2026-09-26",
+   "updated": "2026-09-27",
    "watchers": 0,
    "workflows": 15
   },
   "subject": "tannergolden/banners",
-  "today": "2026-09-27"
+  "today": "2026-09-28"
  },
  "snapshot": "2026-09-25",
  "version": 1
