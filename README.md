@@ -249,7 +249,7 @@ the releases and the words on the certificate's ring, which are set in
 <!-- elements:contributors:start -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/elements/contributors-dark.svg">
-  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 54 commits; CLAUDE: 42 commits." src="assets/elements/contributors-day.svg">
+  <img alt="Contributors to tannergolden/banners. TANNER GOLDEN: 55 commits; CLAUDE: 42 commits." src="assets/elements/contributors-day.svg">
 </picture>
 <!-- elements:contributors:end -->
 <!-- elements:conformance:start -->
