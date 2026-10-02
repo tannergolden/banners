@@ -21,7 +21,7 @@
    "pulls": 0,
    "release": "v1.8.0",
    "released": "2026-09-27",
-   "releases": 1,
+   "releases": 2,
    "stars": 0,
    "topics": [
     "banners",
@@ -34,8 +34,8 @@
    "workflows": 15
   },
   "subject": "tannergolden/banners",
-  "today": "2026-09-28"
+  "today": "2026-10-02"
  },
- "snapshot": "2026-09-25",
+ "snapshot": "2026-10-02",
  "version": 1
 }
